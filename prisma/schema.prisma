@@ -1,0 +1,113 @@
+// Prisma Schema for ZecWild
+// Sealed-Bid Shielded Auctions & Open Shielded Marketplace
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Open Marketplace Listings
+model Listing {
+  id                  String   @id @default(cuid())
+  title               String
+  description         String
+  imageUrl            String
+  itemType            String   @default("DIGITAL") // "DIGITAL" or "PHYSICAL"
+  secretPayload       String?  // Digital secret/code/download URL revealed only to buyer upon confirmed payment
+  priceZec            Float
+  priceZat            String   // Exact zatoshis stored as string to avoid precision loss (1 ZEC = 100,000,000 zat)
+  sellerAddress       String   // Shielded address (u1... or zs1...)
+  sellerIdentityPubkey String? // Client-side Ed25519 identity key
+  status              String   @default("AVAILABLE") // "AVAILABLE", "PENDING_CONFIRMATION", "SOLD", "CANCELLED"
+  invoiceMemo         String   @unique // Unique single-use payment memo: "ZECWILD:V1:<invoice_id>"
+  buyerAddress        String?  // Shielded address of buyer (from invoice memo or return address)
+  txid                String?  // Confirmed shielded transaction hash from zechack
+  pool                String?  // "Orchard" or "Sapling"
+  paidAt              DateTime?
+  shippingStatus      String?  @default("NOT_APPLICABLE") // "NOT_APPLICABLE", "PENDING_SHIPMENT", "SHIPPED", "DELIVERED"
+  shippingTracking    String?  // Optional tracking reference for physical goods
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// Sealed-Bid Auctions
+model Auction {
+  id                  String   @id @default(cuid())
+  title               String
+  description         String
+  imageUrl            String
+  itemType            String   @default("DIGITAL") // "DIGITAL" or "PHYSICAL"
+  secretPayload       String?  // Digital secret/code/download URL revealed only to winner upon confirmed payment
+  reservePriceZec     Float    @default(0)
+  reservePriceZat     String   @default("0")
+  sellerAddress       String   // Shielded address where winner sends payment
+  sellerIdentityPubkey String? // Client-side Ed25519 identity key
+  sealingPublicKey    String   // Ephemeral RSA-OAEP public key used to encrypt bids client-side
+  endTime             DateTime
+  status              String   @default("OPEN") // "OPEN", "CLOSED_AWAITING_REVEAL", "WINNER_DECLARED", "SETTLED_PAID", "CANCELLED"
+  
+  // Winner Settlement Fields
+  winnerBidId         String?
+  winnerAddress       String?  // Winner's shielded address
+  winningAmountZec    Float?
+  winningAmountZat    String?
+  invoiceMemo         String?  @unique // Generated when winner is declared: "ZECWILD:V1:<auction_invoice_id>"
+  txid                String?  // Confirmed shielded txid
+  pool                String?
+  paidAt              DateTime?
+  paymentDeadline     DateTime? // Grace period deadline for winner to settle
+  shippingStatus      String?  @default("NOT_APPLICABLE")
+  shippingTracking    String?
+
+  bids                Bid[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// Sealed Bids (Option B: Cryptographically Sealed)
+model Bid {
+  id                    String   @id @default(cuid())
+  auctionId             String
+  auction               Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  
+  // Sealed state (Visible during auction)
+  commitmentHash        String   // SHA-256 hash of the ciphertext for integrity check
+  sealedCiphertext      String   // Ephemeral hybrid encrypted payload: { amountZat, bidderAddress, refundAddress, salt, timestamp }
+  
+  // Revealed state (Populated ONLY after auction closes via seller's unsealing action)
+  revealed              Boolean  @default(false)
+  revealedAmountZec     Float?
+  revealedAmountZat     String?
+  revealedBidderAddress String?
+  revealedSalt          String?
+  rank                  Int?
+  isWinner              Boolean  @default(false)
+  
+  createdAt             DateTime @default(now())
+
+  @@index([auctionId])
+}
+
+// Webhook Event Ingestion & Replay Protection (Idempotency log for zechack)
+model SettlementLog {
+  id                 String   @id @default(cuid())
+  eventId            String   @unique // zechack event_id (e.g. "evt_note_2108_232585f209")
+  txid               String
+  outputIndex        Int?
+  pool               String?  // "Orchard" or "Sapling"
+  amountZat          String
+  amountZec          Float
+  memo               String
+  verificationStatus String   // "simulated", "confirmed", etc.
+  matchedEntityType  String?  // "LISTING" or "AUCTION"
+  matchedEntityId    String?
+  processed          Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  @@index([txid])
+  @@index([memo])
+}
