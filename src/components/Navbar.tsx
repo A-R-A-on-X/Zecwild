@@ -17,16 +17,21 @@ import {
   Sparkles,
   Menu,
   X,
+  RotateCcw,
+  ExternalLink,
+  Info,
 } from "lucide-react";
 import {
   getActiveProfile,
   setActiveProfile,
-  DEMO_PERSONAS,
+  DEFAULT_DEMO_PERSONAS,
   ShieldedProfile,
   getAllProfiles,
   addCustomProfile,
   generateRandomShieldedProfile,
-  removeCustomProfile,
+  deleteProfile,
+  restoreDemoPersonas,
+  getDeletedPersonaIds,
 } from "@/lib/crypto/identity";
 import { formatAddress, isShieldedAddress } from "@/lib/crypto/zcash";
 
@@ -43,8 +48,9 @@ export default function Navbar({
   openCreateModal,
   openSimulatorModal,
 }: NavbarProps) {
-  const [profile, setProfile] = useState<ShieldedProfile>(DEMO_PERSONAS[0]);
-  const [allProfiles, setAllProfiles] = useState<ShieldedProfile[]>(DEMO_PERSONAS);
+  const [profile, setProfile] = useState<ShieldedProfile>(DEFAULT_DEMO_PERSONAS[0]);
+  const [allProfiles, setAllProfiles] = useState<ShieldedProfile[]>([]);
+  const [hasDeletedDemos, setHasDeletedDemos] = useState(false);
   const [personaDropdownOpen, setPersonaDropdownOpen] = useState(false);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,6 +66,7 @@ export default function Navbar({
   const reloadProfiles = () => {
     setProfile(getActiveProfile());
     setAllProfiles(getAllProfiles());
+    setHasDeletedDemos(getDeletedPersonaIds().length > 0);
   };
 
   useEffect(() => {
@@ -68,6 +75,7 @@ export default function Navbar({
       if (e.detail) {
         setProfile(e.detail);
         setAllProfiles(getAllProfiles());
+        setHasDeletedDemos(getDeletedPersonaIds().length > 0);
       }
     };
     window.addEventListener("zecwild_profile_changed", handler);
@@ -123,7 +131,7 @@ export default function Navbar({
     }
     const newProf = addCustomProfile(customName || "My Shielded Wallet", customAddress);
     setProfile(newProf);
-    setAllProfiles(getAllProfiles());
+    reloadProfiles();
     setCustomName("");
     setCustomAddress("");
     setShowAddCustom(false);
@@ -133,26 +141,39 @@ export default function Navbar({
   const handleGenerateRandom = () => {
     const fresh = generateRandomShieldedProfile("Shielded Test User");
     setProfile(fresh);
-    setAllProfiles(getAllProfiles());
+    reloadProfiles();
     setShowAddCustom(false);
     setPersonaDropdownOpen(false);
   };
 
-  const handleRemoveProfile = (e: React.MouseEvent, id: string) => {
+  const handleDeleteProfile = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    removeCustomProfile(id);
+    deleteProfile(id);
     reloadProfiles();
   };
+
+  const handleRestoreDemos = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    restoreDemoPersonas();
+    reloadProfiles();
+  };
+
+  const demoList = allProfiles.filter((p) => p.isDemo);
+  const customList = allProfiles.filter((p) => !p.isDemo);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-[#FFFFFF]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo (Inspired by clean typography & rounded icon in Image 1 & 3) */}
+        {/* Brand Logo -> Click resets view to marketplace */}
         <div
-          className="flex items-center space-x-3 cursor-pointer select-none"
-          onClick={() => setActiveTab("marketplace")}
+          className="flex items-center space-x-3 cursor-pointer select-none group"
+          onClick={() => {
+            setActiveTab("marketplace");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          title="Return to ZecWild Marketplace"
         >
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-md shadow-[#D96522]/20 transition-transform hover:scale-105">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-md shadow-[#D96522]/20 transition-transform group-hover:scale-105">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -168,17 +189,21 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Center Pill Segmented Navigation (Directly inspired by [Rent] [Buy] [Sell] in Image 1) */}
+        {/* Center Pill Segmented Navigation (Inspired by [Rent] [Buy] [Sell] in Image 1) */}
         <nav className="hidden md:flex items-center space-x-1.5 bg-[#EAE9E4] p-1.5 rounded-full border border-black/[0.04]">
           <button
             onClick={() => setActiveTab("marketplace")}
             className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "marketplace"
                 ? "bg-white text-[#1A1816] shadow-sm"
-                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
+                : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
-            <ShoppingBag className={`w-4 h-4 ${activeTab === "marketplace" ? "text-[#D96522]" : "text-[#949089]"}`} />
+            <ShoppingBag
+              className={`w-4 h-4 ${
+                activeTab === "marketplace" ? "text-[#D96522]" : "text-[#66635F]"
+              }`}
+            />
             <span>Marketplace</span>
           </button>
 
@@ -187,10 +212,14 @@ export default function Navbar({
             className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "auctions"
                 ? "bg-white text-[#1A1816] shadow-sm"
-                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
+                : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
-            <Lock className={`w-4 h-4 ${activeTab === "auctions" ? "text-[#D96522]" : "text-[#949089]"}`} />
+            <Lock
+              className={`w-4 h-4 ${
+                activeTab === "auctions" ? "text-[#D96522]" : "text-[#66635F]"
+              }`}
+            />
             <span>Sealed Auctions</span>
           </button>
 
@@ -199,44 +228,48 @@ export default function Navbar({
             className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "activity"
                 ? "bg-white text-[#1A1816] shadow-sm"
-                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
+                : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
-            <Activity className={`w-4 h-4 ${activeTab === "activity" ? "text-[#D96522]" : "text-[#949089]"}`} />
+            <Activity
+              className={`w-4 h-4 ${
+                activeTab === "activity" ? "text-[#D96522]" : "text-[#66635F]"
+              }`}
+            />
             <span>Activity & Vault</span>
           </button>
         </nav>
 
-        {/* Right Section Controls */}
+        {/* Right Action Cluster */}
         <div className="flex items-center space-x-3">
-          {/* Webhook Testbed Button */}
+          {/* Indexer Testbed Button */}
           <button
             onClick={openSimulatorModal}
-            className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill"
-            title="Open ZecShield Gateway Webhook Simulator"
+            className="hidden sm:flex items-center space-x-2 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill transition-all"
+            title="Launch the zechack indexer webhook testbed"
           >
-            <Zap className="w-3.5 h-3.5 text-[#D96522] animate-pulse" />
+            <Zap className="w-3.5 h-3.5 text-[#D96522]" />
             <span>Webhook Testbed</span>
           </button>
 
-          {/* Create Button (Burnt Orange Primary) */}
+          {/* Create Button Dropdown */}
           <div ref={createRef} className="relative">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
-              className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold btn-orange-primary"
+              className="flex items-center space-x-2 px-4 py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-sm"
             >
-              <PlusCircle className="w-4 h-4" />
-              <span>Create</span>
-              <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Create</span>
+              <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
             {createDropdownOpen && (
-              <div
-                className="absolute right-0 mt-3 w-56 rounded-2xl bg-white p-2 shadow-xl border border-black/[0.08] z-50 animate-in fade-in zoom-in-95 duration-150"
-                onClick={() => setCreateDropdownOpen(false)}
-              >
+              <div className="absolute right-0 mt-3 w-56 rounded-2xl bg-white p-2 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-black/[0.08]">
                 <button
-                  onClick={() => openCreateModal("listing")}
+                  onClick={() => {
+                    openCreateModal("listing");
+                    setCreateDropdownOpen(false);
+                  }}
                   className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-[#1A1816] hover:bg-[#FCEFE7] hover:text-[#A7430B] flex items-center space-x-3 transition-colors"
                 >
                   <div className="p-2 rounded-lg bg-orange-100 text-[#D96522]">
@@ -249,7 +282,10 @@ export default function Navbar({
                 </button>
 
                 <button
-                  onClick={() => openCreateModal("auction")}
+                  onClick={() => {
+                    openCreateModal("auction");
+                    setCreateDropdownOpen(false);
+                  }}
                   className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-[#1A1816] hover:bg-[#FCEFE7] hover:text-[#A7430B] flex items-center space-x-3 transition-colors mt-1"
                 >
                   <div className="p-2 rounded-lg bg-orange-100 text-[#D96522]">
@@ -264,19 +300,19 @@ export default function Navbar({
             )}
           </div>
 
-          {/* Persona / Shielded Account Switcher (Floating Card Style) */}
+          {/* Persona / Shielded Account Switcher */}
           <div ref={personaRef} className="relative">
             <button
               onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
               className="flex items-center space-x-2.5 px-3.5 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
             >
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-[#1A1816]">{profile.name}</span>
+              <span className="font-bold text-[#1A1816] max-w-[110px] truncate">{profile.name}</span>
               <ChevronDown className="w-3.5 h-3.5 text-[#949089]" />
             </button>
 
             {personaDropdownOpen && (
-              <div className="absolute right-0 mt-3 w-84 sm:w-92 rounded-3xl bg-white p-5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-black/[0.08] space-y-4 text-left">
+              <div className="absolute right-0 mt-3 w-84 sm:w-96 rounded-3xl bg-white p-5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-black/[0.08] space-y-4 text-left">
                 {/* Active Account Details */}
                 <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] space-y-2">
                   <div className="flex items-center justify-between">
@@ -307,79 +343,113 @@ export default function Navbar({
                   </div>
                 </div>
 
-                {/* Demo Personas */}
-                <div className="space-y-1.5">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089] px-1">
-                    ⚡ Quick Demo Personas
-                  </div>
-                  <div className="space-y-1">
-                    {DEMO_PERSONAS.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => selectPersona(p)}
-                        className={`w-full text-left p-2.5 rounded-2xl text-xs transition-colors flex items-center justify-between ${
-                          profile.id === p.id
-                            ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
-                            : "hover:bg-[#F8F7F4] text-[#1A1816]"
-                        }`}
-                      >
-                        <div>
-                          <div className="font-bold flex items-center space-x-1.5">
-                            <span>{p.name}</span>
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-stone-200 text-stone-700 font-mono">
-                              {p.addressType}
-                            </span>
-                          </div>
-                          <div className="font-mono text-[10px] text-[#66635F] truncate max-w-[200px]">
-                            {formatAddress(p.address, 8, 6)}
-                          </div>
-                        </div>
-                        {profile.id === p.id && <CheckCircle2 className="w-4 h-4 text-[#D96522]" />}
-                      </button>
-                    ))}
-                  </div>
+                {/* Device-Bound Identity Info Notice */}
+                <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 text-[11px] text-[#A7430B] flex items-start space-x-2">
+                  <Shield className="w-4 h-4 text-[#D96522] flex-shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">
+                    <strong>Zero Impersonation:</strong> Actions are authenticated by your browser's local WebCrypto keypair. Never share spending or viewing keys.
+                  </span>
                 </div>
 
-                {/* Custom Profiles (if any) */}
-                {allProfiles.filter((p) => !p.isDemo).length > 0 && (
+                {/* Demo Personas List with Delete & Restore */}
+                {demoList.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#949089]">
+                        ⚡ Demo Personas
+                      </span>
+                    </div>
+                    <div className="space-y-1">
+                      {demoList.map((p) => (
+                        <div
+                          key={p.id}
+                          onClick={() => selectPersona(p)}
+                          className={`w-full text-left p-2.5 rounded-2xl text-xs transition-colors cursor-pointer flex items-center justify-between ${
+                            profile.id === p.id
+                              ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
+                              : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
+                          }`}
+                        >
+                          <div className="truncate max-w-[200px]">
+                            <div className="font-bold flex items-center space-x-1.5">
+                              <span>{p.name}</span>
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-stone-200 text-stone-700 font-mono">
+                                {p.addressType}
+                              </span>
+                            </div>
+                            <div className="font-mono text-[10px] text-[#66635F] truncate">
+                              {formatAddress(p.address, 8, 6)}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            {profile.id === p.id && (
+                              <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
+                            )}
+                            <button
+                              onClick={(e) => handleDeleteProfile(e, p.id)}
+                              className="p-1 hover:text-rose-600 text-[#949089] transition-colors"
+                              title="Delete persona"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Custom Profiles List */}
+                {customList.length > 0 && (
                   <div className="space-y-1.5 pt-2 border-t border-black/[0.06]">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089] px-1">
                       Connected Custom Wallets
                     </div>
                     <div className="space-y-1 max-h-36 overflow-y-auto">
-                      {allProfiles
-                        .filter((p) => !p.isDemo)
-                        .map((p) => (
-                          <div
-                            key={p.id}
-                            onClick={() => selectPersona(p)}
-                            className={`p-2.5 rounded-2xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
-                              profile.id === p.id
-                                ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
-                                : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
-                            }`}
-                          >
-                            <div className="truncate max-w-[200px]">
-                              <div className="font-bold text-[#1A1816]">{p.name}</div>
-                              <div className="font-mono text-[10px] text-[#66635F] truncate">
-                                {formatAddress(p.address, 8, 6)}
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              {profile.id === p.id && (
-                                <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
-                              )}
-                              <button
-                                onClick={(e) => handleRemoveProfile(e, p.id)}
-                                className="p-1 hover:text-rose-600 text-[#949089] transition-colors"
-                                title="Remove wallet"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                      {customList.map((p) => (
+                        <div
+                          key={p.id}
+                          onClick={() => selectPersona(p)}
+                          className={`p-2.5 rounded-2xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
+                            profile.id === p.id
+                              ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
+                              : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
+                          }`}
+                        >
+                          <div className="truncate max-w-[200px]">
+                            <div className="font-bold text-[#1A1816]">{p.name}</div>
+                            <div className="font-mono text-[10px] text-[#66635F] truncate">
+                              {formatAddress(p.address, 8, 6)}
                             </div>
                           </div>
-                        ))}
+                          <div className="flex items-center space-x-1">
+                            {profile.id === p.id && (
+                              <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
+                            )}
+                            <button
+                              onClick={(e) => handleDeleteProfile(e, p.id)}
+                              className="p-1 hover:text-rose-600 text-[#949089] transition-colors"
+                              title="Delete persona"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Restore Demos Button if any deleted */}
+                {hasDeletedDemos && (
+                  <div className="pt-1">
+                    <button
+                      onClick={handleRestoreDemos}
+                      className="w-full py-2 px-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-[#1A1816] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-[#D96522]" />
+                      <span>Restore Default Demo Personas</span>
+                    </button>
                   </div>
                 )}
 
@@ -520,6 +590,30 @@ export default function Navbar({
             <Zap className="w-4 h-4 text-[#D96522]" />
             <span>Webhook Testbed</span>
           </button>
+
+          {/* Persona Deletion row in mobile menu */}
+          <div className="pt-2 border-t border-black/[0.06] space-y-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089]">
+              Switch / Delete Persona:
+            </div>
+            {allProfiles.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center justify-between p-2 rounded-xl text-xs bg-[#F8F7F4]"
+              >
+                <div onClick={() => selectPersona(p)} className="flex-1 cursor-pointer font-bold">
+                  {p.name}
+                </div>
+                <button
+                  onClick={(e) => handleDeleteProfile(e, p.id)}
+                  className="p-1 text-rose-600 hover:text-rose-800"
+                  title="Delete persona"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </header>

@@ -7,12 +7,13 @@ import MarketplaceView from "@/components/MarketplaceView";
 import SealedAuctionsView from "@/components/SealedAuctionsView";
 import ActivityView from "@/components/ActivityView";
 import PaymentModal from "@/components/PaymentModal";
+import ReceiptModal from "@/components/ReceiptModal";
 import PlaceBidModal from "@/components/PlaceBidModal";
 import UnsealModal from "@/components/UnsealModal";
 import CreateListingModal from "@/components/CreateListingModal";
 import CreateAuctionModal from "@/components/CreateAuctionModal";
 import WebhookSimulatorModal from "@/components/WebhookSimulatorModal";
-import { Shield, Lock, Terminal, Sparkles } from "lucide-react";
+import { Shield, Lock, Terminal, Sparkles, ExternalLink } from "lucide-react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"marketplace" | "auctions" | "activity">("marketplace");
@@ -24,6 +25,7 @@ export default function Home() {
   const [createModalType, setCreateModalType] = useState<"listing" | "auction" | null>(null);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [paymentItem, setPaymentItem] = useState<{ item: any; type: "listing" | "auction" } | null>(null);
+  const [receiptItem, setReceiptItem] = useState<{ item: any; type: "listing" | "auction" } | null>(null);
   const [bidAuction, setBidAuction] = useState<any | null>(null);
   const [unsealAuction, setUnsealAuction] = useState<any | null>(null);
 
@@ -82,6 +84,7 @@ export default function Home() {
               <MarketplaceView
                 listings={listings}
                 onOpenPaymentModal={(item) => setPaymentItem({ item, type: "listing" })}
+                onOpenReceiptModal={(item) => setReceiptItem({ item, type: "listing" })}
                 openCreateModal={() => setCreateModalType("listing")}
               />
             )}
@@ -92,6 +95,7 @@ export default function Home() {
                 onOpenBidModal={(auction) => setBidAuction(auction)}
                 onOpenUnsealModal={(auction) => setUnsealAuction(auction)}
                 onOpenPaymentModal={(item) => setPaymentItem({ item, type: "auction" })}
+                onOpenReceiptModal={(auction) => setReceiptItem({ item: auction, type: "auction" })}
                 openCreateModal={() => setCreateModalType("auction")}
                 refreshData={fetchData}
               />
@@ -101,29 +105,51 @@ export default function Home() {
               <ActivityView
                 onOpenPaymentModal={(item, type) => setPaymentItem({ item, type })}
                 onOpenUnsealModal={(auction) => setUnsealAuction(auction)}
+                onOpenReceiptModal={(item, type) => setReceiptItem({ item, type })}
               />
             )}
           </div>
         )}
       </main>
 
-      {/* Security Architecture & Warm Stone Footer */}
+      {/* Security Architecture & Verifiable Links Footer */}
       <footer className="border-t border-black/[0.06] bg-white py-8 px-4 text-center text-xs text-[#66635F] space-y-3 mt-12">
         <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-[#66635F]">
-          <span className="flex items-center space-x-1.5 text-emerald-800 font-semibold">
+          <a
+            href="https://zips.z.cash/zip-0321"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1.5 text-emerald-800 font-semibold hover:underline"
+            title="Read Zcash ZIP-321 Payment URI Specification"
+          >
             <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Zero Platform Custody</span>
-          </span>
+            <span>Zero Platform Custody (ZIP-321)</span>
+            <ExternalLink className="w-3 h-3 text-emerald-600" />
+          </a>
           <span className="text-[#949089] hidden sm:inline">•</span>
-          <span className="flex items-center space-x-1.5 text-[#A7430B] font-semibold">
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1.5 text-[#A7430B] font-semibold hover:underline"
+            title="Read WebCrypto SubtleCrypto standard"
+          >
             <Lock className="w-3.5 h-3.5 text-[#D96522]" />
             <span>Client-Side RSA-OAEP Sealing</span>
-          </span>
+            <ExternalLink className="w-3 h-3 text-[#D96522]" />
+          </a>
           <span className="text-[#949089] hidden sm:inline">•</span>
-          <span className="flex items-center space-x-1.5 text-[#1A1816] font-semibold">
+          <a
+            href="https://github.com/TheWebDevEhi/zechack"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1.5 text-[#1A1816] font-semibold hover:underline"
+            title="View the zechack ZecShield Gateway Indexer on GitHub"
+          >
             <Terminal className="w-3.5 h-3.5 text-[#C85A17]" />
             <span>ZecShield Gateway Indexer (`zechack`)</span>
-          </span>
+            <ExternalLink className="w-3 h-3 text-[#1A1816]" />
+          </a>
         </div>
         <p className="text-[11px] text-[#949089]">
           ZecWild MVP — Shielded Zcash Sealed-Bid Auctions & Open Marketplace
@@ -156,6 +182,16 @@ export default function Home() {
           entityType={paymentItem.type}
           item={paymentItem.item}
           onPaymentSuccess={fetchData}
+          onOpenReceiptModal={(item, type) => setReceiptItem({ item, type })}
+        />
+      )}
+
+      {receiptItem && (
+        <ReceiptModal
+          isOpen={true}
+          onClose={() => setReceiptItem(null)}
+          entityType={receiptItem.type}
+          item={receiptItem.item}
         />
       )}
 

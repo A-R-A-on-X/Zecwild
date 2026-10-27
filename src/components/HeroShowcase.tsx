@@ -57,6 +57,8 @@ export default function HeroShowcase({
       setActiveTab("marketplace");
     } else if (action === "auctions") {
       setActiveTab("auctions");
+    } else if (action === "activity") {
+      setActiveTab("activity");
     }
   };
 
@@ -73,8 +75,12 @@ export default function HeroShowcase({
     } else if (lower.includes("buy") || lower.includes("market") || lower.includes("list")) {
       setActiveTab("marketplace");
       setAssistantStatus("Navigating to Open Marketplace...");
+    } else if (lower.includes("audit") || lower.includes("receipt") || lower.includes("vault")) {
+      setActiveTab("activity");
+      setAssistantStatus("Navigating to Activity & Audit Vault...");
     } else {
-      setAssistantStatus(`Looking up "${assistantPrompt}" across shielded inventory...`);
+      setAssistantStatus(`Navigating inventory for "${assistantPrompt}"...`);
+      setActiveTab("marketplace");
     }
     setAssistantPrompt("");
     setTimeout(() => setAssistantStatus(null), 3500);
@@ -84,10 +90,14 @@ export default function HeroShowcase({
     <section className="space-y-6">
       {/* 1. Metric Overview Cards (Inspired by Image 2 - Modern Dashboard KPI strip) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Metric 1 */}
-        <div className="card-static p-4 sm:p-5 flex flex-col justify-between">
+        {/* Metric 1: Shielded Volume -> Click to view audit log */}
+        <div
+          onClick={() => setActiveTab("activity")}
+          className="card-static p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#D96522]/40 transition-all group"
+          title="Click to view on-chain audit trail"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089] group-hover:text-[#D96522] transition-colors">
               Shielded Volume
             </span>
             <div className="w-8 h-8 rounded-full bg-[#FCEFE7] flex items-center justify-center text-[#D96522]">
@@ -105,10 +115,14 @@ export default function HeroShowcase({
           </div>
         </div>
 
-        {/* Metric 2 */}
-        <div className="card-static p-4 sm:p-5 flex flex-col justify-between">
+        {/* Metric 2: Active Listings -> Click to view marketplace */}
+        <div
+          onClick={() => setActiveTab("marketplace")}
+          className="card-static p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#D96522]/40 transition-all group"
+          title="Click to explore marketplace listings"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089] group-hover:text-[#D96522] transition-colors">
               Active Listings
             </span>
             <div className="w-8 h-8 rounded-full bg-[#FCEFE7] flex items-center justify-center text-[#D96522]">
@@ -125,10 +139,14 @@ export default function HeroShowcase({
           </div>
         </div>
 
-        {/* Metric 3 */}
-        <div className="card-static p-4 sm:p-5 flex flex-col justify-between">
+        {/* Metric 3: Sealed Auctions -> Click to view auctions */}
+        <div
+          onClick={() => setActiveTab("auctions")}
+          className="card-static p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#D96522]/40 transition-all group"
+          title="Click to explore live sealed auctions"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089] group-hover:text-[#D96522] transition-colors">
               Sealed Auctions
             </span>
             <div className="w-8 h-8 rounded-full bg-[#FCEFE7] flex items-center justify-center text-[#D96522]">
@@ -145,10 +163,14 @@ export default function HeroShowcase({
           </div>
         </div>
 
-        {/* Metric 4 */}
-        <div className="card-static p-4 sm:p-5 flex flex-col justify-between">
+        {/* Metric 4: Indexer Gateway -> Click to open simulator testbed */}
+        <div
+          onClick={onOpenSimulator}
+          className="card-static p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-emerald-500/40 transition-all group"
+          title="Click to launch zechack simulator testbed"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#949089] group-hover:text-emerald-700 transition-colors">
               Indexer Gateway
             </span>
             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
@@ -159,9 +181,10 @@ export default function HeroShowcase({
             <div className="text-sm sm:text-base font-bold text-emerald-800 flex items-center space-x-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
               <span>zechack Connected</span>
+              <ExternalLink className="w-3 h-3 text-emerald-600 opacity-60 group-hover:opacity-100" />
             </div>
             <div className="text-[11px] text-[#66635F] mt-0.5 truncate font-mono">
-              Orchard & Sapling compact blocks
+              Click to launch testbed
             </div>
           </div>
         </div>
@@ -188,10 +211,10 @@ export default function HeroShowcase({
             </h1>
 
             <p className="text-sm sm:text-base text-[#66635F] leading-relaxed max-w-xl">
-              Bid in sealed auctions without information leakage, or buy items instantly with direct wallet-to-wallet shielded ZEC transactions. All payments verified seamlessly by the <strong>ZecShield Gateway</strong> indexer.
+              Bid in sealed auctions without information leakage, or buy items instantly with direct wallet-to-wallet shielded ZEC transactions. All payments verified on-chain by the <strong>ZecShield Gateway</strong> indexer.
             </p>
 
-            {/* Quick Feature Pills */}
+            {/* Quick Feature Buttons */}
             <div className="pt-2 flex flex-wrap gap-2.5">
               <button
                 onClick={() => onOpenCreate("listing")}
@@ -208,6 +231,16 @@ export default function HeroShowcase({
                 <Lock className="w-3.5 h-3.5" />
                 <span>Launch Sealed Auction</span>
               </button>
+
+              <a
+                href="https://github.com/TheWebDevEhi/zechack"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-[#1A1816] text-xs font-bold flex items-center space-x-1.5 transition-colors"
+              >
+                <span>Indexer GitHub</span>
+                <ExternalLink className="w-3.5 h-3.5 text-[#66635F]" />
+              </a>
             </div>
           </div>
 
@@ -238,7 +271,7 @@ export default function HeroShowcase({
                 >
                   <div className="flex items-center justify-between mb-1">
                     <Zap className="w-4 h-4 text-[#D96522]" />
-                    <span className="text-[9px] text-[#949089] font-mono">Instant</span>
+                    <span className="text-[9px] text-[#949089] font-mono">Testbed</span>
                   </div>
                   <div className="text-xs font-bold text-[#1A1816] group-hover:text-[#A7430B]">
                     Simulate Payment

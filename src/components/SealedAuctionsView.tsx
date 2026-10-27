@@ -12,6 +12,7 @@ import {
   ChevronRight,
   RotateCcw,
   Sparkles,
+  CheckCircle2,
 } from "lucide-react";
 import { formatAddress } from "@/lib/crypto/zcash";
 import { getActiveProfile } from "@/lib/crypto/identity";
@@ -21,6 +22,7 @@ interface SealedAuctionsViewProps {
   onOpenBidModal: (auction: any) => void;
   onOpenUnsealModal: (auction: any) => void;
   onOpenPaymentModal: (item: any) => void;
+  onOpenReceiptModal?: (auction: any) => void;
   openCreateModal: () => void;
   refreshData: () => void;
 }
@@ -30,6 +32,7 @@ export default function SealedAuctionsView({
   onOpenBidModal,
   onOpenUnsealModal,
   onOpenPaymentModal,
+  onOpenReceiptModal,
   openCreateModal,
   refreshData,
 }: SealedAuctionsViewProps) {
@@ -98,13 +101,14 @@ export default function SealedAuctionsView({
         </button>
       </div>
 
-      {/* Grid of Auctions (Inspired by Image 2 & 3 auction item cards) */}
+      {/* Grid of Auctions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {auctions.map((auction) => {
-          const isClosed = timeRemaining[auction.id] === "CLOSED" || auction.status !== "OPEN";
+          const timer = timeRemaining[auction.id] || "...";
+          const isClosed = timer === "CLOSED" || auction.status !== "OPEN";
+          const isAwaitingReveal = auction.status === "CLOSED_AWAITING_REVEAL";
           const isWinnerDeclared = auction.status === "WINNER_DECLARED";
           const isSettled = auction.status === "SETTLED_PAID";
-          const isAwaitingReveal = auction.status === "CLOSED_AWAITING_REVEAL";
 
           return (
             <div
@@ -112,71 +116,88 @@ export default function SealedAuctionsView({
               className="card-floating overflow-hidden flex flex-col justify-between group"
             >
               <div>
-                {/* Image & Timers Container */}
+                {/* Media Container */}
                 <div className="relative aspect-video w-full overflow-hidden bg-stone-100 p-2">
                   <div className="w-full h-full rounded-2xl overflow-hidden relative">
                     <img
                       src={auction.imageUrl}
                       alt={auction.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                  </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-                  {/* Countdown Timer Badge (Inspired by Image 2 & 3 timers) */}
-                  <div className="absolute top-4 left-4 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-black/[0.08] text-[11px] font-mono font-bold text-[#1A1816] shadow-sm">
-                    <Clock className="w-3.5 h-3.5 text-[#D96522]" />
-                    <span>{timeRemaining[auction.id] || "Loading..."}</span>
-                  </div>
+                    {/* Top Status & Type Badges */}
+                    <div className="absolute top-2.5 left-2.5 flex items-center space-x-1.5">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-md text-[#1A1816] shadow-sm flex items-center space-x-1">
+                        {auction.itemType === "DIGITAL" ? (
+                          <>
+                            <Key className="w-3 h-3 text-[#D96522]" />
+                            <span>Digital</span>
+                          </>
+                        ) : (
+                          <>
+                            <Package className="w-3 h-3 text-[#D96522]" />
+                            <span>Physical</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
 
-                  {/* Status Badge */}
-                  <div className="absolute top-4 right-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm border ${
-                        isSettled
-                          ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                          : isWinnerDeclared
-                          ? "bg-blue-50 text-blue-800 border-blue-300"
-                          : isAwaitingReveal
-                          ? "bg-amber-50 text-amber-900 border-amber-300"
-                          : "bg-white/90 text-[#66635F] border-black/[0.08]"
-                      }`}
-                    >
-                      {auction.status.replace(/_/g, " ")}
-                    </span>
+                    {/* Countdown Timer Pill */}
+                    <div className="absolute top-2.5 right-2.5">
+                      <div
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center space-x-1.5 backdrop-blur-md shadow-sm ${
+                          isClosed
+                            ? "bg-black/60 text-stone-300"
+                            : "bg-[#FCEFE7]/95 text-[#A7430B] border border-[#D96522]/30"
+                        }`}
+                      >
+                        <Clock className="w-3 h-3" />
+                        <span>{timer}</span>
+                      </div>
+                    </div>
+
+                    {/* Bottom Sealed Bids Counter Pill */}
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                      <div className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-black/60 backdrop-blur-md text-white flex items-center space-x-1.5">
+                        <Lock className="w-3 h-3 text-[#D96522]" />
+                        <span>{auction.bids?.length || 0} Sealed Bids Submitted</span>
+                      </div>
+                      <div className="text-[10px] font-mono text-white/80 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-lg">
+                        Reserve: {auction.reservePriceZec} ZEC
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Body */}
-                <div className="p-5 space-y-3">
-                  <h3 className="text-base font-bold text-[#1A1816] group-hover:text-[#D96522] transition-colors line-clamp-1">
+                {/* Body Content */}
+                <div className="p-5 space-y-2.5">
+                  <h3 className="font-bold text-base text-[#1A1816] line-clamp-1 group-hover:text-[#D96522] transition-colors">
                     {auction.title}
                   </h3>
                   <p className="text-xs text-[#66635F] line-clamp-2 leading-relaxed">
-                    {auction.description}
+                    {auction.description || "Shielded peer-to-peer sealed auction with zero knowledge of bids."}
                   </p>
 
-                  {/* Sealed Bids Count Banner in Burnt Orange */}
-                  <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-2 text-[#A7430B] font-bold">
-                      <Lock className="w-4 h-4 text-[#D96522]" />
-                      <span>Sealed Bids Received:</span>
+                  {/* Public Key Fingerprint */}
+                  <div className="pt-2 p-2.5 rounded-xl bg-[#F8F7F4] border border-black/[0.04] space-y-1">
+                    <div className="flex items-center justify-between text-[10px] text-[#949089] uppercase tracking-wider font-bold">
+                      <span className="flex items-center space-x-1">
+                        <Shield className="w-3 h-3 text-[#D96522]" />
+                        <span>Public Sealing Key</span>
+                      </span>
+                      <span className="text-emerald-700 font-bold">RSA-2048</span>
                     </div>
-                    <span className="font-mono text-sm font-black text-[#A7430B] px-2.5 py-0.5 rounded-full bg-white shadow-xs">
-                      {auction.bidsCount || 0}
-                    </span>
-                  </div>
-
-                  {/* Reserve & Seller */}
-                  <div className="pt-1 flex items-center justify-between text-xs text-[#66635F] font-mono">
-                    <span>Reserve: <strong className="text-[#1A1816]">{auction.reservePriceZec} ZEC</strong></span>
-                    <span>Seller: {formatAddress(auction.sellerAddress, 6, 4)}</span>
+                    <div className="font-mono text-[10px] text-[#66635F] truncate">
+                      {auction.sealingPublicKey?.slice(0, 42)}...
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Footer Actions */}
+              {/* Action Buttons Footer */}
               <div className="p-5 pt-0">
-                <div className="pt-3 border-t border-black/[0.05]">
+                <div className="pt-3 border-t border-black/[0.05] space-y-2">
                   {/* Status 1: OPEN -> Place Bid */}
                   {!isClosed && (
                     <button
@@ -192,7 +213,7 @@ export default function SealedAuctionsView({
                   {isAwaitingReveal && (
                     <button
                       onClick={() => onOpenUnsealModal(auction)}
-                      className="w-full py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-2"
+                      className="w-full py-2.5 rounded-full btn-orange-primary text-white font-bold text-xs transition-all shadow-md flex items-center justify-center space-x-2"
                     >
                       <Unlock className="w-3.5 h-3.5" />
                       <span>Unseal Bids & Declare Winner</span>
@@ -247,16 +268,32 @@ export default function SealedAuctionsView({
                     </div>
                   )}
 
-                  {/* Status 4: Settled & Paid */}
+                  {/* Status 4: Settled & Paid -> With View Settlement Receipt Button */}
                   {isSettled && (
-                    <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
-                      <span className="text-emerald-800 font-bold flex items-center space-x-1.5">
-                        <Trophy className="w-4 h-4 text-emerald-600" />
-                        <span>Settled & Paid</span>
-                      </span>
-                      <span className="font-mono text-emerald-900 font-black text-sm">
-                        {auction.winningAmountZec} ZEC
-                      </span>
+                    <div className="space-y-2">
+                      <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                        <span className="text-emerald-800 font-bold flex items-center space-x-1.5">
+                          <Trophy className="w-4 h-4 text-emerald-600" />
+                          <span>Settled & Paid</span>
+                        </span>
+                        <span className="font-mono text-emerald-900 font-black text-sm">
+                          {auction.winningAmountZec} ZEC
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (onOpenReceiptModal) {
+                            onOpenReceiptModal(auction);
+                          } else {
+                            onOpenPaymentModal(auction);
+                          }
+                        }}
+                        className="w-full py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-xs"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>View Settlement Receipt</span>
+                      </button>
                     </div>
                   )}
                 </div>

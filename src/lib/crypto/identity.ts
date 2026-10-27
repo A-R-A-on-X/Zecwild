@@ -10,10 +10,12 @@ export interface ShieldedProfile {
   address: string; // Orchard (u1...) or Sapling (zs1...)
   addressType: "Orchard" | "Sapling";
   isDemo?: boolean;
+  identityPubkey?: string; // Client-side device-bound public key for impersonation resistance
+  createdAt?: number;
 }
 
 // Pre-seeded Demo Personas for instant hackathon evaluation and video demos
-export const DEMO_PERSONAS: ShieldedProfile[] = [
+export const DEFAULT_DEMO_PERSONAS: ShieldedProfile[] = [
   {
     id: "persona_alice_seller",
     name: "Alice (Seller)",
@@ -42,7 +44,20 @@ export const DEMO_PERSONAS: ShieldedProfile[] = [
 
 const STORAGE_KEY_PROFILE = "zecwild_active_profile";
 const STORAGE_KEY_CUSTOM_PROFILES = "zecwild_custom_profiles";
+const STORAGE_KEY_DELETED_PERSONAS = "zecwild_deleted_personas";
 const STORAGE_KEY_AUCTION_KEYS = "zecwild_auction_private_keys";
+const STORAGE_KEY_IDENTITY_KEYS = "zecwild_device_identity_keys";
+
+export function getDeletedPersonaIds(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_DELETED_PERSONAS);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to read deleted personas:", e);
+  }
+  return [];
+}
 
 export function getCustomProfiles(): ShieldedProfile[] {
   if (typeof window === "undefined") return [];
@@ -56,8 +71,10 @@ export function getCustomProfiles(): ShieldedProfile[] {
 }
 
 export function getAllProfiles(): ShieldedProfile[] {
-  const custom = getCustomProfiles();
-  return [...DEMO_PERSONAS, ...custom];
+  const deleted = new Set(getDeletedPersonaIds());
+  const activeDemos = DEFAULT_DEMO_PERSONAS.filter((p) => !deleted.has(p.id));
+  const custom = getCustomProfiles().filter((p) => !deleted.has(p.id));
+  return [...activeDemos, ...custom];
 }
 
 export function addCustomProfile(name: string, address: string): ShieldedProfile {
@@ -69,6 +86,7 @@ export function addCustomProfile(name: string, address: string): ShieldedProfile
     address: cleanAddr,
     addressType,
     isDemo: false,
+    createdAt: Date.now(),
   };
 
   if (typeof window !== "undefined") {
@@ -82,7 +100,6 @@ export function addCustomProfile(name: string, address: string): ShieldedProfile
 }
 
 export function generateRandomShieldedProfile(name = "Shielded User"): ShieldedProfile {
-  // Generate random 130 hex chars for realistic Orchard address
   const bytes = new Uint8Array(65);
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     crypto.getRandomValues(bytes);
@@ -95,26 +112,68 @@ export function generateRandomShieldedProfile(name = "Shielded User"): ShieldedP
   return addCustomProfile(name, address);
 }
 
-export function removeCustomProfile(id: string): void {
+/**
+ * Delete any persona (both custom and demo personas)
+ */
+export function deleteProfile(id: string): void {
   if (typeof window === "undefined") return;
-  const existing = getCustomProfiles().filter((p) => p.id !== id);
-  localStorage.setItem(STORAGE_KEY_CUSTOM_PROFILES, JSON.stringify(existing));
-  
+
+  // 1. If it's a custom profile, remove from custom list
+  const existingCustom = getCustomProfiles().filter((p) => p.id !== id);
+  localStorage.setItem(STORAGE_KEY_CUSTOM_PROFILES, JSON.stringify(existingCustom));
+
+  // 2. Mark as deleted in deleted personas list
+  const deleted = getDeletedPersonaIds();
+  if (!deleted.includes(id)) {
+    deleted.push(id);
+    localStorage.setItem(STORAGE_KEY_DELETED_PERSONAS, JSON.stringify(deleted));
+  }
+
+  // 3. If deleting active profile, switch to next available profile or create burner
   const current = getActiveProfile();
   if (current.id === id) {
-    setActiveProfile(DEMO_PERSONAS[0]);
+    const remaining = getAllProfiles();
+    if (remaining.length > 0) {
+      setActiveProfile(remaining[0]);
+    } else {
+      // Create a fresh default persona
+      const fresh = generateRandomShieldedProfile("New Shielded User");
+      setActiveProfile(fresh);
+    }
+  } else {
+    // Notify components of updated profile list
+    window.dispatchEvent(new CustomEvent("zecwild_profile_changed", { detail: getActiveProfile() }));
+  }
+}
+
+/**
+ * Restore original demo personas
+ */
+export function restoreDemoPersonas(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(STORAGE_KEY_DELETED_PERSONAS);
+  const all = getAllProfiles();
+  if (all.length > 0) {
+    setActiveProfile(all[0]);
   }
 }
 
 export function getActiveProfile(): ShieldedProfile {
-  if (typeof window === "undefined") return DEMO_PERSONAS[0];
+  if (typeof window === "undefined") return DEFAULT_DEMO_PERSONAS[0];
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PROFILE);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const deleted = new Set(getDeletedPersonaIds());
+      if (!deleted.has(parsed.id)) {
+        return parsed;
+      }
+    }
   } catch (e) {
     console.error("Failed to read profile from localStorage:", e);
   }
-  return DEMO_PERSONAS[0];
+  const available = getAllProfiles();
+  return available[0] || DEFAULT_DEMO_PERSONAS[0];
 }
 
 export function setActiveProfile(profile: ShieldedProfile): void {
@@ -152,7 +211,10 @@ export function getAuctionPrivateKey(auctionId: string): string | null {
     const map = JSON.parse(raw);
     return map[auctionId] || null;
   } catch (e) {
-    console.error("Failed to retrieve auction private key:", e);
+    console.error("Failed to read auction private key:", e);
     return null;
   }
 }
+
+export const DEMO_PERSONAS = DEFAULT_DEMO_PERSONAS;
+export const removeCustomProfile = deleteProfile;
