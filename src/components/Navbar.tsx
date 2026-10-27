@@ -38,6 +38,9 @@ export default function Navbar({
   const [personaDropdownOpen, setPersonaDropdownOpen] = useState(false);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
 
+  const createRef = React.useRef<HTMLDivElement>(null);
+  const personaRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setProfile(getActiveProfile());
     const handler = (e: any) => {
@@ -45,6 +48,32 @@ export default function Navbar({
     };
     window.addEventListener("zecwild_profile_changed", handler);
     return () => window.removeEventListener("zecwild_profile_changed", handler);
+  }, []);
+
+  // Close dropdowns on outside click or Escape key
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (createRef.current && !createRef.current.contains(e.target as Node)) {
+        setCreateDropdownOpen(false);
+      }
+      if (personaRef.current && !personaRef.current.contains(e.target as Node)) {
+        setPersonaDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setCreateDropdownOpen(false);
+        setPersonaDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const selectPersona = (p: ShieldedProfile) => {
@@ -128,7 +157,7 @@ export default function Navbar({
           </button>
 
           {/* Create Menu */}
-          <div className="relative">
+          <div ref={createRef} className="relative">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
               className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all font-semibold shadow-lg shadow-emerald-500/20"
@@ -169,7 +198,7 @@ export default function Navbar({
           </div>
 
           {/* Persona / Shielded Identity Switcher */}
-          <div className="relative">
+          <div ref={personaRef} className="relative">
             <button
               onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
               className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 border border-slate-700/80 hover:border-slate-600 transition-colors"
