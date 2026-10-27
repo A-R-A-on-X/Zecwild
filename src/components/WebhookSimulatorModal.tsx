@@ -19,7 +19,6 @@ export default function WebhookSimulatorModal({
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [isFiring, setIsFiring] = useState(false);
   const [responseLog, setResponseLog] = useState<any | null>(null);
-  const [recentLogs, setRecentLogs] = useState<any[]>([]);
 
   const fetchPending = async () => {
     try {
@@ -126,33 +125,33 @@ export default function WebhookSimulatorModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl rounded-2xl glass-panel border border-amber-500/40 p-6 shadow-2xl overflow-y-auto max-h-[90vh]"
+        className="relative w-full max-w-xl sm:max-w-2xl rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <Zap className="w-5 h-5 animate-pulse" />
+        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#FCEFE7] text-[#D96522] flex items-center justify-center shadow-xs">
+              <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-                <span>ZecShield Gateway Webhook Testbed</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono">
+              <h3 className="text-base sm:text-lg font-bold text-[#1A1816] flex items-center space-x-2">
+                <span>ZecShield Gateway Testbed</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#A7430B] font-mono font-bold">
                   Dev Mode
                 </span>
               </h3>
-              <p className="text-xs text-slate-400 font-mono">
-                Simulates real-time shielded note events from the zechack indexer
+              <p className="text-xs text-[#66635F]">
+                Simulates incoming shielded note events from the zechack indexer
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-xl text-[#949089] hover:text-[#1A1816] hover:bg-black/[0.04] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -160,12 +159,12 @@ export default function WebhookSimulatorModal({
 
         <div className="py-4 space-y-4">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Select Pending Invoice to Settle:
+            <label className="text-xs font-bold text-[#1A1816] uppercase tracking-wider">
+              Pending Shielded Invoices:
             </label>
             <button
               onClick={fetchPending}
-              className="text-xs text-amber-400 hover:text-amber-300 flex items-center space-x-1"
+              className="text-xs text-[#D96522] hover:text-[#A7430B] font-bold flex items-center space-x-1"
             >
               <RefreshCw className="w-3 h-3" />
               <span>Refresh</span>
@@ -173,35 +172,35 @@ export default function WebhookSimulatorModal({
           </div>
 
           {pendingItems.length === 0 ? (
-            <div className="p-6 text-center rounded-xl bg-slate-900/60 border border-slate-800 text-slate-400 text-xs">
+            <div className="p-8 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs">
               No pending listings or winning auctions currently awaiting payment.
             </div>
           ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
               {pendingItems.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => setSelectedItem(item)}
-                  className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between ${
+                  className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex items-center justify-between ${
                     selectedItem?.id === item.id
-                      ? "bg-amber-500/15 border-amber-500/40 text-amber-200"
-                      : "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700"
+                      ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#1A1816] shadow-xs"
+                      : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
                   }`}
                 >
-                  <div>
+                  <div className="min-w-0 pr-3">
                     <div className="flex items-center space-x-2">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider bg-slate-800 text-slate-300">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white border border-black/[0.06] text-[#A7430B]">
                         {item.type}
                       </span>
-                      <span className="font-semibold text-sm truncate max-w-[260px]">{item.title}</span>
+                      <span className="font-bold text-xs sm:text-sm text-[#1A1816] truncate">{item.title}</span>
                     </div>
-                    <div className="font-mono text-xs text-amber-300/80 mt-1">
+                    <div className="font-mono text-xs text-[#C85A17] font-semibold mt-1 truncate">
                       Memo: {item.memo}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-bold font-mono text-white">{item.amountZec} ZEC</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{item.amountZat} zat</div>
+                  <div className="text-right flex-shrink-0">
+                    <div className="text-sm font-black font-mono text-[#1A1816]">{item.amountZec} ZEC</div>
+                    <div className="text-[10px] text-[#949089] font-mono">{item.amountZat} zat</div>
                   </div>
                 </div>
               ))}
@@ -212,11 +211,11 @@ export default function WebhookSimulatorModal({
           <button
             onClick={handleFireWebhook}
             disabled={isFiring || !selectedItem}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50 flex items-center justify-center space-x-2"
+            className="w-full py-3 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
           >
             {isFiring ? (
               <>
-                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 <span>Dispatching Webhook from Indexer...</span>
               </>
             ) : (
@@ -229,12 +228,12 @@ export default function WebhookSimulatorModal({
 
           {/* Response Inspector */}
           {responseLog && (
-            <div className="p-3.5 rounded-xl bg-black/90 border border-slate-800 font-mono text-xs space-y-2">
-              <div className="text-slate-400 font-bold uppercase tracking-wider text-[10px] flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-[#1A1816] text-[#F3F2EE] font-mono text-xs space-y-2 border border-black/[0.1]">
+              <div className="text-[#949089] font-bold uppercase tracking-wider text-[10px] flex items-center justify-between">
                 <span>Webhook Ingestion Log & Response:</span>
-                <span className="text-emerald-400">200 OK</span>
+                <span className="text-emerald-400 font-bold">200 OK</span>
               </div>
-              <pre className="text-slate-300 overflow-x-auto text-[11px] leading-relaxed">
+              <pre className="text-[#F3F2EE] overflow-x-auto text-[11px] leading-relaxed p-1">
                 {JSON.stringify(responseLog, null, 2)}
               </pre>
             </div>

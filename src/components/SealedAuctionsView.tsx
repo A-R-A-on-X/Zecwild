@@ -77,40 +77,28 @@ export default function SealedAuctionsView({
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Banner */}
-      <div className="relative rounded-3xl p-6 sm:p-8 overflow-hidden glass-panel border border-amber-500/30">
-        <div className="absolute -right-10 -top-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-2xl space-y-3">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
-            <Lock className="w-3.5 h-3.5" />
-            <span>Blind Bidding • End-to-End Client Sealing</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            Cryptographically Sealed{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-emerald-400">
-              Zcash Auctions
-            </span>
-          </h1>
-
-          <p className="text-sm text-slate-300 leading-relaxed">
-            Bid with zero information leakage. Bids are encrypted in your browser using the auction’s public key. Competing bidders and server administrators cannot peek at bid values until the auction closes.
+    <div className="space-y-6">
+      {/* Header Strip & Launch Action */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-black text-[#1A1816] tracking-tight">
+            Cryptographically Sealed Auctions
+          </h2>
+          <p className="text-xs text-[#66635F] mt-0.5">
+            Bids are encrypted in your browser using the auction’s public key. Zero information leakage.
           </p>
-
-          <div className="pt-2 flex flex-wrap gap-3">
-            <button
-              onClick={openCreateModal}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/20 flex items-center space-x-2"
-            >
-              <Lock className="w-4 h-4" />
-              <span>Launch Sealed Auction</span>
-            </button>
-          </div>
         </div>
+
+        <button
+          onClick={openCreateModal}
+          className="px-5 py-2.5 rounded-full btn-orange-primary text-xs font-bold flex items-center space-x-2 self-start sm:self-auto"
+        >
+          <Lock className="w-4 h-4" />
+          <span>Launch Sealed Auction</span>
+        </button>
       </div>
 
-      {/* Grid of Auctions */}
+      {/* Grid of Auctions (Inspired by Image 2 & 3 auction item cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {auctions.map((auction) => {
           const isClosed = timeRemaining[auction.id] === "CLOSED" || auction.status !== "OPEN";
@@ -121,34 +109,36 @@ export default function SealedAuctionsView({
           return (
             <div
               key={auction.id}
-              className="group rounded-2xl glass-card overflow-hidden flex flex-col justify-between"
+              className="card-floating overflow-hidden flex flex-col justify-between group"
             >
               <div>
                 {/* Image & Timers Container */}
-                <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
-                  <img
-                    src={auction.imageUrl}
-                    alt={auction.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                <div className="relative aspect-video w-full overflow-hidden bg-stone-100 p-2">
+                  <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                    <img
+                      src={auction.imageUrl}
+                      alt={auction.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
 
-                  {/* Countdown Timer Badge */}
-                  <div className="absolute top-3 left-3 flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono font-bold text-amber-300">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  {/* Countdown Timer Badge (Inspired by Image 2 & 3 timers) */}
+                  <div className="absolute top-4 left-4 flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-black/[0.08] text-[11px] font-mono font-bold text-[#1A1816] shadow-sm">
+                    <Clock className="w-3.5 h-3.5 text-[#D96522]" />
                     <span>{timeRemaining[auction.id] || "Loading..."}</span>
                   </div>
 
                   {/* Status Badge */}
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-4 right-4">
                     <span
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider backdrop-blur-md border ${
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm border ${
                         isSettled
-                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                          ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                           : isWinnerDeclared
-                          ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
+                          ? "bg-blue-50 text-blue-800 border-blue-300"
                           : isAwaitingReveal
-                          ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                          : "bg-black/70 text-slate-300 border-white/10"
+                          ? "bg-amber-50 text-amber-900 border-amber-300"
+                          : "bg-white/90 text-[#66635F] border-black/[0.08]"
                       }`}
                     >
                       {auction.status.replace(/_/g, " ")}
@@ -158,27 +148,27 @@ export default function SealedAuctionsView({
 
                 {/* Body */}
                 <div className="p-5 space-y-3">
-                  <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors line-clamp-1">
+                  <h3 className="text-base font-bold text-[#1A1816] group-hover:text-[#D96522] transition-colors line-clamp-1">
                     {auction.title}
                   </h3>
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#66635F] line-clamp-2 leading-relaxed">
                     {auction.description}
                   </p>
 
-                  {/* Sealed Bids Count Banner */}
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-2 text-amber-300 font-semibold">
-                      <Lock className="w-4 h-4 text-amber-400" />
+                  {/* Sealed Bids Count Banner in Burnt Orange */}
+                  <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 flex items-center justify-between text-xs">
+                    <div className="flex items-center space-x-2 text-[#A7430B] font-bold">
+                      <Lock className="w-4 h-4 text-[#D96522]" />
                       <span>Sealed Bids Received:</span>
                     </div>
-                    <span className="font-mono text-sm font-bold text-white px-2 py-0.5 rounded bg-black/40">
+                    <span className="font-mono text-sm font-black text-[#A7430B] px-2.5 py-0.5 rounded-full bg-white shadow-xs">
                       {auction.bidsCount || 0}
                     </span>
                   </div>
 
                   {/* Reserve & Seller */}
-                  <div className="pt-1 flex items-center justify-between text-xs text-slate-400 font-mono">
-                    <span>Reserve: {auction.reservePriceZec} ZEC</span>
+                  <div className="pt-1 flex items-center justify-between text-xs text-[#66635F] font-mono">
+                    <span>Reserve: <strong className="text-[#1A1816]">{auction.reservePriceZec} ZEC</strong></span>
                     <span>Seller: {formatAddress(auction.sellerAddress, 6, 4)}</span>
                   </div>
                 </div>
@@ -186,12 +176,12 @@ export default function SealedAuctionsView({
 
               {/* Footer Actions */}
               <div className="p-5 pt-0">
-                <div className="pt-3 border-t border-slate-800/80">
+                <div className="pt-3 border-t border-black/[0.05]">
                   {/* Status 1: OPEN -> Place Bid */}
                   {!isClosed && (
                     <button
                       onClick={() => onOpenBidModal(auction)}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 flex items-center justify-center space-x-2"
+                      className="w-full py-2.5 rounded-full btn-orange-primary text-xs font-bold transition-all flex items-center justify-center space-x-2"
                     >
                       <Lock className="w-3.5 h-3.5" />
                       <span>Place Cryptographically Sealed Bid</span>
@@ -202,7 +192,7 @@ export default function SealedAuctionsView({
                   {isAwaitingReveal && (
                     <button
                       onClick={() => onOpenUnsealModal(auction)}
-                      className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-emerald-500/20 flex items-center justify-center space-x-2"
+                      className="w-full py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-2"
                     >
                       <Unlock className="w-3.5 h-3.5" />
                       <span>Unseal Bids & Declare Winner</span>
@@ -212,12 +202,12 @@ export default function SealedAuctionsView({
                   {/* Status 3: Winner Declared -> Settle Payment or Select Runner-Up */}
                   {isWinnerDeclared && (
                     <div className="space-y-2">
-                      <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs">
-                        <div className="flex items-center justify-between text-cyan-300 font-bold">
+                      <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 text-xs">
+                        <div className="flex items-center justify-between text-[#A7430B] font-bold">
                           <span>🏆 Winner Declared</span>
-                          <span className="font-mono">{auction.winningAmountZec} ZEC</span>
+                          <span className="font-mono text-sm font-black">{auction.winningAmountZec} ZEC</span>
                         </div>
-                        <div className="font-mono text-[10px] text-slate-400 truncate mt-0.5">
+                        <div className="font-mono text-[11px] text-[#66635F] truncate mt-0.5">
                           {formatAddress(auction.winnerAddress || "", 12, 8)}
                         </div>
                       </div>
@@ -239,7 +229,7 @@ export default function SealedAuctionsView({
                               txid: auction.txid,
                             })
                           }
-                          className="py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center space-x-1"
+                          className="py-2.5 px-3 rounded-full btn-orange-primary font-bold text-xs flex items-center justify-center space-x-1"
                         >
                           <span>Settle Payment</span>
                           <ChevronRight className="w-3.5 h-3.5" />
@@ -247,7 +237,7 @@ export default function SealedAuctionsView({
 
                         <button
                           onClick={() => handleSelectRunnerUp(auction.id)}
-                          className="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs flex items-center justify-center space-x-1"
+                          className="py-2.5 px-3 rounded-full bg-stone-100 hover:bg-stone-200 text-[#1A1816] font-bold text-xs flex items-center justify-center space-x-1"
                           title="If the winning bidder defaults or flakes, offer the item to the runner-up"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -259,12 +249,12 @@ export default function SealedAuctionsView({
 
                   {/* Status 4: Settled & Paid */}
                   {isSettled && (
-                    <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between text-xs">
-                      <span className="text-emerald-300 font-bold flex items-center space-x-1">
-                        <Trophy className="w-3.5 h-3.5 text-emerald-400" />
+                    <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                      <span className="text-emerald-800 font-bold flex items-center space-x-1.5">
+                        <Trophy className="w-4 h-4 text-emerald-600" />
                         <span>Settled & Paid</span>
                       </span>
-                      <span className="font-mono text-emerald-200 font-bold">
+                      <span className="font-mono text-emerald-900 font-black text-sm">
                         {auction.winningAmountZec} ZEC
                       </span>
                     </div>

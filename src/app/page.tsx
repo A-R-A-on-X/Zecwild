@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
+import HeroShowcase from "@/components/HeroShowcase";
 import MarketplaceView from "@/components/MarketplaceView";
 import SealedAuctionsView from "@/components/SealedAuctionsView";
 import ActivityView from "@/components/ActivityView";
@@ -11,7 +12,7 @@ import UnsealModal from "@/components/UnsealModal";
 import CreateListingModal from "@/components/CreateListingModal";
 import CreateAuctionModal from "@/components/CreateAuctionModal";
 import WebhookSimulatorModal from "@/components/WebhookSimulatorModal";
-import { Shield, Lock, Zap, CheckCircle2, Terminal } from "lucide-react";
+import { Shield, Lock, Terminal, Sparkles } from "lucide-react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"marketplace" | "auctions" | "activity">("marketplace");
@@ -49,7 +50,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#07090e] cyber-grid">
+    <div className="min-h-screen flex flex-col bg-[#F3F2EE] text-[#1A1816]">
       {/* Top Header Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -59,14 +60,24 @@ export default function Home() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+        {/* Hero & Metrics Showcase (Images 1 & 2 inspired) */}
+        <HeroShowcase
+          onOpenCreate={(type) => setCreateModalType(type)}
+          onOpenSimulator={() => setIsSimulatorOpen(true)}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          listingsCount={listings.length}
+          auctionsCount={auctions.length}
+        />
+
         {isLoading ? (
           <div className="py-24 text-center space-y-4">
-            <div className="w-12 h-12 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto glow-emerald" />
-            <p className="text-xs font-mono text-slate-400">Loading Shielded State...</p>
+            <div className="w-12 h-12 border-3 border-[#D96522] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-mono text-[#66635F]">Synchronizing Shielded State...</p>
           </div>
         ) : (
-          <>
+          <div className="pt-2">
             {activeTab === "marketplace" && (
               <MarketplaceView
                 listings={listings}
@@ -92,29 +103,29 @@ export default function Home() {
                 onOpenUnsealModal={(auction) => setUnsealAuction(auction)}
               />
             )}
-          </>
+          </div>
         )}
       </main>
 
-      {/* Security Architecture & Cyber Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#07090e]/90 py-8 px-4 text-center text-xs text-slate-400 space-y-3">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-6 text-[11px] font-mono text-slate-400">
-          <span className="flex items-center space-x-1.5 text-emerald-400">
-            <Shield className="w-3.5 h-3.5" />
+      {/* Security Architecture & Warm Stone Footer */}
+      <footer className="border-t border-black/[0.06] bg-white py-8 px-4 text-center text-xs text-[#66635F] space-y-3 mt-12">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-[#66635F]">
+          <span className="flex items-center space-x-1.5 text-emerald-800 font-semibold">
+            <Shield className="w-3.5 h-3.5 text-emerald-600" />
             <span>Zero Platform Custody</span>
           </span>
-          <span>•</span>
-          <span className="flex items-center space-x-1.5 text-amber-400">
-            <Lock className="w-3.5 h-3.5" />
+          <span className="text-[#949089] hidden sm:inline">•</span>
+          <span className="flex items-center space-x-1.5 text-[#A7430B] font-semibold">
+            <Lock className="w-3.5 h-3.5 text-[#D96522]" />
             <span>Client-Side RSA-OAEP Sealing</span>
           </span>
-          <span>•</span>
-          <span className="flex items-center space-x-1.5 text-cyan-400">
-            <Terminal className="w-3.5 h-3.5" />
+          <span className="text-[#949089] hidden sm:inline">•</span>
+          <span className="flex items-center space-x-1.5 text-[#1A1816] font-semibold">
+            <Terminal className="w-3.5 h-3.5 text-[#C85A17]" />
             <span>ZecShield Gateway Indexer (`zechack`)</span>
           </span>
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-[#949089]">
           ZecWild MVP — Shielded Zcash Sealed-Bid Auctions & Open Marketplace
         </p>
       </footer>

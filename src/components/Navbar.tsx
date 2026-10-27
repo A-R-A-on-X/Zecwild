@@ -7,16 +7,16 @@ import {
   ShoppingBag,
   PlusCircle,
   Zap,
-  User,
   CheckCircle2,
   ChevronDown,
-  Layers,
   Activity,
   Plus,
   Trash2,
   Copy,
   Check,
   Sparkles,
+  Menu,
+  X,
 } from "lucide-react";
 import {
   getActiveProfile,
@@ -47,6 +47,7 @@ export default function Navbar({
   const [allProfiles, setAllProfiles] = useState<ShieldedProfile[]>(DEMO_PERSONAS);
   const [personaDropdownOpen, setPersonaDropdownOpen] = useState(false);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customName, setCustomName] = useState("");
   const [customAddress, setCustomAddress] = useState("");
@@ -88,6 +89,7 @@ export default function Navbar({
       if (e.key === "Escape") {
         setCreateDropdownOpen(false);
         setPersonaDropdownOpen(false);
+        setMobileMenuOpen(false);
       }
     };
 
@@ -103,6 +105,7 @@ export default function Navbar({
     setActiveProfile(p);
     setProfile(p);
     setPersonaDropdownOpen(false);
+    setMobileMenuOpen(false);
   };
 
   const handleCopyActive = (addr: string) => {
@@ -142,84 +145,85 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#07090e]/85 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo */}
-        <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab("marketplace")}>
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-amber-500 p-[2px]">
-            <div className="w-full h-full bg-[#07090e] rounded-[10px] flex items-center justify-center">
-              <Shield className="w-5 h-5 text-emerald-400" />
-            </div>
+    <header className="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-[#FFFFFF]/90 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        {/* Brand Logo (Inspired by clean typography & rounded icon in Image 1 & 3) */}
+        <div
+          className="flex items-center space-x-3 cursor-pointer select-none"
+          onClick={() => setActiveTab("marketplace")}
+        >
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-md shadow-[#D96522]/20 transition-transform hover:scale-105">
+            <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="text-xl font-bold tracking-tight text-white">ZecWild</span>
-              <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                Shielded
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-black tracking-tight text-[#1A1816]">ZecWild</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#C85A17] border border-[#C85A17]/25 tracking-wide uppercase">
+                Shielded ZEC
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 tracking-wider uppercase font-medium">
-              Zero-Custody • Sealed Auctions
+            <p className="text-[11px] text-[#66635F] font-medium tracking-wide">
+              Zero Custody • Sealed-Bid Auctions
             </p>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="hidden md:flex items-center space-x-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800">
+        {/* Center Pill Segmented Navigation (Directly inspired by [Rent] [Buy] [Sell] in Image 1) */}
+        <nav className="hidden md:flex items-center space-x-1.5 bg-[#EAE9E4] p-1.5 rounded-full border border-black/[0.04]">
           <button
             onClick={() => setActiveTab("marketplace")}
-            className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "marketplace"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-sm"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                ? "bg-white text-[#1A1816] shadow-sm"
+                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
             }`}
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className={`w-4 h-4 ${activeTab === "marketplace" ? "text-[#D96522]" : "text-[#949089]"}`} />
             <span>Marketplace</span>
           </button>
 
           <button
             onClick={() => setActiveTab("auctions")}
-            className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "auctions"
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                ? "bg-white text-[#1A1816] shadow-sm"
+                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
             }`}
           >
-            <Lock className="w-4 h-4" />
-            <span>Sealed-Bid Auctions</span>
+            <Lock className={`w-4 h-4 ${activeTab === "auctions" ? "text-[#D96522]" : "text-[#949089]"}`} />
+            <span>Sealed Auctions</span>
           </button>
 
           <button
             onClick={() => setActiveTab("activity")}
-            className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
               activeTab === "activity"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-sm"
-                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                ? "bg-white text-[#1A1816] shadow-sm"
+                : "text-[#66635F] hover:text-[#1A1816] hover:bg-black/[0.03]"
             }`}
           >
-            <Activity className="w-4 h-4" />
-            <span>Activity & Audits</span>
+            <Activity className={`w-4 h-4 ${activeTab === "activity" ? "text-[#D96522]" : "text-[#949089]"}`} />
+            <span>Activity & Vault</span>
           </button>
         </nav>
 
-        {/* Action Controls & Identity Switcher */}
+        {/* Right Section Controls */}
         <div className="flex items-center space-x-3">
-          {/* Webhook Testbed Simulator Button */}
+          {/* Webhook Testbed Button */}
           <button
             onClick={openSimulatorModal}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-all cursor-pointer"
+            className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill"
             title="Open ZecShield Gateway Webhook Simulator"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400/20 animate-pulse" />
-            <span className="hidden sm:inline">Webhook Testbed</span>
+            <Zap className="w-3.5 h-3.5 text-[#D96522] animate-pulse" />
+            <span>Webhook Testbed</span>
           </button>
 
-          {/* Create Menu */}
+          {/* Create Button (Burnt Orange Primary) */}
           <div ref={createRef} className="relative">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
-              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all font-semibold shadow-lg shadow-emerald-500/20"
+              className="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold btn-orange-primary"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Create</span>
@@ -228,72 +232,76 @@ export default function Navbar({
 
             {createDropdownOpen && (
               <div
-                className="absolute right-0 mt-2 w-52 rounded-xl glass-panel p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150"
+                className="absolute right-0 mt-3 w-56 rounded-2xl bg-white p-2 shadow-xl border border-black/[0.08] z-50 animate-in fade-in zoom-in-95 duration-150"
                 onClick={() => setCreateDropdownOpen(false)}
               >
                 <button
                   onClick={() => openCreateModal("listing")}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-emerald-500/10 hover:text-emerald-300 flex items-center space-x-2.5 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-[#1A1816] hover:bg-[#FCEFE7] hover:text-[#A7430B] flex items-center space-x-3 transition-colors"
                 >
-                  <ShoppingBag className="w-4 h-4 text-emerald-400" />
+                  <div className="p-2 rounded-lg bg-orange-100 text-[#D96522]">
+                    <ShoppingBag className="w-4 h-4" />
+                  </div>
                   <div>
-                    <div className="font-semibold">New Listing</div>
-                    <div className="text-[11px] text-slate-400">Fixed-price marketplace</div>
+                    <div className="font-bold">New Listing</div>
+                    <div className="text-[11px] text-[#66635F]">Fixed-price marketplace</div>
                   </div>
                 </button>
 
                 <button
                   onClick={() => openCreateModal("auction")}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-slate-200 hover:bg-amber-500/10 hover:text-amber-300 flex items-center space-x-2.5 transition-colors mt-1"
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-[#1A1816] hover:bg-[#FCEFE7] hover:text-[#A7430B] flex items-center space-x-3 transition-colors mt-1"
                 >
-                  <Lock className="w-4 h-4 text-amber-400" />
+                  <div className="p-2 rounded-lg bg-orange-100 text-[#D96522]">
+                    <Lock className="w-4 h-4" />
+                  </div>
                   <div>
-                    <div className="font-semibold">New Sealed Auction</div>
-                    <div className="text-[11px] text-slate-400">Client-sealed bids</div>
+                    <div className="font-bold">New Sealed Auction</div>
+                    <div className="text-[11px] text-[#66635F]">Client-sealed bids</div>
                   </div>
                 </button>
               </div>
             )}
           </div>
 
-          {/* Persona / Shielded Identity Switcher */}
+          {/* Persona / Shielded Account Switcher (Floating Card Style) */}
           <div ref={personaRef} className="relative">
             <button
               onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
-              className="flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 border border-slate-700/80 hover:border-slate-600 transition-colors"
+              className="flex items-center space-x-2.5 px-3.5 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-medium text-slate-200">{profile.name}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold text-[#1A1816]">{profile.name}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#949089]" />
             </button>
 
             {personaDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-88 rounded-2xl glass-panel p-4 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-700/80 space-y-4">
+              <div className="absolute right-0 mt-3 w-84 sm:w-92 rounded-3xl bg-white p-5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-black/[0.08] space-y-4 text-left">
                 {/* Active Account Details */}
-                <div className="p-3 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-1.5">
+                <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 flex items-center space-x-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#C85A17] flex items-center space-x-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Active Identity</span>
                     </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
                       {profile.addressType}
                     </span>
                   </div>
-                  <div className="font-bold text-sm text-white">{profile.name}</div>
-                  <div className="flex items-center justify-between text-slate-400 pt-1">
-                    <span className="font-mono text-[11px] truncate max-w-[240px]">
+                  <div className="font-bold text-sm text-[#1A1816]">{profile.name}</div>
+                  <div className="flex items-center justify-between text-[#66635F] pt-1 border-t border-black/[0.04]">
+                    <span className="font-mono text-[11px] truncate max-w-[220px]">
                       {profile.address}
                     </span>
                     <button
                       onClick={() => handleCopyActive(profile.address)}
-                      className="p-1 rounded hover:bg-slate-800 text-slate-300"
+                      className="p-1 rounded-md hover:bg-white text-[#1A1816] transition-colors"
                       title="Copy Full Shielded Address"
                     >
                       {copiedActive ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
                       ) : (
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy className="w-3.5 h-3.5 text-[#66635F]" />
                       )}
                     </button>
                   </div>
@@ -301,7 +309,7 @@ export default function Navbar({
 
                 {/* Demo Personas */}
                 <div className="space-y-1.5">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089] px-1">
                     ⚡ Quick Demo Personas
                   </div>
                   <div className="space-y-1">
@@ -309,24 +317,24 @@ export default function Navbar({
                       <button
                         key={p.id}
                         onClick={() => selectPersona(p)}
-                        className={`w-full text-left p-2 rounded-xl text-xs transition-colors flex items-center justify-between ${
+                        className={`w-full text-left p-2.5 rounded-2xl text-xs transition-colors flex items-center justify-between ${
                           profile.id === p.id
-                            ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-200"
-                            : "hover:bg-slate-800/60 text-slate-300"
+                            ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
+                            : "hover:bg-[#F8F7F4] text-[#1A1816]"
                         }`}
                       >
                         <div>
-                          <div className="font-semibold flex items-center space-x-1.5">
+                          <div className="font-bold flex items-center space-x-1.5">
                             <span>{p.name}</span>
-                            <span className="text-[9px] px-1 py-0.2 rounded bg-slate-800 text-slate-400">
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-stone-200 text-stone-700 font-mono">
                               {p.addressType}
                             </span>
                           </div>
-                          <div className="font-mono text-[10px] text-slate-400 truncate max-w-[200px]">
+                          <div className="font-mono text-[10px] text-[#66635F] truncate max-w-[200px]">
                             {formatAddress(p.address, 8, 6)}
                           </div>
                         </div>
-                        {profile.id === p.id && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                        {profile.id === p.id && <CheckCircle2 className="w-4 h-4 text-[#D96522]" />}
                       </button>
                     ))}
                   </div>
@@ -334,8 +342,8 @@ export default function Navbar({
 
                 {/* Custom Profiles (if any) */}
                 {allProfiles.filter((p) => !p.isDemo).length > 0 && (
-                  <div className="space-y-1.5 pt-2 border-t border-slate-800">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                  <div className="space-y-1.5 pt-2 border-t border-black/[0.06]">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089] px-1">
                       Connected Custom Wallets
                     </div>
                     <div className="space-y-1 max-h-36 overflow-y-auto">
@@ -345,25 +353,25 @@ export default function Navbar({
                           <div
                             key={p.id}
                             onClick={() => selectPersona(p)}
-                            className={`p-2 rounded-xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
+                            className={`p-2.5 rounded-2xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
                               profile.id === p.id
-                                ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-200"
-                                : "hover:bg-slate-800/60 text-slate-300 border border-slate-800/60"
+                                ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
+                                : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
                             }`}
                           >
                             <div className="truncate max-w-[200px]">
-                              <div className="font-semibold text-white">{p.name}</div>
-                              <div className="font-mono text-[10px] text-slate-400 truncate">
+                              <div className="font-bold text-[#1A1816]">{p.name}</div>
+                              <div className="font-mono text-[10px] text-[#66635F] truncate">
                                 {formatAddress(p.address, 8, 6)}
                               </div>
                             </div>
                             <div className="flex items-center space-x-1">
                               {profile.id === p.id && (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
                               )}
                               <button
                                 onClick={(e) => handleRemoveProfile(e, p.id)}
-                                className="p-1 hover:text-rose-400 text-slate-500 transition-colors"
+                                className="p-1 hover:text-rose-600 text-[#949089] transition-colors"
                                 title="Remove wallet"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -376,12 +384,12 @@ export default function Navbar({
                 )}
 
                 {/* Add Custom / Burner Identity Controls */}
-                <div className="pt-2 border-t border-slate-800 space-y-2">
+                <div className="pt-2 border-t border-black/[0.06] space-y-2">
                   {showAddCustom ? (
                     <form onSubmit={handleConnectCustom} className="space-y-2.5">
-                      <div className="text-xs font-bold text-white">Connect Custom Shielded Address</div>
+                      <div className="text-xs font-bold text-[#1A1816]">Connect Custom Shielded Address</div>
                       {customError && (
-                        <div className="text-[10px] text-rose-300 bg-rose-500/10 p-2 rounded-lg border border-rose-500/20">
+                        <div className="text-[10px] text-rose-700 bg-rose-50 p-2 rounded-xl border border-rose-200">
                           {customError}
                         </div>
                       )}
@@ -391,7 +399,7 @@ export default function Navbar({
                           placeholder="Account Name (e.g. My Zashi)"
                           value={customName}
                           onChange={(e) => setCustomName(e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                          className="w-full px-3 py-2 rounded-xl bg-[#F8F7F4] border border-black/[0.08] text-xs text-[#1A1816] placeholder-[#949089] focus:outline-none focus:border-[#D96522]"
                         />
                       </div>
                       <div>
@@ -400,14 +408,14 @@ export default function Navbar({
                           placeholder="Orchard (u1...) or Sapling (zs1...)"
                           value={customAddress}
                           onChange={(e) => setCustomAddress(e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                          className="w-full px-3 py-2 rounded-xl bg-[#F8F7F4] border border-black/[0.08] text-xs font-mono text-[#1A1816] placeholder-[#949089] focus:outline-none focus:border-[#D96522]"
                           required
                         />
                       </div>
                       <div className="flex items-center space-x-2 pt-1">
                         <button
                           type="submit"
-                          className="flex-1 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors"
+                          className="flex-1 py-2 rounded-xl btn-orange-primary text-xs font-bold transition-colors"
                         >
                           Connect
                         </button>
@@ -417,7 +425,7 @@ export default function Navbar({
                             setShowAddCustom(false);
                             setCustomError(null);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"
+                          className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#1A1816] text-xs font-medium"
                         >
                           Cancel
                         </button>
@@ -428,7 +436,7 @@ export default function Navbar({
                       <button
                         type="button"
                         onClick={() => setShowAddCustom(true)}
-                        className="py-2 px-2.5 rounded-xl border border-dashed border-slate-700 hover:border-emerald-500/50 hover:bg-emerald-500/10 text-slate-300 hover:text-emerald-300 text-[11px] font-semibold flex items-center justify-center space-x-1.5 transition-colors"
+                        className="py-2.5 px-3 rounded-2xl border border-dashed border-[#D96522]/30 hover:border-[#D96522] hover:bg-[#FCEFE7] text-[#C85A17] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Address</span>
@@ -437,10 +445,10 @@ export default function Navbar({
                       <button
                         type="button"
                         onClick={handleGenerateRandom}
-                        className="py-2 px-2.5 rounded-xl border border-dashed border-slate-700 hover:border-cyan-500/50 hover:bg-cyan-500/10 text-slate-300 hover:text-cyan-300 text-[11px] font-semibold flex items-center justify-center space-x-1.5 transition-colors"
+                        className="py-2.5 px-3 rounded-2xl border border-dashed border-stone-300 hover:border-[#D96522] hover:bg-stone-50 text-[#1A1816] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
                         title="Generate a random shielded Orchard identity"
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Sparkles className="w-3.5 h-3.5 text-[#D96522]" />
                         <span>New Identity</span>
                       </button>
                     </div>
@@ -449,8 +457,71 @@ export default function Navbar({
               </div>
             )}
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-2xl bg-[#EAE9E4] text-[#1A1816]"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Navigation (Portrait / Landscape responsiveness) */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-black/[0.06] bg-white px-4 py-4 space-y-2 animate-in slide-in-from-top-2">
+          <button
+            onClick={() => {
+              setActiveTab("marketplace");
+              setMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
+              activeTab === "marketplace" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
+            }`}
+          >
+            <ShoppingBag className="w-4 h-4 text-[#D96522]" />
+            <span>Marketplace</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("auctions");
+              setMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
+              activeTab === "auctions" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
+            }`}
+          >
+            <Lock className="w-4 h-4 text-[#D96522]" />
+            <span>Sealed Auctions</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("activity");
+              setMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
+              activeTab === "activity" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
+            }`}
+          >
+            <Activity className="w-4 h-4 text-[#D96522]" />
+            <span>Activity & Vault</span>
+          </button>
+
+          <button
+            onClick={() => {
+              openSimulatorModal();
+              setMobileMenuOpen(false);
+            }}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold btn-orange-pill"
+          >
+            <Zap className="w-4 h-4 text-[#D96522]" />
+            <span>Webhook Testbed</span>
+          </button>
+        </div>
+      )}
     </header>
   );
 }

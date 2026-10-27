@@ -101,6 +101,16 @@ export default function PaymentModal({
     return () => clearInterval(interval);
   }, [isOpen, isSettled, entityType, item.id, onPaymentSuccess]);
 
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
@@ -138,16 +148,6 @@ export default function PaymentModal({
     }
   };
 
-  // Close on Escape key
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
   if (!isOpen) return null;
 
   return (
@@ -155,26 +155,26 @@ export default function PaymentModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl rounded-2xl glass-panel border border-slate-700/80 p-6 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-xl rounded-3xl bg-white border border-black/[0.08] p-6 sm:p-7 shadow-2xl overflow-hidden text-left"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 rounded-2xl bg-[#FCEFE7] text-[#D96522] border border-[#D96522]/20">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Shielded Settlement Invoice</h3>
-              <p className="text-xs text-slate-400 font-mono">ZIP-321 Direct Wallet-to-Wallet</p>
+              <h3 className="text-lg font-black text-[#1A1816]">Shielded Settlement Invoice</h3>
+              <p className="text-xs text-[#66635F] font-mono">ZIP-321 Direct Wallet-to-Wallet</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-full text-[#949089] hover:text-[#1A1816] hover:bg-stone-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -183,32 +183,32 @@ export default function PaymentModal({
         {isSettled ? (
           /* Payment Settled Success View */
           <div className="py-6 space-y-5 animate-in zoom-in-95 duration-200 text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto glow-emerald">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-700 flex items-center justify-center mx-auto shadow-sm">
               <Sparkles className="w-8 h-8 animate-spin-slow" />
             </div>
 
             <div>
-              <h4 className="text-xl font-bold text-emerald-300">Payment Confirmed!</h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <h4 className="text-2xl font-black text-[#1A1816]">Payment Confirmed!</h4>
+              <p className="text-xs text-[#66635F] mt-1">
                 Settled on-chain via Zcash Shielded Note ({item.priceZec} ZEC)
               </p>
             </div>
 
             {/* Confirmed Txid */}
             {confirmedTxid && (
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-left">
-                <div className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+              <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-left">
+                <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">
                   Shielded Transaction ID
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="font-mono text-xs text-emerald-300 truncate max-w-[400px]">
+                  <span className="font-mono text-xs text-[#D96522] font-bold truncate max-w-[400px]">
                     {confirmedTxid}
                   </span>
                   <button
                     onClick={() => copyToClipboard(confirmedTxid, "txid")}
-                    className="p-1 text-slate-400 hover:text-white"
+                    className="p-1 text-[#66635F] hover:text-[#1A1816]"
                   >
-                    {copiedField === "txid" ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    {copiedField === "txid" ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -216,21 +216,21 @@ export default function PaymentModal({
 
             {/* If Digital Goods: Reveal Secret Payload */}
             {item.itemType === "DIGITAL" && (
-              <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/30 text-left">
-                <div className="flex items-center space-x-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-                  <Unlock className="w-4 h-4" />
+              <div className="p-4 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 text-left">
+                <div className="flex items-center space-x-2 text-[#A7430B] text-xs font-bold uppercase tracking-wider">
+                  <Unlock className="w-4 h-4 text-[#D96522]" />
                   <span>Unlocked Digital Secret / Download</span>
                 </div>
-                <div className="mt-2.5 p-3 rounded-lg bg-black/60 border border-emerald-500/20 flex items-center justify-between">
-                  <span className="font-mono text-sm text-emerald-200 break-all select-all">
+                <div className="mt-2.5 p-3 rounded-xl bg-white border border-[#D96522]/20 flex items-center justify-between shadow-xs">
+                  <span className="font-mono text-sm text-[#C85A17] font-bold break-all select-all">
                     {unlockedSecret || "Secret payload decrypted and available in your dashboard."}
                   </span>
                   {unlockedSecret && (
                     <button
                       onClick={() => copyToClipboard(unlockedSecret, "secret")}
-                      className="ml-3 p-1.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 transition-colors"
+                      className="ml-3 p-1.5 rounded-lg bg-[#FCEFE7] hover:bg-[#F7DDD0] text-[#A7430B] transition-colors"
                     >
-                      {copiedField === "secret" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copiedField === "secret" ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                     </button>
                   )}
                 </div>
@@ -239,11 +239,11 @@ export default function PaymentModal({
 
             {/* If Physical Goods */}
             {item.itemType === "PHYSICAL" && (
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-left flex items-start space-x-3">
-                <Package className="w-5 h-5 text-amber-400 mt-0.5" />
+              <div className="p-4 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-left flex items-start space-x-3">
+                <Package className="w-5 h-5 text-[#D96522] mt-0.5" />
                 <div>
-                  <div className="text-sm font-semibold text-slate-200">Physical Fulfillment Initiated</div>
-                  <div className="text-xs text-slate-400 mt-0.5">
+                  <div className="text-sm font-bold text-[#1A1816]">Physical Fulfillment Initiated</div>
+                  <div className="text-xs text-[#66635F] mt-0.5">
                     The seller has been notified of your confirmed shielded payment and will dispatch your package.
                   </div>
                 </div>
@@ -252,7 +252,7 @@ export default function PaymentModal({
 
             <button
               onClick={onClose}
-              className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition-all"
+              className="w-full py-3 rounded-full btn-orange-primary font-bold text-sm transition-all"
             >
               Done
             </button>
@@ -262,32 +262,32 @@ export default function PaymentModal({
           <div className="py-4 space-y-4">
             <div className="flex flex-col sm:flex-row items-center gap-5">
               {/* QR Code Container */}
-              <div className="flex-shrink-0 p-3 bg-white rounded-xl shadow-lg flex items-center justify-center">
+              <div className="flex-shrink-0 p-3 bg-white rounded-2xl border border-black/[0.08] shadow-md flex items-center justify-center">
                 {qrDataUrl ? (
                   <img src={qrDataUrl} alt="ZIP-321 Zcash QR Code" className="w-44 h-44 object-contain" />
                 ) : (
-                  <div className="w-44 h-44 bg-slate-200 animate-pulse rounded-lg flex items-center justify-center text-slate-600 font-mono text-xs">
+                  <div className="w-44 h-44 bg-stone-100 animate-pulse rounded-xl flex items-center justify-center text-stone-500 font-mono text-xs">
                     Generating QR...
                   </div>
                 )}
               </div>
 
               {/* Instructions */}
-              <div className="flex-1 space-y-2 text-left">
-                <div className="text-xs text-slate-400">Scan with any shielded Zcash wallet:</div>
-                <div className="flex items-center space-x-2 text-xs font-semibold text-emerald-400">
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">Zashi</span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">YWallet</span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">Zingo!</span>
+              <div className="flex-1 space-y-2.5 text-left">
+                <div className="text-xs text-[#66635F]">Scan with any shielded Zcash wallet:</div>
+                <div className="flex items-center space-x-2 text-xs font-bold text-[#A7430B]">
+                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20">Zashi</span>
+                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20">YWallet</span>
+                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20">Zingo!</span>
                 </div>
-                <div className="pt-2 text-xs text-slate-300">
+                <div className="pt-2 text-xs text-[#66635F]">
                   Or open directly on mobile via ZIP-321 deep link:
                 </div>
                 <a
                   href={zip321Uri}
-                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-semibold border border-emerald-500/30 transition-all"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full btn-orange-pill text-xs font-bold transition-all"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <ExternalLink className="w-3.5 h-3.5 text-[#D96522]" />
                   <span>Open in Zcash Wallet</span>
                 </a>
               </div>
@@ -296,74 +296,74 @@ export default function PaymentModal({
             {/* Payment Fields Breakdown */}
             <div className="space-y-2.5 pt-2">
               {/* Amount */}
-              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Exact Amount</div>
-                  <div className="text-sm font-bold text-white font-mono">
-                    {item.priceZec} ZEC <span className="text-xs text-slate-400 font-normal">({item.priceZat} zatoshis)</span>
+                  <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">Exact Amount</div>
+                  <div className="text-base font-black text-[#1A1816] font-mono">
+                    <span className="text-[#D96522]">{item.priceZec}</span> ZEC{" "}
+                    <span className="text-xs text-[#66635F] font-normal">({item.priceZat} zatoshis)</span>
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(String(item.priceZec), "amount")}
-                  className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                  className="p-2 rounded-xl bg-white hover:bg-stone-100 text-[#1A1816] shadow-xs border border-black/[0.05]"
                   title="Copy Amount"
                 >
-                  {copiedField === "amount" ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedField === "amount" ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
 
               {/* Recipient Shielded Address */}
-              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Seller Shielded Address</div>
-                  <div className="text-xs font-mono text-slate-300 truncate max-w-[340px]">
+                  <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">Seller Shielded Address</div>
+                  <div className="text-xs font-mono text-[#1A1816] truncate max-w-[340px]">
                     {formatAddress(item.sellerAddress, 16, 12)}
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(item.sellerAddress, "addr")}
-                  className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                  className="p-2 rounded-xl bg-white hover:bg-stone-100 text-[#1A1816] shadow-xs border border-black/[0.05]"
                   title="Copy Full Address"
                 >
-                  {copiedField === "addr" ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedField === "addr" ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
 
               {/* Mandatory Memo */}
-              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-amber-300 font-bold flex items-center space-x-1">
-                    <Lock className="w-3 h-3 text-amber-400" />
+                  <div className="text-[10px] uppercase tracking-wider text-[#A7430B] font-bold flex items-center space-x-1">
+                    <Lock className="w-3 h-3 text-[#D96522]" />
                     <span>Mandatory Invoice Memo (Required)</span>
                   </div>
-                  <div className="text-xs font-mono font-bold text-amber-200 mt-0.5">
+                  <div className="text-xs font-mono font-bold text-[#C85A17] mt-0.5">
                     {item.invoiceMemo}
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(item.invoiceMemo, "memo")}
-                  className="p-1.5 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300"
+                  className="p-2 rounded-xl bg-white hover:bg-stone-100 text-[#C85A17] shadow-xs border border-[#D96522]/20"
                   title="Copy Exact Memo"
                 >
-                  {copiedField === "memo" ? <Check className="w-4 h-4 text-amber-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedField === "memo" ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             {/* Real-time Status Banner */}
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-xs text-slate-400">
-                <Clock className="w-4 h-4 text-emerald-400 animate-spin" />
+            <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs text-[#66635F]">
+                <Clock className="w-4 h-4 text-[#D96522] animate-spin" />
                 <span>Waiting for shielded note detection via indexer...</span>
               </div>
 
-              {/* Quick simulation button for demo judges */}
               <button
                 onClick={handleSimulatePayment}
                 disabled={isSimulating}
-                className="flex items-center space-x-1 px-2.5 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-semibold border border-amber-500/40 transition-colors disabled:opacity-50"
+                className="flex items-center space-x-1 px-3 py-1.5 rounded-full btn-orange-pill text-xs font-bold disabled:opacity-50"
               >
-                <Zap className="w-3 h-3" />
+                <Zap className="w-3.5 h-3.5 text-[#D96522]" />
                 <span>{isSimulating ? "Simulating..." : "⚡ Quick Simulate"}</span>
               </button>
             </div>

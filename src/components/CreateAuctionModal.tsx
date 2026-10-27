@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { X, Lock, Upload, AlertCircle, Shield, Key, Package, Clock } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Lock, Upload, AlertCircle, Shield, Key, Package, Clock, Sparkles } from "lucide-react";
 import { getActiveProfile, storeAuctionPrivateKey } from "@/lib/crypto/identity";
 import { generateAuctionKeypair } from "@/lib/crypto/sealing";
 import { isShieldedAddress } from "@/lib/crypto/zcash";
@@ -29,8 +29,8 @@ export default function CreateAuctionModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Close on Escape key
-  React.useEffect(() => {
+  // Sync profile & Escape key
+  useEffect(() => {
     if (!isOpen) return;
     const active = getActiveProfile();
     setSellerAddress(active.address || "");
@@ -49,7 +49,7 @@ export default function CreateAuctionModal({
     if (!file) return;
 
     if (file.size > 2 * 1024 * 1024) {
-      setError("Image must be smaller than 2MB.");
+      setError("Image file must be under 2MB.");
       return;
     }
 
@@ -132,26 +132,26 @@ export default function CreateAuctionModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-2xl glass-panel border border-slate-700/80 p-6 shadow-2xl overflow-y-auto max-h-[90vh]"
+        className="relative w-full max-w-lg rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#FCEFE7] text-[#D96522] flex items-center justify-center shadow-xs">
               <Lock className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Create Sealed-Bid Auction</h3>
-              <p className="text-xs text-slate-400 font-mono">End-to-End Cryptographic Sealing</p>
+              <h3 className="text-base sm:text-lg font-bold text-[#1A1816]">Create Sealed-Bid Auction</h3>
+              <p className="text-xs text-[#66635F]">End-to-End Cryptographic Sealing</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-xl text-[#949089] hover:text-[#1A1816] hover:bg-black/[0.04] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -159,7 +159,7 @@ export default function CreateAuctionModal({
 
         <form onSubmit={handleSubmit} className="py-4 space-y-4">
           {error && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center space-x-2">
+            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -167,17 +167,17 @@ export default function CreateAuctionModal({
 
           {/* Item Type */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
               Auction Category
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setItemType("DIGITAL")}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
+                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "DIGITAL"
-                    ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
-                    : "bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#A7430B] shadow-xs"
+                    : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
                 }`}
               >
                 <Key className="w-3.5 h-3.5" />
@@ -187,10 +187,10 @@ export default function CreateAuctionModal({
               <button
                 type="button"
                 onClick={() => setItemType("PHYSICAL")}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
+                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "PHYSICAL"
-                    ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
-                    : "bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#A7430B] shadow-xs"
+                    : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
                 }`}
               >
                 <Package className="w-3.5 h-3.5" />
@@ -201,22 +201,22 @@ export default function CreateAuctionModal({
 
           {/* Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
               Auction Title
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Rare Shielded Proof of Provenance Artifact"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-white text-sm focus:outline-none focus:border-amber-400"
+              placeholder="e.g. Shielded Proof of Provenance Artifact"
+              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] text-xs font-medium focus:outline-none focus:border-[#D96522]"
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
               Description
             </label>
             <textarea
@@ -224,14 +224,14 @@ export default function CreateAuctionModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Provide auction specifications..."
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-700/80 text-white text-xs focus:outline-none focus:border-amber-400 resize-none"
+              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] text-xs focus:outline-none focus:border-[#D96522] resize-none"
             />
           </div>
 
           {/* Reserve & Duration */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
                 Reserve Price (ZEC)
               </label>
               <input
@@ -241,18 +241,18 @@ export default function CreateAuctionModal({
                 value={reservePriceZec}
                 onChange={(e) => setReservePriceZec(e.target.value)}
                 placeholder="0.5"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-700/80 text-white font-mono text-sm focus:outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] font-mono text-xs font-bold focus:outline-none focus:border-[#D96522]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
                 Duration
               </label>
               <select
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-white text-xs focus:outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] text-xs focus:outline-none focus:border-[#D96522]"
               >
                 <option value="5">5 Minutes (Fast Demo)</option>
                 <option value="15">15 Minutes</option>
@@ -264,17 +264,17 @@ export default function CreateAuctionModal({
 
           {/* Image */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
               Image (Max 2MB)
             </label>
             <div className="flex items-center space-x-2">
-              <label className="cursor-pointer flex-1 py-2 px-3 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-slate-600 text-xs text-slate-300 flex items-center justify-center space-x-1.5">
-                <Upload className="w-3.5 h-3.5 text-slate-400" />
+              <label className="cursor-pointer flex-1 py-2 px-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] hover:border-[#D96522]/30 text-xs text-[#66635F] flex items-center justify-center space-x-1.5">
+                <Upload className="w-3.5 h-3.5 text-[#D96522]" />
                 <span>Choose Image</span>
                 <input type="file" accept="image/*" onChange={handleImageFile} className="hidden" />
               </label>
               {imageUrl && (
-                <img src={imageUrl} alt="preview" className="w-9 h-9 rounded-lg object-cover border border-slate-700" />
+                <img src={imageUrl} alt="preview" className="w-9 h-9 rounded-xl object-cover border border-black/[0.08]" />
               )}
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function CreateAuctionModal({
           {/* Digital Secret Payload */}
           {itemType === "DIGITAL" && (
             <div>
-              <label className="block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+              <label className="block text-xs font-bold text-[#C85A17] uppercase tracking-wider mb-1.5 flex items-center space-x-1">
                 <Key className="w-3.5 h-3.5" />
                 <span>Secret Payload / Download Link (Unlocked for Winner)</span>
               </label>
@@ -291,7 +291,7 @@ export default function CreateAuctionModal({
                 value={secretPayload}
                 onChange={(e) => setSecretPayload(e.target.value)}
                 placeholder="e.g. https://storage.network/master_key.zip"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-amber-500/30 text-amber-200 font-mono text-xs focus:outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-[#D96522]/30 text-[#1A1816] font-mono text-xs focus:outline-none focus:border-[#D96522]"
                 required
               />
             </div>
@@ -299,7 +299,7 @@ export default function CreateAuctionModal({
 
           {/* Seller Address */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
               Payout Shielded Address (Orchard u1... / Sapling zs1...)
             </label>
             <input
@@ -307,14 +307,14 @@ export default function CreateAuctionModal({
               value={sellerAddress}
               onChange={(e) => setSellerAddress(e.target.value)}
               placeholder="u1... or zs1..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-white font-mono text-xs focus:outline-none focus:border-amber-400"
+              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] font-mono text-xs focus:outline-none focus:border-[#D96522]"
               required
             />
           </div>
 
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 flex items-start space-x-2">
-            <Shield className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-            <span>
+          <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 text-xs text-[#A7430B] flex items-start space-x-2">
+            <Shield className="w-4 h-4 text-[#D96522] flex-shrink-0 mt-0.5" />
+            <span className="leading-relaxed">
               An ephemeral RSA-2048 keypair will be generated in your browser. The private key will be saved strictly in your local device vault to unseal bids at deadline.
             </span>
           </div>
@@ -322,7 +322,7 @@ export default function CreateAuctionModal({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50"
+            className="w-full py-3 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-md disabled:opacity-50"
           >
             {isSubmitting ? "Generating Keys & Launching..." : "Launch Sealed Auction"}
           </button>
