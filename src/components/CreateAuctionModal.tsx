@@ -32,6 +32,9 @@ export default function CreateAuctionModal({
   // Close on Escape key
   React.useEffect(() => {
     if (!isOpen) return;
+    const active = getActiveProfile();
+    setSellerAddress(active.address || "");
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };

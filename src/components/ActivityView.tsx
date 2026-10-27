@@ -27,7 +27,7 @@ export default function ActivityView({
   onOpenPaymentModal,
   onOpenUnsealModal,
 }: ActivityViewProps) {
-  const profile = getActiveProfile();
+  const [profile, setProfile] = useState(getActiveProfile());
   const [subTab, setSubTab] = useState<"seller" | "buyer" | "audits">("seller");
   const [listings, setListings] = useState<any[]>([]);
   const [auctions, setAuctions] = useState<any[]>([]);
@@ -35,6 +35,15 @@ export default function ActivityView({
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    setProfile(getActiveProfile());
+    const handler = (e: any) => {
+      if (e.detail) setProfile(e.detail);
+    };
+    window.addEventListener("zecwild_profile_changed", handler);
+    return () => window.removeEventListener("zecwild_profile_changed", handler);
+  }, []);
 
   const fetchData = async () => {
     try {

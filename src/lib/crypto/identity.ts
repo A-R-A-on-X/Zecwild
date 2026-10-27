@@ -41,7 +41,70 @@ export const DEMO_PERSONAS: ShieldedProfile[] = [
 ];
 
 const STORAGE_KEY_PROFILE = "zecwild_active_profile";
+const STORAGE_KEY_CUSTOM_PROFILES = "zecwild_custom_profiles";
 const STORAGE_KEY_AUCTION_KEYS = "zecwild_auction_private_keys";
+
+export function getCustomProfiles(): ShieldedProfile[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_CUSTOM_PROFILES);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to read custom profiles:", e);
+  }
+  return [];
+}
+
+export function getAllProfiles(): ShieldedProfile[] {
+  const custom = getCustomProfiles();
+  return [...DEMO_PERSONAS, ...custom];
+}
+
+export function addCustomProfile(name: string, address: string): ShieldedProfile {
+  const cleanAddr = address.trim();
+  const addressType = cleanAddr.startsWith("u1") ? "Orchard" : "Sapling";
+  const newProfile: ShieldedProfile = {
+    id: `custom_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    name: name.trim() || `User (${cleanAddr.slice(0, 6)}...)`,
+    address: cleanAddr,
+    addressType,
+    isDemo: false,
+  };
+
+  if (typeof window !== "undefined") {
+    const existing = getCustomProfiles();
+    const updated = [newProfile, ...existing];
+    localStorage.setItem(STORAGE_KEY_CUSTOM_PROFILES, JSON.stringify(updated));
+  }
+
+  setActiveProfile(newProfile);
+  return newProfile;
+}
+
+export function generateRandomShieldedProfile(name = "Shielded User"): ShieldedProfile {
+  // Generate random 130 hex chars for realistic Orchard address
+  const bytes = new Uint8Array(65);
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    crypto.getRandomValues(bytes);
+  }
+  const hex = Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const address = `u1${hex}`;
+
+  return addCustomProfile(name, address);
+}
+
+export function removeCustomProfile(id: string): void {
+  if (typeof window === "undefined") return;
+  const existing = getCustomProfiles().filter((p) => p.id !== id);
+  localStorage.setItem(STORAGE_KEY_CUSTOM_PROFILES, JSON.stringify(existing));
+  
+  const current = getActiveProfile();
+  if (current.id === id) {
+    setActiveProfile(DEMO_PERSONAS[0]);
+  }
+}
 
 export function getActiveProfile(): ShieldedProfile {
   if (typeof window === "undefined") return DEMO_PERSONAS[0];

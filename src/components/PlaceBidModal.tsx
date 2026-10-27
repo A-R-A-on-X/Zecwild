@@ -37,6 +37,9 @@ export default function PlaceBidModal({
   // Close on Escape key
   React.useEffect(() => {
     if (!isOpen) return;
+    const active = getActiveProfile();
+    setBidderAddress(active.address || "");
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
