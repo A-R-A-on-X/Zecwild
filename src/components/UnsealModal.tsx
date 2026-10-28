@@ -15,7 +15,7 @@ interface UnsealModalProps {
     title: string;
     reservePriceZec: number;
     reservePriceZat: string;
-    bids: Array<{
+    bids?: Array<{
       id: string;
       sealedCiphertext: string;
       commitmentHash: string;
@@ -31,20 +31,35 @@ export default function UnsealModal({
   onRevealed,
 }: UnsealModalProps) {
   const [privateKeyBase64, setPrivateKeyBase64] = useState<string>("");
+  const [bidsList, setBidsList] = useState<any[]>(auction?.bids || []);
+  const [isLoadingBids, setIsLoadingBids] = useState(false);
   const [isUnsealing, setIsUnsealing] = useState(false);
   const [decryptedBids, setDecryptedBids] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && auction?.id) {
       const storedKey = getAuctionPrivateKey(auction.id);
       if (storedKey) setPrivateKeyBase64(storedKey);
       setIsFinished(false);
       setDecryptedBids([]);
       setError(null);
+      setBidsList(auction.bids || []);
+
+      // Fetch fresh bids list from backend
+      setIsLoadingBids(true);
+      fetch(`/api/auctions/${auction.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.auction?.bids) {
+            setBidsList(data.auction.bids);
+          }
+        })
+        .catch((e) => console.error("Failed to fetch bids for unsealing:", e))
+        .finally(() => setIsLoadingBids(false));
     }
-  }, [isOpen, auction.id]);
+  }, [isOpen, auction?.id, auction?.bids]);
 
   // Close on Escape key
   useEffect(() => {
@@ -64,13 +79,19 @@ export default function UnsealModal({
       return;
     }
 
+    const currentBids = bidsList.length > 0 ? bidsList : (auction?.bids || []);
+    if (currentBids.length === 0) {
+      setError("No bids are registered on this auction to unseal.");
+      return;
+    }
+
     setIsUnsealing(true);
     setError(null);
 
     try {
       const unsealedList: any[] = [];
 
-      for (const b of auction.bids) {
+      for (const b of currentBids) {
         try {
           const payload = await unsealBid(privateKeyBase64.trim(), b.sealedCiphertext);
           unsealedList.push({
@@ -116,6 +137,8 @@ export default function UnsealModal({
       setIsUnsealing(false);
     }
   };
+
+  const count = bidsList?.length ?? (auction?.bids?.length ?? 0);
 
   return (
     <div
@@ -212,7 +235,11 @@ export default function UnsealModal({
               <div className="text-sm font-bold text-[#1A1816] truncate mt-0.5">{auction.title}</div>
               <div className="text-xs text-[#D96522] mt-1.5 font-bold flex items-center space-x-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#D96522]" />
-                <span>{auction.bids.length} Sealed Bids Awaiting Decryption</span>
+                <span>
+                  {isLoadingBids
+                    ? "Loading bids..."
+                    : `${count} Sealed Bid${count === 1 ? "" : "s"} Awaiting Decryption`}
+                </span>
               </div>
             </div>
 
@@ -241,7 +268,7 @@ export default function UnsealModal({
 
             <button
               onClick={handleUnseal}
-              disabled={isUnsealing || auction.bids.length === 0}
+              disabled={isUnsealing || count === 0}
               className="w-full py-3 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               {isUnsealing ? (

@@ -151,9 +151,9 @@ export default function ReceiptModal({
 
   const formattedDate = item.paidAt
     ? new Date(item.paidAt).toLocaleString("en-US", {
-        dateStyle: "medium",
-        timeStyle: "medium",
-      })
+      dateStyle: "medium",
+      timeStyle: "medium",
+    })
     : "Settled On-Chain";
 
   const explorerUrl = item.txid
@@ -429,3 +429,4 @@ export default function ReceiptModal({
     </div>
   );
 }
+

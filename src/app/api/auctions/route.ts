@@ -20,6 +20,13 @@ export async function GET() {
     const auctions = await prisma.auction.findMany({
       orderBy: { createdAt: "desc" },
       include: {
+        bids: {
+          select: {
+            id: true,
+            commitmentHash: true,
+            sealedCiphertext: true,
+          },
+        },
         _count: {
           select: { bids: true },
         },
@@ -30,6 +37,7 @@ export async function GET() {
     const sanitized = auctions.map((a) => ({
       ...a,
       secretPayload: a.status === "SETTLED_PAID" ? a.secretPayload : null,
+      bids: a.bids || [],
       bidsCount: a._count.bids,
       _count: undefined,
     }));
