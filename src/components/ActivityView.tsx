@@ -170,7 +170,13 @@ export default function ActivityView({
         </div>
 
         <div className="text-xs text-[#949089] font-mono ml-auto hidden sm:block">
-          Active: <strong className="text-[#1A1816]">{profile.name}</strong> ({formatAddress(profile.address, 6, 4)})
+          {profile ? (
+            <>
+              Active: <strong className="text-[#1A1816]">{profile.name}</strong> ({formatAddress(profile.address, 6, 4)})
+            </>
+          ) : (
+            <span>No identity connected</span>
+          )}
         </div>
       </div>
 
@@ -190,7 +196,14 @@ export default function ActivityView({
             </div>
 
             <div className="space-y-3">
-              {listings.map((l) => (
+              {listings.length === 0 ? (
+                <div className="p-8 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs space-y-2">
+                  <Package className="w-8 h-8 text-[#949089] mx-auto" />
+                  <p className="font-bold text-[#1A1816]">No marketplace listings yet.</p>
+                  <p>Create a fixed-price listing to manage fulfillment and settlement here.</p>
+                </div>
+              ) : (
+                listings.map((l) => (
                 <div
                   key={l.id}
                   className="p-4 rounded-2xl bg-[#F8F7F4] border border-black/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -263,7 +276,7 @@ export default function ActivityView({
                     )}
                   </div>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
 
@@ -280,77 +293,85 @@ export default function ActivityView({
             </div>
 
             <div className="space-y-3">
-              {auctions.map((a) => (
-                <div
-                  key={a.id}
-                  className="p-4 rounded-2xl bg-[#F8F7F4] border border-black/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4"
-                >
-                  <div className="flex items-start space-x-3.5">
-                    <img src={a.imageUrl} alt={a.title} className="w-14 h-14 rounded-xl object-cover border border-black/[0.06]" />
-                    <div>
-                      <div className="font-bold text-sm text-[#1A1816]">{a.title}</div>
-                      <div className="text-xs text-[#66635F] flex items-center space-x-2 mt-1">
-                        <span className="font-mono text-[#D96522] font-bold">
-                          {a.bids?.length || 0} sealed bids
-                        </span>
-                        <span>•</span>
-                        <span className="font-mono text-[11px] bg-white px-2 py-0.5 rounded-full border border-black/[0.05]">
-                          Reserve: {a.reservePriceZec} ZEC
-                        </span>
+              {auctions.length === 0 ? (
+                <div className="p-8 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs space-y-2">
+                  <Lock className="w-8 h-8 text-[#949089] mx-auto" />
+                  <p className="font-bold text-[#1A1816]">No sealed auctions created yet.</p>
+                  <p>Launch a sealed-bid auction to monitor bids and reveal winners here.</p>
+                </div>
+              ) : (
+                auctions.map((a) => (
+                  <div
+                    key={a.id}
+                    className="p-4 rounded-2xl bg-[#F8F7F4] border border-black/[0.05] flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  >
+                    <div className="flex items-start space-x-3.5">
+                      <img src={a.imageUrl} alt={a.title} className="w-14 h-14 rounded-xl object-cover border border-black/[0.06]" />
+                      <div>
+                        <div className="font-bold text-sm text-[#1A1816]">{a.title}</div>
+                        <div className="text-xs text-[#66635F] flex items-center space-x-2 mt-1">
+                          <span className="font-mono text-[#D96522] font-bold">
+                            {a.bids?.length || 0} sealed bids
+                          </span>
+                          <span>•</span>
+                          <span className="font-mono text-[11px] bg-white px-2 py-0.5 rounded-full border border-black/[0.05]">
+                            Reserve: {a.reservePriceZec} ZEC
+                          </span>
+                        </div>
                       </div>
                     </div>
+
+                    <div className="flex flex-wrap items-center gap-2.5 self-end md:self-center">
+                      <span
+                        className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
+                          a.status === "SETTLED_PAID"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : a.status === "WINNER_DECLARED"
+                            ? "bg-[#FCEFE7] text-[#A7430B]"
+                            : "bg-stone-200 text-stone-700"
+                        }`}
+                      >
+                        {a.status}
+                      </span>
+
+                      {/* Receipt for Settled Auction */}
+                      {a.status === "SETTLED_PAID" && onOpenReceiptModal && (
+                        <button
+                          onClick={() => onOpenReceiptModal(a, "auction")}
+                          className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center space-x-1"
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>Receipt</span>
+                        </button>
+                      )}
+
+                      {/* Seller Reveal Action */}
+                      {a.status === "CLOSED_AWAITING_REVEAL" && (
+                        <button
+                          onClick={() => onOpenUnsealModal(a)}
+                          className="px-4 py-2 rounded-full btn-orange-primary text-xs font-bold flex items-center space-x-1.5 shadow-sm"
+                        >
+                          <Unlock className="w-3.5 h-3.5" />
+                          <span>Unseal & Reveal Winner</span>
+                        </button>
+                      )}
+
+                      {/* Defaulted Winner Fallback: Select Runner-Up */}
+                      {a.status === "WINNER_DECLARED" && (
+                        <button
+                          onClick={() => handleSelectRunnerUp(a.id)}
+                          disabled={actionLoading === a.id}
+                          className="px-4 py-2 rounded-full btn-orange-pill text-xs font-bold flex items-center space-x-1.5"
+                          title="If winning bidder defaults or does not pay, offer to the next highest bidder"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Select Runner-Up</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-
-                  <div className="flex flex-wrap items-center gap-2.5 self-end md:self-center">
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
-                        a.status === "SETTLED_PAID"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : a.status === "WINNER_DECLARED"
-                          ? "bg-[#FCEFE7] text-[#A7430B]"
-                          : "bg-stone-200 text-stone-700"
-                      }`}
-                    >
-                      {a.status}
-                    </span>
-
-                    {/* Receipt for Settled Auction */}
-                    {a.status === "SETTLED_PAID" && onOpenReceiptModal && (
-                      <button
-                        onClick={() => onOpenReceiptModal(a, "auction")}
-                        className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center space-x-1"
-                      >
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>Receipt</span>
-                      </button>
-                    )}
-
-                    {/* Seller Reveal Action */}
-                    {a.status === "CLOSED_AWAITING_REVEAL" && (
-                      <button
-                        onClick={() => onOpenUnsealModal(a)}
-                        className="px-4 py-2 rounded-full btn-orange-primary text-xs font-bold flex items-center space-x-1.5 shadow-sm"
-                      >
-                        <Unlock className="w-3.5 h-3.5" />
-                        <span>Unseal & Reveal Winner</span>
-                      </button>
-                    )}
-
-                    {/* Defaulted Winner Fallback: Select Runner-Up */}
-                    {a.status === "WINNER_DECLARED" && (
-                      <button
-                        onClick={() => handleSelectRunnerUp(a.id)}
-                        disabled={actionLoading === a.id}
-                        className="px-4 py-2 rounded-full btn-orange-pill text-xs font-bold flex items-center space-x-1.5"
-                        title="If winning bidder defaults or does not pay, offer to the next highest bidder"
-                      >
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        <span>Select Runner-Up</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -509,55 +530,63 @@ export default function ActivityView({
           </div>
 
           <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
-            {logs.map((log) => {
-              const isTestnet = log.memo?.includes("test") || profile.network === "testnet";
-              const explorerUrl = getBlockExplorerUrl(log.txid, isTestnet ? "testnet" : "mainnet");
-              return (
-                <div
-                  key={log.id}
-                  className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.05] text-xs font-mono space-y-1.5"
-                >
-                  <div className="flex items-center justify-between text-[#66635F]">
-                    <span className="text-[#C85A17] font-bold">{log.eventId}</span>
-                    <span className="text-[10px] text-[#949089]">
-                      {new Date(log.createdAt).toLocaleTimeString()}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-[#1A1816]">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="text-[#949089]">txid:</span>
-                      <a
-                        href={explorerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#D96522] font-bold hover:underline flex items-center space-x-1"
-                        title="View on Zcash Block Explorer"
-                      >
-                        <span>{formatAddress(log.txid, 12, 10)}</span>
-                        <ExternalLink className="w-3 h-3 text-[#D96522]" />
-                      </a>
-                      <button
-                        onClick={() => copyToClipboard(log.txid, `log_${log.id}`)}
-                        className="p-0.5 text-[#949089] hover:text-[#1A1816]"
-                        title="Copy TxID"
-                      >
-                        {copiedKey === `log_${log.id}` ? (
-                          <Check className="w-3 h-3 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
-                      </button>
+            {logs.length === 0 ? (
+              <div className="p-8 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs space-y-2 font-sans">
+                <Activity className="w-8 h-8 text-[#949089] mx-auto" />
+                <p className="font-bold text-[#1A1816]">No on-chain webhook settlements recorded yet.</p>
+                <p>Simulate a payment via Webhook Simulator or execute a shielded payment to view the immutable audit trail.</p>
+              </div>
+            ) : (
+              logs.map((log) => {
+                const isTestnet = log.memo?.includes("test") || profile?.network === "testnet";
+                const explorerUrl = getBlockExplorerUrl(log.txid, isTestnet ? "testnet" : "mainnet");
+                return (
+                  <div
+                    key={log.id}
+                    className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.05] text-xs font-mono space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between text-[#66635F]">
+                      <span className="text-[#C85A17] font-bold">{log.eventId}</span>
+                      <span className="text-[10px] text-[#949089]">
+                        {new Date(log.createdAt).toLocaleTimeString()}
+                      </span>
                     </div>
-                    <span className="text-emerald-700 font-bold">
-                      {log.amountZec} ZEC ({log.pool || "Ironwood"})
-                    </span>
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[#1A1816]">
+                      <div className="flex items-center space-x-1.5">
+                        <span className="text-[#949089]">txid:</span>
+                        <a
+                          href={explorerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#D96522] font-bold hover:underline flex items-center space-x-1"
+                          title="View on Zcash Block Explorer"
+                        >
+                          <span>{formatAddress(log.txid, 12, 10)}</span>
+                          <ExternalLink className="w-3 h-3 text-[#D96522]" />
+                        </a>
+                        <button
+                          onClick={() => copyToClipboard(log.txid, `log_${log.id}`)}
+                          className="p-0.5 text-[#949089] hover:text-[#1A1816]"
+                          title="Copy TxID"
+                        >
+                          {copiedKey === `log_${log.id}` ? (
+                            <Check className="w-3 h-3 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
+                      </div>
+                      <span className="text-emerald-700 font-bold">
+                        {log.amountZec} ZEC ({log.pool || "Ironwood"})
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-[#A7430B] font-bold truncate">
+                      Memo: {log.memo}
+                    </div>
                   </div>
-                  <div className="text-[11px] text-[#A7430B] font-bold truncate">
-                    Memo: {log.memo}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
       )}

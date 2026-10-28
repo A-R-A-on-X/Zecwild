@@ -29,7 +29,7 @@ export default function PlaceBidModal({
 }: PlaceBidModalProps) {
   const profile = getActiveProfile();
   const [bidAmountZec, setBidAmountZec] = useState<string>("");
-  const [bidderAddress, setBidderAddress] = useState<string>(profile.address || "");
+  const [bidderAddress, setBidderAddress] = useState<string>(profile?.address || "");
   const [isSealing, setIsSealing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successCommitment, setSuccessCommitment] = useState<string | null>(null);
@@ -38,7 +38,7 @@ export default function PlaceBidModal({
   React.useEffect(() => {
     if (!isOpen) return;
     const active = getActiveProfile();
-    setBidderAddress(active.address || "");
+    setBidderAddress(active?.address || "");
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

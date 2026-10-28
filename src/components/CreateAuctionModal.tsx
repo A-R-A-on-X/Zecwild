@@ -25,7 +25,7 @@ export default function CreateAuctionModal({
   const [secretPayload, setSecretPayload] = useState("");
   const [reservePriceZec, setReservePriceZec] = useState("");
   const [durationMinutes, setDurationMinutes] = useState("15");
-  const [sellerAddress, setSellerAddress] = useState(profile.address || "");
+  const [sellerAddress, setSellerAddress] = useState(profile?.address || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ export default function CreateAuctionModal({
   useEffect(() => {
     if (!isOpen) return;
     const active = getActiveProfile();
-    setSellerAddress(active.address || "");
+    setSellerAddress(active?.address || "");
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

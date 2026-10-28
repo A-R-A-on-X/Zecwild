@@ -52,7 +52,7 @@ export default function Navbar({
   openCreateModal,
   openSimulatorModal,
 }: NavbarProps) {
-  const [profile, setProfile] = useState<ShieldedProfile>(DEFAULT_DEMO_PERSONAS[0]);
+  const [profile, setProfile] = useState<ShieldedProfile | null>(null);
   const [allProfiles, setAllProfiles] = useState<ShieldedProfile[]>([]);
   const [activeNetwork, setActiveNetworkState] = useState<ZecNetwork>("mainnet");
   const [hasDeletedDemos, setHasDeletedDemos] = useState(false);
@@ -132,7 +132,7 @@ export default function Navbar({
     // Switch to appropriate persona matching the network if current doesn't match
     const profiles = getAllProfiles();
     const matching = profiles.find((p) => p.network === newNet);
-    if (matching && profile.network !== newNet) {
+    if (matching && profile?.network !== newNet) {
       selectPersona(matching);
     }
   };
@@ -372,57 +372,96 @@ export default function Navbar({
 
           {/* Persona / Shielded Account Switcher */}
           <div ref={personaRef} className="relative">
-            <button
-              onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
-              className="flex items-center space-x-2 px-3 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
-            >
-              <div
-                className={`w-2.5 h-2.5 rounded-full ${
-                  profile.network === "testnet" ? "bg-amber-500 animate-pulse" : "bg-emerald-500 animate-pulse"
-                }`}
-              />
-              <span className="font-bold text-[#1A1816] max-w-[90px] sm:max-w-[120px] truncate">
-                {profile.name}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-[#949089]" />
-            </button>
+            {profile ? (
+              <button
+                onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
+                className="flex items-center space-x-2 px-3 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
+              >
+                <div
+                  className={`w-2.5 h-2.5 rounded-full ${
+                    profile.network === "testnet" ? "bg-amber-500 animate-pulse" : "bg-emerald-500 animate-pulse"
+                  }`}
+                />
+                <span className="font-bold text-[#1A1816] max-w-[90px] sm:max-w-[120px] truncate">
+                  {profile.name}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-[#949089]" />
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setShowAddCustom(true);
+                  setPersonaDropdownOpen(!personaDropdownOpen);
+                }}
+                className="flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-xs font-bold bg-[#FCEFE7] hover:bg-[#F8E2D5] border border-[#D96522]/30 hover:border-[#D96522] text-[#A7430B] shadow-xs transition-all"
+              >
+                <Shield className="w-3.5 h-3.5 text-[#D96522]" />
+                <span className="hidden sm:inline">Connect Shielded Identity</span>
+                <span className="sm:hidden">Connect</span>
+              </button>
+            )}
 
             {personaDropdownOpen && (
               <div className="absolute right-0 mt-3 w-84 sm:w-96 rounded-3xl bg-white p-5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 border border-black/[0.08] space-y-4 text-left">
                 {/* Active Account Details */}
-                <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#C85A17] flex items-center space-x-1.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      <span>Active Identity</span>
-                    </span>
-                    <div className="flex items-center space-x-1">
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
-                        🌲 {profile.addressType}
+                {profile ? (
+                  <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#C85A17] flex items-center space-x-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>Active Identity</span>
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono font-bold uppercase">
-                        {profile.network || "mainnet"}
+                      <div className="flex items-center space-x-1">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
+                          🌲 {profile.addressType}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono font-bold uppercase">
+                          {profile.network || "mainnet"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="font-bold text-sm text-[#1A1816]">{profile.name}</div>
+                      <button
+                        onClick={() => {
+                          setActiveProfile(null);
+                          setProfile(null);
+                          reloadProfiles();
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:text-rose-700 hover:underline"
+                        title="Disconnect current identity"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between text-[#66635F] pt-1 border-t border-black/[0.04]">
+                      <span className="font-mono text-[11px] truncate max-w-[220px]">
+                        {profile.address}
                       </span>
+                      <button
+                        onClick={() => handleCopyActive(profile.address)}
+                        className="p-1 rounded-md hover:bg-white text-[#1A1816] transition-colors"
+                        title="Copy Full Shielded Address"
+                      >
+                        {copiedActive ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5 text-[#66635F]" />
+                        )}
+                      </button>
                     </div>
                   </div>
-                  <div className="font-bold text-sm text-[#1A1816]">{profile.name}</div>
-                  <div className="flex items-center justify-between text-[#66635F] pt-1 border-t border-black/[0.04]">
-                    <span className="font-mono text-[11px] truncate max-w-[220px]">
-                      {profile.address}
-                    </span>
-                    <button
-                      onClick={() => handleCopyActive(profile.address)}
-                      className="p-1 rounded-md hover:bg-white text-[#1A1816] transition-colors"
-                      title="Copy Full Shielded Address"
-                    >
-                      {copiedActive ? (
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5 text-[#66635F]" />
-                      )}
-                    </button>
+                ) : (
+                  <div className="p-3.5 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 space-y-1.5">
+                    <div className="flex items-center space-x-2 text-[#A7430B] font-bold text-xs">
+                      <Shield className="w-4 h-4 text-[#D96522]" />
+                      <span>No Shielded Identity Connected</span>
+                    </div>
+                    <p className="text-[11px] text-[#66635F] leading-relaxed">
+                      Connect a custom shielded address (Orchard/Sapling) or generate an instant test identity to list, buy, or participate in sealed auctions.
+                    </p>
                   </div>
-                </div>
+                )}
 
                 {/* Ironwood & Testnet Status Notice */}
                 <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 text-[11px] text-[#A7430B] flex items-start space-x-2">
@@ -446,7 +485,7 @@ export default function Navbar({
                           key={p.id}
                           onClick={() => selectPersona(p)}
                           className={`w-full text-left p-2.5 rounded-2xl text-xs transition-colors cursor-pointer flex items-center justify-between ${
-                            profile.id === p.id
+                            profile?.id === p.id
                               ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
                               : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
                           }`}
@@ -466,7 +505,7 @@ export default function Navbar({
                             </div>
                           </div>
                           <div className="flex items-center space-x-1">
-                            {profile.id === p.id && (
+                            {profile?.id === p.id && (
                               <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
                             )}
                             <button
@@ -495,7 +534,7 @@ export default function Navbar({
                           key={p.id}
                           onClick={() => selectPersona(p)}
                           className={`p-2.5 rounded-2xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
-                            profile.id === p.id
+                            profile?.id === p.id
                               ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B]"
                               : "hover:bg-[#F8F7F4] text-[#1A1816] border border-black/[0.04]"
                           }`}
@@ -510,7 +549,7 @@ export default function Navbar({
                             </div>
                           </div>
                           <div className="flex items-center space-x-1">
-                            {profile.id === p.id && (
+                            {profile?.id === p.id && (
                               <CheckCircle2 className="w-4 h-4 text-[#D96522]" />
                             )}
                             <button

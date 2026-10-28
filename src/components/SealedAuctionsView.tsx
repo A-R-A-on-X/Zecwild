@@ -106,8 +106,28 @@ export default function SealedAuctionsView({
         </button>
       </div>
 
-      {/* Grid of Auctions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid of Auctions or Empty State */}
+      {auctions.length === 0 ? (
+        <div className="card-static p-12 sm:p-16 text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-[#FCEFE7] text-[#D96522] flex items-center justify-center mx-auto shadow-xs">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-1 max-w-md mx-auto">
+            <h3 className="text-lg font-black text-[#1A1816]">No Sealed Auctions Live</h3>
+            <p className="text-xs text-[#66635F] leading-relaxed">
+              Launch a sealed-bid auction with client-side cryptographic sealing. Zero bid information is revealed until the deadline passes.
+            </p>
+          </div>
+          <button
+            onClick={openCreateModal}
+            className="px-5 py-2.5 rounded-full btn-orange-primary text-xs font-bold inline-flex items-center space-x-1.5 shadow-sm"
+          >
+            <Lock className="w-4 h-4" />
+            <span>Launch First Auction</span>
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {auctions.map((auction) => {
           const timer = timeRemaining[auction.id] || "...";
           const isClosed = timer === "CLOSED" || auction.status !== "OPEN";
@@ -307,6 +327,7 @@ export default function SealedAuctionsView({
           );
         })}
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 }

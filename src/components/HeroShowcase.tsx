@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Shield,
   Lock,
@@ -25,6 +25,7 @@ interface HeroShowcaseProps {
   setActiveTab: (tab: "marketplace" | "auctions" | "activity") => void;
   listingsCount: number;
   auctionsCount: number;
+  settledVolumeZec?: number;
 }
 
 export default function HeroShowcase({
@@ -34,24 +35,38 @@ export default function HeroShowcase({
   setActiveTab,
   listingsCount,
   auctionsCount,
+  settledVolumeZec = 0,
 }: HeroShowcaseProps) {
-  const profile = getActiveProfile();
+  const [profile, setProfile] = useState(getActiveProfile());
   const [assistantPrompt, setAssistantPrompt] = useState("");
   const [assistantStatus, setAssistantStatus] = useState<string | null>(null);
   const [copiedAddr, setCopiedAddr] = useState(false);
 
+  useEffect(() => {
+    setProfile(getActiveProfile());
+    const handler = (e: any) => setProfile(e.detail);
+    window.addEventListener("zecwild_profile_changed", handler);
+    return () => window.removeEventListener("zecwild_profile_changed", handler);
+  }, []);
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(profile.address);
-    setCopiedAddr(true);
-    setTimeout(() => setCopiedAddr(false), 2000);
+    if (profile?.address) {
+      navigator.clipboard.writeText(profile.address);
+      setCopiedAddr(true);
+      setTimeout(() => setCopiedAddr(false), 2000);
+    }
   };
 
   const handleAssistantAction = (action: string) => {
     if (action === "simulate") {
       onOpenSimulator();
     } else if (action === "copy") {
-      handleCopy();
-      setAssistantStatus("Shielded address copied to clipboard!");
+      if (profile?.address) {
+        handleCopy();
+        setAssistantStatus("Shielded address copied to clipboard!");
+      } else {
+        setAssistantStatus("No shielded wallet connected. Connect in header above!");
+      }
       setTimeout(() => setAssistantStatus(null), 3000);
     } else if (action === "marketplace") {
       setActiveTab("marketplace");
@@ -106,7 +121,7 @@ export default function HeroShowcase({
           </div>
           <div className="mt-2">
             <div className="text-xl sm:text-2xl font-black text-[#1A1816] font-mono">
-              12.85 <span className="text-sm text-[#C85A17] font-semibold">ZEC</span>
+              {settledVolumeZec.toFixed(2)} <span className="text-sm text-[#C85A17] font-semibold">ZEC</span>
             </div>
             <div className="text-[11px] text-[#66635F] mt-0.5 flex items-center space-x-1">
               <span className="text-emerald-700 font-bold">100%</span>

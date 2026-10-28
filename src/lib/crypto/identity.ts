@@ -18,45 +18,8 @@ export interface ShieldedProfile {
   createdAt?: number;
 }
 
-// Pre-seeded Demo Personas for instant Mainnet and Testnet evaluation
-export const DEFAULT_DEMO_PERSONAS: ShieldedProfile[] = [
-  {
-    id: "persona_alice_seller",
-    name: "Alice (Seller - Ironwood Mainnet)",
-    address:
-      "u1zrqm2vh87r6w998v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829f2",
-    addressType: "Ironwood",
-    network: "mainnet",
-    isDemo: true,
-  },
-  {
-    id: "persona_bob_testnet",
-    name: "Bob (Bidder - Ironwood Testnet)",
-    address:
-      "utest1zk3e5vh77r6w888v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829bb",
-    addressType: "Ironwood",
-    network: "testnet",
-    isDemo: true,
-  },
-  {
-    id: "persona_charlie_buyer",
-    name: "Charlie (Buyer - Sapling Mainnet)",
-    address:
-      "zs1zp994vh99r6w777v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829cc",
-    addressType: "Sapling",
-    network: "mainnet",
-    isDemo: true,
-  },
-  {
-    id: "persona_dana_testnet",
-    name: "Dana (Buyer - Sapling Testnet)",
-    address:
-      "ztestsapling1076f8e4e7e6f9829df739a82e7492c8e90726f5e82719a84e629f738a92e8471927492a83f982a",
-    addressType: "Sapling",
-    network: "testnet",
-    isDemo: true,
-  },
-];
+// Empty default personas — no mock/placeholder users
+export const DEFAULT_DEMO_PERSONAS: ShieldedProfile[] = [];
 
 const STORAGE_KEY_PROFILE = "zecwild_active_profile";
 const STORAGE_KEY_CUSTOM_PROFILES = "zecwild_custom_profiles";
@@ -109,9 +72,8 @@ export function getCustomProfiles(): ShieldedProfile[] {
 
 export function getAllProfiles(): ShieldedProfile[] {
   const deleted = new Set(getDeletedPersonaIds());
-  const activeDemos = DEFAULT_DEMO_PERSONAS.filter((p) => !deleted.has(p.id));
   const custom = getCustomProfiles().filter((p) => !deleted.has(p.id));
-  return [...activeDemos, ...custom];
+  return custom;
 }
 
 export function addCustomProfile(name: string, address: string): ShieldedProfile {
@@ -164,7 +126,7 @@ export function generateRandomShieldedProfile(
 }
 
 /**
- * Delete any persona (both custom and demo personas)
+ * Delete any persona
  */
 export function deleteProfile(id: string): void {
   if (typeof window === "undefined") return;
@@ -179,17 +141,21 @@ export function deleteProfile(id: string): void {
   }
 
   const current = getActiveProfile();
-  if (current.id === id) {
+  if (current && current.id === id) {
     const remaining = getAllProfiles();
     if (remaining.length > 0) {
       setActiveProfile(remaining[0]);
     } else {
-      const fresh = generateRandomShieldedProfile("New Shielded User");
-      setActiveProfile(fresh);
+      setActiveProfile(null);
     }
   } else {
     window.dispatchEvent(new CustomEvent("zecwild_profile_changed", { detail: getActiveProfile() }));
   }
+}
+
+export function disconnectProfile(): void {
+  if (typeof window === "undefined") return;
+  setActiveProfile(null);
 }
 
 export function restoreDemoPersonas(): void {
@@ -201,8 +167,8 @@ export function restoreDemoPersonas(): void {
   }
 }
 
-export function getActiveProfile(): ShieldedProfile {
-  if (typeof window === "undefined") return DEFAULT_DEMO_PERSONAS[0];
+export function getActiveProfile(): ShieldedProfile | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PROFILE);
     if (raw) {
@@ -216,13 +182,17 @@ export function getActiveProfile(): ShieldedProfile {
     console.error("Failed to read profile from localStorage:", e);
   }
   const available = getAllProfiles();
-  return available[0] || DEFAULT_DEMO_PERSONAS[0];
+  return available[0] || null;
 }
 
-export function setActiveProfile(profile: ShieldedProfile): void {
+export function setActiveProfile(profile: ShieldedProfile | null): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(profile));
+    if (profile) {
+      localStorage.setItem(STORAGE_KEY_PROFILE, JSON.stringify(profile));
+    } else {
+      localStorage.removeItem(STORAGE_KEY_PROFILE);
+    }
     window.dispatchEvent(new CustomEvent("zecwild_profile_changed", { detail: profile }));
   } catch (e) {
     console.error("Failed to save profile:", e);

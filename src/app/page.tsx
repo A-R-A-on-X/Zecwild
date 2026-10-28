@@ -62,6 +62,14 @@ export default function Home() {
     };
   }, []);
 
+  const settledVolumeZec =
+    listings
+      .filter((l) => l.status === "SOLD")
+      .reduce((acc, l) => acc + (l.priceZec || 0), 0) +
+    auctions
+      .filter((a) => a.status === "SETTLED_PAID")
+      .reduce((acc, a) => acc + (a.winningAmountZec || 0), 0);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F3F2EE] text-[#1A1816]">
       {/* Top Header Navbar */}
@@ -82,6 +90,7 @@ export default function Home() {
           setActiveTab={setActiveTab}
           listingsCount={listings.length}
           auctionsCount={auctions.length}
+          settledVolumeZec={settledVolumeZec}
         />
 
         {isLoading ? (

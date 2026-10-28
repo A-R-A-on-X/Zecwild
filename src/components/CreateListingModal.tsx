@@ -23,7 +23,7 @@ export default function CreateListingModal({
   const [itemType, setItemType] = useState<"DIGITAL" | "PHYSICAL">("DIGITAL");
   const [secretPayload, setSecretPayload] = useState("");
   const [priceZec, setPriceZec] = useState("");
-  const [sellerAddress, setSellerAddress] = useState(profile.address || "");
+  const [sellerAddress, setSellerAddress] = useState(profile?.address || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ export default function CreateListingModal({
   useEffect(() => {
     if (!isOpen) return;
     const active = getActiveProfile();
-    setSellerAddress(active.address || "");
+    setSellerAddress(active?.address || "");
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
