@@ -49,6 +49,10 @@ export default function SealedAuctionsView({
         const diff = end - now;
 
         if (diff <= 0) {
+          if (timeRemaining[a.id] && timeRemaining[a.id] !== "CLOSED" && a.status === "OPEN") {
+            refreshData();
+            window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
+          }
           updated[a.id] = "CLOSED";
         } else {
           const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -74,6 +78,7 @@ export default function SealedAuctionsView({
       const data = await res.json();
       alert(data.message || "Runner-up selected!");
       refreshData();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
     } catch (e) {
       console.error(e);
     }

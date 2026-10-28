@@ -72,6 +72,17 @@ export default function ActivityView({
 
   useEffect(() => {
     fetchData();
+
+    // Auto-sync polling every 3 seconds so seller/buyer vault updates automatically
+    const interval = setInterval(fetchData, 3000);
+
+    const handleRefresh = () => fetchData();
+    window.addEventListener("zecwild_refresh_data", handleRefresh);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("zecwild_refresh_data", handleRefresh);
+    };
   }, []);
 
   const copyToClipboard = (text: string, id: string) => {
@@ -94,6 +105,7 @@ export default function ActivityView({
         }),
       });
       fetchData();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
     } catch (e) {
       console.error("Failed to update shipping:", e);
     } finally {
@@ -108,6 +120,7 @@ export default function ActivityView({
       const data = await res.json();
       alert(data.message || "Runner-up selected!");
       fetchData();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
     } catch (e) {
       console.error(e);
     } finally {

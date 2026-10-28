@@ -164,15 +164,29 @@ export function generateZip321Uri({
   amountZec,
   memo,
 }: {
-  address: string;
-  amountZec: number;
-  memo: string;
+  address?: string;
+  amountZec?: number;
+  memo?: string;
 }): string {
+  if (!address) return "zcash:";
   const cleanAddress = address.trim();
   const params = new URLSearchParams();
-  params.set("amount", amountZec.toFixed(8).replace(/\.?0+$/, ""));
+  const zecVal = typeof amountZec === "number" && !isNaN(amountZec) ? amountZec : 0;
+  params.set("amount", zecVal.toFixed(8).replace(/\.?0+$/, ""));
   if (memo) {
-    params.set("memo", Buffer.from(memo, "utf8").toString("base64url"));
+    // Cross-platform safe base64url encoding (supported in both Browser and Node.js)
+    let b64 = "";
+    if (typeof window !== "undefined" && typeof window.btoa === "function") {
+      try {
+        b64 = window.btoa(unescape(encodeURIComponent(memo)));
+      } catch {
+        b64 = Buffer.from(memo, "utf8").toString("base64");
+      }
+    } else {
+      b64 = Buffer.from(memo, "utf8").toString("base64");
+    }
+    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    params.set("memo", b64url);
   }
   return `zcash:${cleanAddress}?${params.toString()}`;
 }

@@ -49,6 +49,17 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
+
+    // Auto-sync polling every 3 seconds so state updates automatically without manual reload
+    const interval = setInterval(fetchData, 3000);
+
+    const handleRefresh = () => fetchData();
+    window.addEventListener("zecwild_refresh_data", handleRefresh);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("zecwild_refresh_data", handleRefresh);
+    };
   }, []);
 
   return (

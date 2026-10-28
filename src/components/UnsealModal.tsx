@@ -130,6 +130,7 @@ export default function UnsealModal({
         origin: { y: 0.6 },
       });
       onRevealed();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
     } catch (err: any) {
       console.error("Unsealing error:", err);
       setError(err.message || "Failed to unseal bids.");

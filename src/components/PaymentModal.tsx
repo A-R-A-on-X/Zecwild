@@ -66,6 +66,7 @@ export default function PaymentModal({
     item.txid || null
   );
   const [isSimulating, setIsSimulating] = useState(false);
+  const [simError, setSimError] = useState<string | null>(null);
 
   const zip321Uri = generateZip321Uri({
     address: item.sellerAddress,
@@ -132,6 +133,7 @@ export default function PaymentModal({
             origin: { y: 0.6 },
           });
           if (onPaymentSuccess) onPaymentSuccess();
+          window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
         }
       } catch (err) {
         console.error("Poller error:", err);
@@ -162,6 +164,7 @@ export default function PaymentModal({
 
   const handleSimulatePayment = async () => {
     setIsSimulating(true);
+    setSimError(null);
     try {
       const res = await fetch("/api/webhooks/simulate", {
         method: "POST",
@@ -184,9 +187,13 @@ export default function PaymentModal({
           origin: { y: 0.6 },
         });
         if (onPaymentSuccess) onPaymentSuccess();
+        window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
+      } else {
+        setSimError(data.error || "Simulation failed to match invoice.");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      console.error("Simulation error:", e);
+      setSimError(e.message || "Failed to trigger shielded payment simulation.");
     } finally {
       setIsSimulating(false);
     }
@@ -505,6 +512,12 @@ export default function PaymentModal({
                 </button>
               </div>
             </div>
+
+            {simError && (
+              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
+                <span className="font-semibold">{simError}</span>
+              </div>
+            )}
 
             {/* Listening Notice & Simulator Trigger */}
             <div className="p-3.5 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 flex items-center justify-between">

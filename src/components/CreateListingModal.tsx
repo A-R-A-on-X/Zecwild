@@ -102,6 +102,7 @@ export default function CreateListingModal({
       }
 
       onCreated();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
       onClose();
     } catch (err: any) {
       console.error("Listing creation error:", err);

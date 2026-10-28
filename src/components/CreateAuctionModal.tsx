@@ -118,6 +118,7 @@ export default function CreateAuctionModal({
       storeAuctionPrivateKey(data.auction.id, keypair.privateKeyBase64);
 
       onCreated();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
       onClose();
     } catch (err: any) {
       console.error("Auction creation error:", err);

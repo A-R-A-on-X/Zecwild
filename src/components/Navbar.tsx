@@ -194,48 +194,40 @@ export default function Navbar({
   const customList = allProfiles.filter((p) => !p.isDemo);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-[#FFFFFF]/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b border-black/[0.06] bg-[#FFFFFF]/95 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3">
         {/* Brand Logo -> Click resets view to marketplace */}
         <div
-          className="flex items-center space-x-3 cursor-pointer select-none group"
+          className="flex items-center space-x-2.5 cursor-pointer select-none group flex-shrink-0"
           onClick={() => {
             setActiveTab("marketplace");
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           title="Return to ZecWild Marketplace"
         >
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-md shadow-[#D96522]/20 transition-transform group-hover:scale-105">
-            <Shield className="w-6 h-6 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
+            <Shield className="w-5 h-5 text-white" />
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-black tracking-tight text-[#1A1816]">ZecWild</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#C85A17] border border-[#C85A17]/25 tracking-wide uppercase">
-                {activeNetwork === "testnet" ? "Testnet" : "Mainnet"}
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 tracking-wide uppercase hidden sm:inline-flex">
-                🌲 Ironwood
-              </span>
-            </div>
-            <p className="text-[11px] text-[#66635F] font-medium tracking-wide">
-              Zero Custody • Sealed-Bid Auctions
-            </p>
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-black tracking-tight text-[#1A1816]">ZecWild</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 tracking-wide uppercase hidden sm:inline-flex">
+              🌲 Ironwood
+            </span>
           </div>
         </div>
 
         {/* Center Pill Segmented Navigation */}
-        <nav className="hidden md:flex items-center space-x-1.5 bg-[#EAE9E4] p-1.5 rounded-full border border-black/[0.04]">
+        <nav className="hidden md:flex items-center space-x-1 bg-[#EAE9E4] p-1 rounded-full border border-black/[0.04]">
           <button
             onClick={() => setActiveTab("marketplace")}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === "marketplace"
-                ? "bg-white text-[#1A1816] shadow-sm"
+                ? "bg-white text-[#1A1816] shadow-xs"
                 : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
             <ShoppingBag
-              className={`w-4 h-4 ${
+              className={`w-3.5 h-3.5 ${
                 activeTab === "marketplace" ? "text-[#D96522]" : "text-[#66635F]"
               }`}
             />
@@ -244,14 +236,14 @@ export default function Navbar({
 
           <button
             onClick={() => setActiveTab("auctions")}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === "auctions"
-                ? "bg-white text-[#1A1816] shadow-sm"
+                ? "bg-white text-[#1A1816] shadow-xs"
                 : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
             <Lock
-              className={`w-4 h-4 ${
+              className={`w-3.5 h-3.5 ${
                 activeTab === "auctions" ? "text-[#D96522]" : "text-[#66635F]"
               }`}
             />
@@ -260,14 +252,14 @@ export default function Navbar({
 
           <button
             onClick={() => setActiveTab("activity")}
-            className={`flex items-center space-x-2 px-5 py-2 rounded-full text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === "activity"
-                ? "bg-white text-[#1A1816] shadow-sm"
+                ? "bg-white text-[#1A1816] shadow-xs"
                 : "text-[#66635F] hover:text-[#1A1816]"
             }`}
           >
             <Activity
-              className={`w-4 h-4 ${
+              className={`w-3.5 h-3.5 ${
                 activeTab === "activity" ? "text-[#D96522]" : "text-[#66635F]"
               }`}
             />
@@ -276,12 +268,12 @@ export default function Navbar({
         </nav>
 
         {/* Right Action Cluster */}
-        <div className="flex items-center space-x-2.5 sm:space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-2.5">
           {/* Network Switcher Toggle Pill */}
-          <div className="flex items-center space-x-1 bg-[#EAE9E4] p-1 rounded-full border border-black/[0.04]">
+          <div className="flex items-center space-x-0.5 bg-[#EAE9E4] p-0.5 rounded-full border border-black/[0.04]">
             <button
               onClick={() => handleNetworkChange("mainnet")}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all ${
                 activeNetwork === "mainnet"
                   ? "bg-white text-[#1A1816] shadow-xs"
                   : "text-[#66635F] hover:text-[#1A1816]"
@@ -292,7 +284,7 @@ export default function Navbar({
             </button>
             <button
               onClick={() => handleNetworkChange("testnet")}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all ${
                 activeNetwork === "testnet"
                   ? "bg-[#FCEFE7] text-[#A7430B] border border-[#D96522]/30 shadow-xs"
                   : "text-[#66635F] hover:text-[#1A1816]"
@@ -303,25 +295,24 @@ export default function Navbar({
             </button>
           </div>
 
-          {/* Indexer Testbed Button */}
+          {/* Quick Webhook Simulator Icon Button */}
           <button
             onClick={openSimulatorModal}
-            className="hidden lg:flex items-center space-x-2 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill transition-all"
-            title="Launch the zechack indexer webhook testbed"
+            className="hidden sm:flex p-2 rounded-full bg-white hover:bg-[#FCEFE7] text-[#D96522] border border-black/[0.08] hover:border-[#D96522]/30 shadow-xs transition-colors"
+            title="Launch Webhook Simulator Testbed"
           >
-            <Zap className="w-3.5 h-3.5 text-[#D96522]" />
-            <span>Webhook Testbed</span>
+            <Zap className="w-3.5 h-3.5" />
           </button>
 
           {/* Create Button Dropdown */}
           <div ref={createRef} className="relative">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
-              className="flex items-center space-x-1.5 sm:space-x-2 px-3.5 sm:px-4 py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-sm"
+              className="flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-xs"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Create</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <ChevronDown className="w-3 h-3 opacity-80" />
             </button>
 
             {createDropdownOpen && (
@@ -355,6 +346,24 @@ export default function Navbar({
                   <div>
                     <div className="font-bold">New Sealed Auction</div>
                     <div className="text-[11px] text-[#66635F]">Client-sealed bids</div>
+                  </div>
+                </button>
+
+                <div className="my-1 border-t border-black/[0.05]" />
+
+                <button
+                  onClick={() => {
+                    openSimulatorModal();
+                    setCreateDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-[#1A1816] hover:bg-[#FCEFE7] hover:text-[#A7430B] flex items-center space-x-3 transition-colors"
+                >
+                  <div className="p-2 rounded-lg bg-orange-100 text-[#D96522]">
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="font-bold">Webhook Simulator</div>
+                    <div className="text-[11px] text-[#66635F]">Test shielded payments</div>
                   </div>
                 </button>
               </div>

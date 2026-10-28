@@ -105,7 +105,7 @@ export async function POST(
     }
 
     // Generate settlement invoice memo for winning bidder
-    const invoiceMemo = generateInvoiceMemo("ZECWILD:V1");
+    const invoiceMemo = generateInvoiceMemo("auct");
     // 6-hour payment grace period
     const paymentDeadline = new Date(Date.now() + 6 * 3600 * 1000);
 

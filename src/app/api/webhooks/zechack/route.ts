@@ -52,13 +52,18 @@ export async function POST(req: NextRequest) {
     let matchedEntityId: string | null = null;
 
     // Deterministically extract invoice nonce (e.g. "ZECWILD:V1:<invoice_id>")
-    const memoMatch = incomingMemo.match(/(ZECWILD:V1:[a-zA-Z0-9_-]+)/i);
+    const memoMatch = incomingMemo.match(/(ZECWILD:V1:[^\s,;]+)/i);
     const targetMemo = memoMatch ? memoMatch[1] : incomingMemo;
 
-    // 1. Try finding matching Listing by unique invoiceMemo
-    const foundListing = await prisma.listing.findUnique({
-      where: { invoiceMemo: targetMemo },
+    // 1. Try finding matching Listing by unique invoiceMemo (exact or nonce)
+    let foundListing = await prisma.listing.findUnique({
+      where: { invoiceMemo: incomingMemo },
     });
+    if (!foundListing && targetMemo !== incomingMemo) {
+      foundListing = await prisma.listing.findUnique({
+        where: { invoiceMemo: targetMemo },
+      });
+    }
 
     if (foundListing) {
       if (foundListing.status === "SOLD") {
@@ -67,8 +72,8 @@ export async function POST(req: NextRequest) {
         matchedEntityId = foundListing.id;
       } else {
         // Validate payment amount (strict Zatoshis check)
-        const paidZat = BigInt(amount_zat || 0);
-        const requiredZat = BigInt(foundListing.priceZat || 0);
+        const paidZat = BigInt(Math.floor(Number(amount_zat) || 0));
+        const requiredZat = BigInt(Math.floor(Number(foundListing.priceZat) || 0));
 
         if (paidZat < requiredZat) {
           console.warn(
@@ -90,10 +95,15 @@ export async function POST(req: NextRequest) {
         }
       }
     } else {
-      // 2. Try finding matching Auction by unique invoiceMemo
-      const foundAuction = await prisma.auction.findUnique({
-        where: { invoiceMemo: targetMemo },
+      // 2. Try finding matching Auction by unique invoiceMemo (exact or nonce)
+      let foundAuction = await prisma.auction.findUnique({
+        where: { invoiceMemo: incomingMemo },
       });
+      if (!foundAuction && targetMemo !== incomingMemo) {
+        foundAuction = await prisma.auction.findUnique({
+          where: { invoiceMemo: targetMemo },
+        });
+      }
 
       if (foundAuction) {
         if (foundAuction.status === "SETTLED_PAID") {
@@ -101,8 +111,8 @@ export async function POST(req: NextRequest) {
           matchedEntityType = "AUCTION";
           matchedEntityId = foundAuction.id;
         } else {
-          const paidZat = BigInt(amount_zat || 0);
-          const requiredZat = BigInt(foundAuction.winningAmountZat || 0);
+          const paidZat = BigInt(Math.floor(Number(amount_zat) || 0));
+          const requiredZat = BigInt(Math.floor(Number(foundAuction.winningAmountZat) || 0));
 
           if (paidZat >= requiredZat) {
             await prisma.auction.update({

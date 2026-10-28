@@ -109,6 +109,7 @@ export default function PlaceBidModal({
         origin: { y: 0.6 },
       });
       onBidSubmitted();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
     } catch (err: any) {
       console.error("Sealed bid error:", err);
       setError(err.message || "Failed to seal and submit bid.");

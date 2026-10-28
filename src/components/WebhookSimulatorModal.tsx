@@ -115,6 +115,7 @@ export default function WebhookSimulatorModal({
       const data = await res.json();
       setResponseLog(data);
       if (onWebhookFired) onWebhookFired();
+      window.dispatchEvent(new CustomEvent("zecwild_refresh_data"));
       fetchPending();
     } catch (err: any) {
       setResponseLog({ error: err.message || "Simulation request failed" });
