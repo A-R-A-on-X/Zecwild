@@ -1,9 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.text();
+
+    // 0. Optional Webhook HMAC Authentication
+    const webhookSecret = process.env.ZECHACK_WEBHOOK_SECRET;
+    if (webhookSecret && webhookSecret.trim()) {
+      const authHeader = req.headers.get("authorization") || "";
+      const sigHeader =
+        req.headers.get("x-zecshield-signature") ||
+        req.headers.get("x-signature") ||
+        "";
+      const querySecret = req.nextUrl.searchParams.get("secret") || "";
+
+      let isAuthorized = false;
+
+      // 1. Bearer Token Check
+      if (authHeader.startsWith("Bearer ") && authHeader.slice(7).trim() === webhookSecret.trim()) {
+        isAuthorized = true;
+      }
+      // 2. Query param check (?secret=...)
+      else if (querySecret && querySecret === webhookSecret.trim()) {
+        isAuthorized = true;
+      }
+      // 3. HMAC-SHA256 signature check (ZecShield X-ZecShield-Signature header)
+      else if (sigHeader) {
+        try {
+          const hmac = crypto
+            .createHmac("sha256", webhookSecret.trim())
+            .update(rawBody)
+            .digest("hex");
+          if (
+            sigHeader.length === hmac.length &&
+            crypto.timingSafeEqual(Buffer.from(sigHeader, "utf8"), Buffer.from(hmac, "utf8"))
+          ) {
+            isAuthorized = true;
+          }
+        } catch (err) {
+          console.error("[Webhook] HMAC comparison error:", err);
+        }
+      }
+
+      if (!isAuthorized) {
+        return NextResponse.json(
+          { success: false, error: "Unauthorized: Invalid webhook secret or signature" },
+          { status: 401 }
+        );
+      }
+    }
+
     let payload: any;
     try {
       payload = JSON.parse(rawBody);

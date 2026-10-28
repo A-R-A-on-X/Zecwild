@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: zecwild
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npx prisma generate && npx prisma db push && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: ZECHACK_WEBHOOK_SECRET
+        generateValue: true
