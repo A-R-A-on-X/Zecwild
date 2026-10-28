@@ -41,7 +41,7 @@ import { formatAddress, isShieldedAddress, ZecNetwork } from "@/lib/crypto/zcash
 
 interface NavbarProps {
   activeTab: "marketplace" | "auctions" | "activity";
-  setActiveTab: (tab: "marketplace" | "auctions" | "activity") => void;
+  setActiveTab: (tab: "marketplace" | "auctions" | "activity", subTab?: "seller" | "buyer" | "audits") => void;
   openCreateModal: (type: "listing" | "auction") => void;
   openSimulatorModal: () => void;
 }
@@ -251,7 +251,7 @@ export default function Navbar({
           </button>
 
           <button
-            onClick={() => setActiveTab("activity")}
+            onClick={() => setActiveTab("activity", "audits")}
             className={`flex items-center space-x-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === "activity"
                 ? "bg-white text-[#1A1816] shadow-xs"
@@ -263,7 +263,7 @@ export default function Navbar({
                 activeTab === "activity" ? "text-[#D96522]" : "text-[#66635F]"
               }`}
             />
-            <span>Activity & Vault</span>
+            <span>Activity & Audit</span>
           </button>
         </nav>
 
@@ -718,7 +718,7 @@ export default function Navbar({
 
           <button
             onClick={() => {
-              setActiveTab("activity");
+              setActiveTab("activity", "audits");
               setMobileMenuOpen(false);
             }}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
@@ -726,7 +726,7 @@ export default function Navbar({
             }`}
           >
             <Activity className="w-4 h-4 text-[#D96522]" />
-            <span>Activity & Vault</span>
+            <span>Activity & Audit Vault</span>
           </button>
 
           <button

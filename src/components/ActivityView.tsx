@@ -26,15 +26,30 @@ interface ActivityViewProps {
   onOpenPaymentModal: (item: any, type: "listing" | "auction") => void;
   onOpenUnsealModal: (auction: any) => void;
   onOpenReceiptModal?: (item: any, type: "listing" | "auction") => void;
+  subTab?: "seller" | "buyer" | "audits";
+  onSubTabChange?: (tab: "seller" | "buyer" | "audits") => void;
 }
 
 export default function ActivityView({
   onOpenPaymentModal,
   onOpenUnsealModal,
   onOpenReceiptModal,
+  subTab: propSubTab,
+  onSubTabChange,
 }: ActivityViewProps) {
   const [profile, setProfile] = useState(getActiveProfile());
-  const [subTab, setSubTab] = useState<"seller" | "buyer" | "audits">("seller");
+  const [subTab, setInternalSubTab] = useState<"seller" | "buyer" | "audits">(propSubTab || "seller");
+
+  useEffect(() => {
+    if (propSubTab) {
+      setInternalSubTab(propSubTab);
+    }
+  }, [propSubTab]);
+
+  const setSubTab = (newTab: "seller" | "buyer" | "audits") => {
+    setInternalSubTab(newTab);
+    if (onSubTabChange) onSubTabChange(newTab);
+  };
   const [listings, setListings] = useState<any[]>([]);
   const [auctions, setAuctions] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);

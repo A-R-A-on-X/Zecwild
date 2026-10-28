@@ -22,7 +22,7 @@ interface HeroShowcaseProps {
   onOpenCreate: (type: "listing" | "auction") => void;
   onOpenSimulator: () => void;
   activeTab: "marketplace" | "auctions" | "activity";
-  setActiveTab: (tab: "marketplace" | "auctions" | "activity") => void;
+  setActiveTab: (tab: "marketplace" | "auctions" | "activity", subTab?: "seller" | "buyer" | "audits") => void;
   listingsCount: number;
   auctionsCount: number;
   settledVolumeZec?: number;
@@ -73,7 +73,7 @@ export default function HeroShowcase({
     } else if (action === "auctions") {
       setActiveTab("auctions");
     } else if (action === "activity") {
-      setActiveTab("activity");
+      setActiveTab("activity", "audits");
     }
   };
 
@@ -91,7 +91,7 @@ export default function HeroShowcase({
       setActiveTab("marketplace");
       setAssistantStatus("Navigating to Open Marketplace...");
     } else if (lower.includes("audit") || lower.includes("receipt") || lower.includes("vault")) {
-      setActiveTab("activity");
+      setActiveTab("activity", "audits");
       setAssistantStatus("Navigating to Activity & Audit Vault...");
     } else {
       setAssistantStatus(`Navigating inventory for "${assistantPrompt}"...`);
@@ -107,7 +107,7 @@ export default function HeroShowcase({
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: Shielded Volume -> Click to view audit log */}
         <div
-          onClick={() => setActiveTab("activity")}
+          onClick={() => setActiveTab("activity", "audits")}
           className="card-static p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#D96522]/40 transition-all group"
           title="Click to view on-chain audit trail"
         >

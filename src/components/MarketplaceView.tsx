@@ -42,31 +42,28 @@ export default function MarketplaceView({
         <div className="flex items-center space-x-2 bg-[#EAE9E4] p-1.5 rounded-full border border-black/[0.04] self-start">
           <button
             onClick={() => setFilter("ALL")}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-              filter === "ALL"
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${filter === "ALL"
                 ? "bg-white text-[#1A1816] shadow-sm"
                 : "text-[#66635F] hover:text-[#1A1816]"
-            }`}
+              }`}
           >
             All Items ({listings.length})
           </button>
           <button
             onClick={() => setFilter("DIGITAL")}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-              filter === "DIGITAL"
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${filter === "DIGITAL"
                 ? "bg-white text-[#1A1816] shadow-sm"
                 : "text-[#66635F] hover:text-[#1A1816]"
-            }`}
+              }`}
           >
             Digital Goods
           </button>
           <button
             onClick={() => setFilter("PHYSICAL")}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-              filter === "PHYSICAL"
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${filter === "PHYSICAL"
                 ? "bg-white text-[#1A1816] shadow-sm"
                 : "text-[#66635F] hover:text-[#1A1816]"
-            }`}
+              }`}
           >
             Physical Goods
           </button>
@@ -143,11 +140,10 @@ export default function MarketplaceView({
 
                     <div className="absolute top-2.5 right-2.5">
                       <span
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${
-                          item.status === "SOLD"
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm ${item.status === "SOLD"
                             ? "bg-emerald-500/90 text-white"
                             : "bg-black/60 text-white"
-                        }`}
+                          }`}
                       >
                         {item.status === "SOLD" ? "Sold / Settled" : "Available"}
                       </span>

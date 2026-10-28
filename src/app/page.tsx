@@ -17,6 +17,7 @@ import { Shield, Lock, Terminal, Sparkles, ExternalLink } from "lucide-react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"marketplace" | "auctions" | "activity">("marketplace");
+  const [activitySubTab, setActivitySubTab] = useState<"seller" | "buyer" | "audits">("seller");
   const [listings, setListings] = useState<any[]>([]);
   const [auctions, setAuctions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,12 +71,28 @@ export default function Home() {
       .filter((a) => a.status === "SETTLED_PAID")
       .reduce((acc, a) => acc + (a.winningAmountZec || 0), 0);
 
+  const handleTabChange = (
+    tab: "marketplace" | "auctions" | "activity",
+    subTab?: "seller" | "buyer" | "audits"
+  ) => {
+    setActiveTab(tab);
+    if (subTab) {
+      setActivitySubTab(subTab);
+    }
+    setTimeout(() => {
+      const el = document.getElementById("content-view");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F3F2EE] text-[#1A1816]">
       {/* Top Header Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         openCreateModal={(type) => setCreateModalType(type)}
         openSimulatorModal={() => setIsSimulatorOpen(true)}
       />
@@ -87,7 +104,7 @@ export default function Home() {
           onOpenCreate={(type) => setCreateModalType(type)}
           onOpenSimulator={() => setIsSimulatorOpen(true)}
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
           listingsCount={listings.length}
           auctionsCount={auctions.length}
           settledVolumeZec={settledVolumeZec}
@@ -99,7 +116,7 @@ export default function Home() {
             <p className="text-xs font-mono text-[#66635F]">Synchronizing Shielded State...</p>
           </div>
         ) : (
-          <div className="pt-2">
+          <div id="content-view" className="scroll-mt-20 sm:scroll-mt-24 pt-2">
             {activeTab === "marketplace" && (
               <MarketplaceView
                 listings={listings}
@@ -123,6 +140,8 @@ export default function Home() {
 
             {activeTab === "activity" && (
               <ActivityView
+                subTab={activitySubTab}
+                onSubTabChange={(st) => setActivitySubTab(st)}
                 onOpenPaymentModal={(item, type) => setPaymentItem({ item, type })}
                 onOpenUnsealModal={(auction) => setUnsealAuction(auction)}
                 onOpenReceiptModal={(item, type) => setReceiptItem({ item, type })}
