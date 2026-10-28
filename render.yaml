@@ -13,3 +13,4 @@ services:
         value: file:./dev.db
       - key: ZECHACK_WEBHOOK_SECRET
         generateValue: true
+
