@@ -5,6 +5,7 @@ import {
   Shield,
   Lock,
   ShoppingBag,
+  ShoppingCart,
   PlusCircle,
   Zap,
   CheckCircle2,
@@ -206,7 +207,7 @@ export default function Navbar({
           title="Return to ZecWild Marketplace"
         >
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D96522] to-[#A7430B] flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
-            <Shield className="w-5 h-5 text-white" />
+            <ShoppingCart className="w-5 h-5 text-white" />
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-lg font-black tracking-tight text-[#1A1816]">ZecWild</span>
@@ -269,8 +270,8 @@ export default function Navbar({
 
         {/* Right Action Cluster */}
         <div className="flex items-center space-x-2 sm:space-x-2.5">
-          {/* Network Switcher Toggle Pill */}
-          <div className="flex items-center space-x-0.5 bg-[#EAE9E4] p-0.5 rounded-full border border-black/[0.04]">
+          {/* Network Switcher Toggle Pill - Desktop */}
+          <div className="hidden md:flex items-center space-x-0.5 bg-[#EAE9E4] p-0.5 rounded-full border border-black/[0.04]">
             <button
               onClick={() => handleNetworkChange("mainnet")}
               className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all ${
@@ -295,17 +296,17 @@ export default function Navbar({
             </button>
           </div>
 
-          {/* Quick Webhook Simulator Icon Button */}
+          {/* Quick Webhook Simulator Icon Button - Desktop */}
           <button
             onClick={openSimulatorModal}
-            className="hidden sm:flex p-2 rounded-full bg-white hover:bg-[#FCEFE7] text-[#D96522] border border-black/[0.08] hover:border-[#D96522]/30 shadow-xs transition-colors"
+            className="hidden md:flex p-2 rounded-full bg-white hover:bg-[#FCEFE7] text-[#D96522] border border-black/[0.08] hover:border-[#D96522]/30 shadow-xs transition-colors"
             title="Launch Webhook Simulator Testbed"
           >
             <Zap className="w-3.5 h-3.5" />
           </button>
 
-          {/* Create Button Dropdown */}
-          <div ref={createRef} className="relative">
+          {/* Create Button Dropdown - Desktop */}
+          <div ref={createRef} className="relative hidden md:block">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
               className="flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-xs"
@@ -370,8 +371,8 @@ export default function Navbar({
             )}
           </div>
 
-          {/* Persona / Shielded Account Switcher */}
-          <div ref={personaRef} className="relative">
+          {/* Persona / Shielded Account Switcher - Desktop */}
+          <div ref={personaRef} className="relative hidden md:block">
             {profile ? (
               <button
                 onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
@@ -654,22 +655,195 @@ export default function Navbar({
             )}
           </div>
 
+          {/* Mobile Network Indicator Button */}
+          <button
+            onClick={() => handleNetworkChange(activeNetwork === "mainnet" ? "testnet" : "mainnet")}
+            className="md:hidden px-2.5 py-1.5 rounded-full text-[10px] font-bold border transition-colors flex items-center space-x-1.5 bg-[#F8F7F4] border-black/[0.08]"
+            title={`Active: ${activeNetwork}. Tap to toggle network.`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                activeNetwork === "testnet" ? "bg-amber-500 animate-pulse" : "bg-emerald-500 animate-pulse"
+              }`}
+            />
+            <span className="font-mono text-[#1A1816] uppercase text-[10px]">
+              {activeNetwork === "testnet" ? "Testnet" : "Mainnet"}
+            </span>
+          </button>
+
           {/* Mobile Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-2xl bg-[#EAE9E4] text-[#1A1816]"
+            className="md:hidden p-2 rounded-xl bg-[#EAE9E4] hover:bg-stone-200 text-[#1A1816] transition-colors"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#D96522]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Navigation (Responsive Hamburger Menu) */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-black/[0.06] bg-white px-4 py-4 space-y-2 animate-in slide-in-from-top-2">
-          {/* Mobile Network Selector */}
-          <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8F7F4] mb-2">
-            <span className="text-xs font-bold text-[#1A1816]">Network:</span>
+        <div className="md:hidden border-t border-black/[0.06] bg-white px-4 py-4 space-y-3 animate-in slide-in-from-top-2 shadow-xl">
+          {/* 1. Shielded Identity Section */}
+          {profile ? (
+            <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-[#C85A17] flex items-center space-x-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>{profile.name}</span>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
+                  🌲 {profile.addressType}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[#66635F] pt-1 border-t border-black/[0.04]">
+                <span className="font-mono text-xs truncate max-w-[210px]">{formatAddress(profile.address, 8, 6)}</span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handleCopyActive(profile.address)}
+                    className="p-1 text-[#66635F] hover:text-[#1A1816]"
+                    title="Copy Shielded Address"
+                  >
+                    {copiedActive ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveProfile(null);
+                      setProfile(null);
+                      reloadProfiles();
+                    }}
+                    className="text-[11px] font-bold text-rose-600 hover:underline"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1.5 text-xs font-bold text-[#A7430B]">
+                  <Shield className="w-4 h-4 text-[#D96522]" />
+                  <span>Shielded Identity</span>
+                </div>
+                <span className="text-[10px] text-[#66635F]">Disconnected</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddCustom(true);
+                    setPersonaDropdownOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="py-2 px-3 rounded-xl btn-orange-primary text-xs font-bold text-center"
+                >
+                  Connect Address
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleGenerateRandom();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="py-2 px-3 rounded-xl bg-white border border-[#D96522]/30 text-[#A7430B] text-xs font-bold text-center hover:bg-[#FCEFE7]"
+                >
+                  Generate New
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 2. Main Navigation Links */}
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                setActiveTab("marketplace");
+                setMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-colors ${
+                activeTab === "marketplace" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F] hover:bg-stone-50"
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4 text-[#D96522]" />
+              <span>Marketplace</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("auctions");
+                setMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-colors ${
+                activeTab === "auctions" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F] hover:bg-stone-50"
+              }`}
+            >
+              <Lock className="w-4 h-4 text-[#D96522]" />
+              <span>Sealed Auctions</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("activity", "audits");
+                setMobileMenuOpen(false);
+              }}
+              className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-colors ${
+                activeTab === "activity" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F] hover:bg-stone-50"
+              }`}
+            >
+              <Activity className="w-4 h-4 text-[#D96522]" />
+              <span>Activity & Audit Vault</span>
+            </button>
+          </div>
+
+          {/* 3. Creation Actions & Simulator */}
+          <div className="pt-2 border-t border-black/[0.06] space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => {
+                  openCreateModal("listing");
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2.5 rounded-xl bg-[#F8F7F4] hover:bg-[#FCEFE7] text-left border border-black/[0.04] transition-colors"
+              >
+                <div className="text-xs font-bold text-[#1A1816] flex items-center space-x-1.5">
+                  <Plus className="w-3.5 h-3.5 text-[#D96522]" />
+                  <span>New Listing</span>
+                </div>
+                <div className="text-[10px] text-[#66635F]">Fixed-price sales</div>
+              </button>
+
+              <button
+                onClick={() => {
+                  openCreateModal("auction");
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2.5 rounded-xl bg-[#F8F7F4] hover:bg-[#FCEFE7] text-left border border-black/[0.04] transition-colors"
+              >
+                <div className="text-xs font-bold text-[#1A1816] flex items-center space-x-1.5">
+                  <Lock className="w-3.5 h-3.5 text-[#D96522]" />
+                  <span>New Auction</span>
+                </div>
+                <div className="text-[10px] text-[#66635F]">Sealed bids</div>
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                openSimulatorModal();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full p-2.5 rounded-xl bg-[#FCEFE7] hover:bg-[#F8E2D5] text-[#A7430B] border border-[#D96522]/20 flex items-center justify-center space-x-2 text-xs font-bold transition-colors"
+            >
+              <Zap className="w-3.5 h-3.5 text-[#D96522]" />
+              <span>Launch Webhook Simulator</span>
+            </button>
+          </div>
+
+          {/* 4. Network Switcher */}
+          <div className="pt-2 border-t border-black/[0.06] flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-[#1A1816]">Active Network:</span>
             <div className="flex space-x-1">
               <button
                 onClick={() => handleNetworkChange("mainnet")}
@@ -685,60 +859,10 @@ export default function Navbar({
                   activeNetwork === "testnet" ? "bg-[#D96522] text-white" : "bg-stone-200 text-[#66635F]"
                 }`}
               >
-                Testnet
+                🧪 Testnet
               </button>
             </div>
           </div>
-
-          <button
-            onClick={() => {
-              setActiveTab("marketplace");
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
-              activeTab === "marketplace" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4 text-[#D96522]" />
-            <span>Marketplace</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab("auctions");
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
-              activeTab === "auctions" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
-            }`}
-          >
-            <Lock className="w-4 h-4 text-[#D96522]" />
-            <span>Sealed Auctions</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab("activity", "audits");
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold ${
-              activeTab === "activity" ? "bg-[#FCEFE7] text-[#A7430B]" : "text-[#66635F]"
-            }`}
-          >
-            <Activity className="w-4 h-4 text-[#D96522]" />
-            <span>Activity & Audit Vault</span>
-          </button>
-
-          <button
-            onClick={() => {
-              openSimulatorModal();
-              setMobileMenuOpen(false);
-            }}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-bold btn-orange-pill"
-          >
-            <Zap className="w-4 h-4 text-[#D96522]" />
-            <span>Webhook Testbed</span>
-          </button>
         </div>
       )}
     </header>

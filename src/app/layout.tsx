@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "ZecWild — Shielded Sealed-Bid Auctions & Open Marketplace",
   description:
     "Direct wallet-to-wallet shielded ZEC payments, zero platform custody, and cryptographically sealed bids powered by Zcash Orchard and Sapling.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
