@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npx prisma generate && npx prisma db push && npm run build
+    buildCommand: npm install && npx prisma db push && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -13,4 +13,3 @@ services:
         value: file:./dev.db
       - key: ZECHACK_WEBHOOK_SECRET
         generateValue: true
-
