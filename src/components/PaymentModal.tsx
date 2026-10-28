@@ -21,6 +21,8 @@ import {
   generateZip321Uri,
   generateQrDataUrl,
   formatAddress,
+  detectNetwork,
+  getBlockExplorerUrl,
 } from "@/lib/crypto/zcash";
 
 interface PaymentModalProps {
@@ -155,6 +157,9 @@ export default function PaymentModal({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const network = detectNetwork(item.sellerAddress);
+  const isTestnet = network === "testnet";
+
   const handleSimulatePayment = async () => {
     setIsSimulating(true);
     try {
@@ -165,7 +170,8 @@ export default function PaymentModal({
           memo: item.invoiceMemo,
           amountZat: item.priceZat,
           amountZec: item.priceZec,
-          pool: "Orchard",
+          pool: "Ironwood",
+          network: network,
         }),
       });
       const data = await res.json();
@@ -189,8 +195,8 @@ export default function PaymentModal({
   if (!isOpen) return null;
 
   const explorerUrl = confirmedTxid
-    ? `https://zcashblockexplorer.com/transactions/${confirmedTxid}`
-    : `https://zcashblockexplorer.com`;
+    ? getBlockExplorerUrl(confirmedTxid, network)
+    : (isTestnet ? "https://testnet.zcashblockexplorer.com" : "https://zcashblockexplorer.com");
 
   return (
     <div
@@ -210,9 +216,19 @@ export default function PaymentModal({
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-black text-[#1A1816]">
-                Shielded Settlement Invoice
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-base sm:text-lg font-black text-[#1A1816]">
+                  Shielded Settlement Invoice
+                </h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold uppercase tracking-wider">
+                  🌲 Ironwood
+                </span>
+                {isTestnet && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold uppercase tracking-wider border border-amber-300">
+                    🧪 Testnet
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-[#66635F]">
                 ZIP-321 Direct Wallet-to-Wallet ZEC Settlement
               </p>
@@ -236,7 +252,7 @@ export default function PaymentModal({
             <div>
               <h4 className="text-2xl font-black text-[#1A1816]">Payment Confirmed!</h4>
               <p className="text-xs text-[#66635F] mt-1">
-                Settled on-chain via Zcash Shielded Note ({item.priceZec} ZEC)
+                Settled on-chain via Zcash Ironwood Shielded Note ({item.priceZec} ZEC • {isTestnet ? "Testnet" : "Mainnet"})
               </p>
             </div>
 

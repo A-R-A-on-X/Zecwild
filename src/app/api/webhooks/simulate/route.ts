@@ -4,7 +4,13 @@ import crypto from "crypto";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { memo, amountZat, amountZec, pool = "Orchard" } = body;
+    const {
+      memo,
+      amountZat,
+      amountZec,
+      pool = "Ironwood",
+      network = "mainnet",
+    } = body;
 
     if (!memo) {
       return NextResponse.json(
@@ -20,20 +26,22 @@ export async function POST(req: NextRequest) {
     const simulatedPayload = {
       event_id: `evt_sim_${timestamp}_${randomSuffix}`,
       event: "shielded_note.simulated",
+      network: network, // "mainnet" or "testnet"
       data: {
         note_id: Math.floor(Math.random() * 9000) + 1000,
         key_id: 1,
         txid: simulatedTxid,
         output_index: 0,
-        block_height: 4535432,
+        block_height: network === "testnet" ? 2840120 : 4535432,
         block_time: timestamp,
-        pool: pool,
+        pool: pool, // "Ironwood" (NU6.3), "Orchard", or "Sapling"
         amount_zat: Number(amountZat) || 100000000,
         amount_zec: Number(amountZec) || 1.0,
         transfer_type: "incoming",
         memo: memo,
         is_simulated: true,
         verification_status: "simulated",
+        network: network,
       },
       timestamp: timestamp,
     };

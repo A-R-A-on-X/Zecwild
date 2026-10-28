@@ -150,9 +150,13 @@ export default function Home() {
             <span>ZecShield Gateway Indexer (`zechack`)</span>
             <ExternalLink className="w-3 h-3 text-[#1A1816]" />
           </a>
+          <span className="text-[#949089] hidden sm:inline">•</span>
+          <span className="flex items-center space-x-1.5 text-[#D96522] font-semibold">
+            <span>🌲 Ironwood (NU6.3) & Testnet</span>
+          </span>
         </div>
         <p className="text-[11px] text-[#949089]">
-          ZecWild MVP — Shielded Zcash Sealed-Bid Auctions & Open Marketplace
+          ZecWild MVP — Shielded Zcash Sealed-Bid Auctions & Open Marketplace • Mainnet & Testnet Support
         </p>
       </footer>
 

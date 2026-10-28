@@ -19,7 +19,7 @@ import {
   FileText,
   Trophy,
 } from "lucide-react";
-import { formatAddress } from "@/lib/crypto/zcash";
+import { formatAddress, getBlockExplorerUrl } from "@/lib/crypto/zcash";
 import { getActiveProfile } from "@/lib/crypto/identity";
 
 interface ActivityViewProps {
@@ -497,7 +497,8 @@ export default function ActivityView({
 
           <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
             {logs.map((log) => {
-              const explorerUrl = `https://zcashblockexplorer.com/transactions/${log.txid}`;
+              const isTestnet = log.memo?.includes("test") || profile.network === "testnet";
+              const explorerUrl = getBlockExplorerUrl(log.txid, isTestnet ? "testnet" : "mainnet");
               return (
                 <div
                   key={log.id}
@@ -535,7 +536,7 @@ export default function ActivityView({
                       </button>
                     </div>
                     <span className="text-emerald-700 font-bold">
-                      {log.amountZec} ZEC ({log.pool || "Orchard"})
+                      {log.amountZec} ZEC ({log.pool || "Ironwood"})
                     </span>
                   </div>
                   <div className="text-[11px] text-[#A7430B] font-bold truncate">

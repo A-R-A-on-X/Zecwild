@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
             data: {
               status: "SOLD",
               txid: txid || "simulated_shielded_txid",
-              pool: pool || "Orchard",
+              pool: pool || "Ironwood",
               paidAt: new Date(),
             },
           });
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
               data: {
                 status: "SETTLED_PAID",
                 txid: txid || "simulated_shielded_txid",
-                pool: pool || "Orchard",
+                pool: pool || "Ironwood",
                 paidAt: new Date(),
               },
             });
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
         eventId: event_id,
         txid: txid || "unknown_txid",
         outputIndex: typeof output_index === "number" ? output_index : null,
-        pool: pool || "Orchard",
+        pool: pool || "Ironwood",
         amountZat: String(amount_zat || "0"),
         amountZec: Number(amount_zec || 0),
         memo: incomingMemo,

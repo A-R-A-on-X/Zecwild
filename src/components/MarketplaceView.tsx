@@ -153,7 +153,14 @@ export default function MarketplaceView({
 
                 {/* Seller & Network Info */}
                 <div className="pt-2 flex items-center justify-between text-[11px] text-[#949089] font-mono">
-                  <span>Seller:</span>
+                  <span className="flex items-center space-x-1.5">
+                    <span>Seller:</span>
+                    {(item.sellerAddress?.startsWith("utest") || item.sellerAddress?.startsWith("ztestsapling")) && (
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold uppercase">
+                        Testnet
+                      </span>
+                    )}
+                  </span>
                   <span className="truncate max-w-[170px] text-[#66635F]">
                     {formatAddress(item.sellerAddress, 8, 6)}
                   </span>

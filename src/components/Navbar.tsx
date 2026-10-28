@@ -20,6 +20,8 @@ import {
   RotateCcw,
   ExternalLink,
   Info,
+  Globe,
+  Layers,
 } from "lucide-react";
 import {
   getActiveProfile,
@@ -32,8 +34,10 @@ import {
   deleteProfile,
   restoreDemoPersonas,
   getDeletedPersonaIds,
+  getActiveNetwork,
+  setActiveNetwork,
 } from "@/lib/crypto/identity";
-import { formatAddress, isShieldedAddress } from "@/lib/crypto/zcash";
+import { formatAddress, isShieldedAddress, ZecNetwork } from "@/lib/crypto/zcash";
 
 interface NavbarProps {
   activeTab: "marketplace" | "auctions" | "activity";
@@ -50,6 +54,7 @@ export default function Navbar({
 }: NavbarProps) {
   const [profile, setProfile] = useState<ShieldedProfile>(DEFAULT_DEMO_PERSONAS[0]);
   const [allProfiles, setAllProfiles] = useState<ShieldedProfile[]>([]);
+  const [activeNetwork, setActiveNetworkState] = useState<ZecNetwork>("mainnet");
   const [hasDeletedDemos, setHasDeletedDemos] = useState(false);
   const [personaDropdownOpen, setPersonaDropdownOpen] = useState(false);
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
@@ -67,6 +72,7 @@ export default function Navbar({
     setProfile(getActiveProfile());
     setAllProfiles(getAllProfiles());
     setHasDeletedDemos(getDeletedPersonaIds().length > 0);
+    setActiveNetworkState(getActiveNetwork());
   };
 
   useEffect(() => {
@@ -78,8 +84,18 @@ export default function Navbar({
         setHasDeletedDemos(getDeletedPersonaIds().length > 0);
       }
     };
+    const netHandler = (e: any) => {
+      if (e.detail) {
+        setActiveNetworkState(e.detail);
+      }
+    };
+
     window.addEventListener("zecwild_profile_changed", handler);
-    return () => window.removeEventListener("zecwild_profile_changed", handler);
+    window.addEventListener("zecwild_network_changed", netHandler);
+    return () => {
+      window.removeEventListener("zecwild_profile_changed", handler);
+      window.removeEventListener("zecwild_network_changed", netHandler);
+    };
   }, []);
 
   // Close dropdowns on outside click or Escape key
@@ -109,9 +125,25 @@ export default function Navbar({
     };
   }, []);
 
+  const handleNetworkChange = (newNet: ZecNetwork) => {
+    setActiveNetwork(newNet);
+    setActiveNetworkState(newNet);
+
+    // Switch to appropriate persona matching the network if current doesn't match
+    const profiles = getAllProfiles();
+    const matching = profiles.find((p) => p.network === newNet);
+    if (matching && profile.network !== newNet) {
+      selectPersona(matching);
+    }
+  };
+
   const selectPersona = (p: ShieldedProfile) => {
     setActiveProfile(p);
     setProfile(p);
+    if (p.network && p.network !== activeNetwork) {
+      setActiveNetwork(p.network);
+      setActiveNetworkState(p.network);
+    }
     setPersonaDropdownOpen(false);
     setMobileMenuOpen(false);
   };
@@ -126,7 +158,7 @@ export default function Navbar({
     e.preventDefault();
     setCustomError(null);
     if (!customAddress || !isShieldedAddress(customAddress)) {
-      setCustomError("Enter a valid Orchard (u1...) or Sapling (zs1...) shielded address.");
+      setCustomError("Enter a valid Orchard/Ironwood (u1..., utest1...) or Sapling (zs1..., ztestsapling1...) address.");
       return;
     }
     const newProf = addCustomProfile(customName || "My Shielded Wallet", customAddress);
@@ -139,7 +171,7 @@ export default function Navbar({
   };
 
   const handleGenerateRandom = () => {
-    const fresh = generateRandomShieldedProfile("Shielded Test User");
+    const fresh = generateRandomShieldedProfile("Shielded Test User", activeNetwork);
     setProfile(fresh);
     reloadProfiles();
     setShowAddCustom(false);
@@ -180,7 +212,10 @@ export default function Navbar({
             <div className="flex items-center space-x-2">
               <span className="text-xl font-black tracking-tight text-[#1A1816]">ZecWild</span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#C85A17] border border-[#C85A17]/25 tracking-wide uppercase">
-                Shielded ZEC
+                {activeNetwork === "testnet" ? "Testnet" : "Mainnet"}
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 tracking-wide uppercase hidden sm:inline-flex">
+                🌲 Ironwood
               </span>
             </div>
             <p className="text-[11px] text-[#66635F] font-medium tracking-wide">
@@ -189,7 +224,7 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Center Pill Segmented Navigation (Inspired by [Rent] [Buy] [Sell] in Image 1) */}
+        {/* Center Pill Segmented Navigation */}
         <nav className="hidden md:flex items-center space-x-1.5 bg-[#EAE9E4] p-1.5 rounded-full border border-black/[0.04]">
           <button
             onClick={() => setActiveTab("marketplace")}
@@ -241,11 +276,37 @@ export default function Navbar({
         </nav>
 
         {/* Right Action Cluster */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
+          {/* Network Switcher Toggle Pill */}
+          <div className="flex items-center space-x-1 bg-[#EAE9E4] p-1 rounded-full border border-black/[0.04]">
+            <button
+              onClick={() => handleNetworkChange("mainnet")}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+                activeNetwork === "mainnet"
+                  ? "bg-white text-[#1A1816] shadow-xs"
+                  : "text-[#66635F] hover:text-[#1A1816]"
+              }`}
+              title="Zcash Mainnet"
+            >
+              Mainnet
+            </button>
+            <button
+              onClick={() => handleNetworkChange("testnet")}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all ${
+                activeNetwork === "testnet"
+                  ? "bg-[#FCEFE7] text-[#A7430B] border border-[#D96522]/30 shadow-xs"
+                  : "text-[#66635F] hover:text-[#1A1816]"
+              }`}
+              title="Zcash Testnet (utest1 / ztestsapling1)"
+            >
+              🧪 Testnet
+            </button>
+          </div>
+
           {/* Indexer Testbed Button */}
           <button
             onClick={openSimulatorModal}
-            className="hidden sm:flex items-center space-x-2 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill transition-all"
+            className="hidden lg:flex items-center space-x-2 px-3.5 py-2 rounded-full text-xs font-bold btn-orange-pill transition-all"
             title="Launch the zechack indexer webhook testbed"
           >
             <Zap className="w-3.5 h-3.5 text-[#D96522]" />
@@ -256,7 +317,7 @@ export default function Navbar({
           <div ref={createRef} className="relative">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-sm"
+              className="flex items-center space-x-1.5 sm:space-x-2 px-3.5 sm:px-4 py-2 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-sm"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Create</span>
@@ -304,10 +365,16 @@ export default function Navbar({
           <div ref={personaRef} className="relative">
             <button
               onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
-              className="flex items-center space-x-2.5 px-3.5 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
+              className="flex items-center space-x-2 px-3 py-2 rounded-full text-xs font-mono bg-white border border-black/[0.08] hover:border-[#D96522]/40 shadow-sm transition-all"
             >
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-[#1A1816] max-w-[110px] truncate">{profile.name}</span>
+              <div
+                className={`w-2.5 h-2.5 rounded-full ${
+                  profile.network === "testnet" ? "bg-amber-500 animate-pulse" : "bg-emerald-500 animate-pulse"
+                }`}
+              />
+              <span className="font-bold text-[#1A1816] max-w-[90px] sm:max-w-[120px] truncate">
+                {profile.name}
+              </span>
               <ChevronDown className="w-3.5 h-3.5 text-[#949089]" />
             </button>
 
@@ -320,9 +387,14 @@ export default function Navbar({
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Active Identity</span>
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
-                      {profile.addressType}
-                    </span>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
+                        🌲 {profile.addressType}
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-200 text-stone-700 font-mono font-bold uppercase">
+                        {profile.network || "mainnet"}
+                      </span>
+                    </div>
                   </div>
                   <div className="font-bold text-sm text-[#1A1816]">{profile.name}</div>
                   <div className="flex items-center justify-between text-[#66635F] pt-1 border-t border-black/[0.04]">
@@ -343,11 +415,11 @@ export default function Navbar({
                   </div>
                 </div>
 
-                {/* Device-Bound Identity Info Notice */}
+                {/* Ironwood & Testnet Status Notice */}
                 <div className="p-3 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/20 text-[11px] text-[#A7430B] flex items-start space-x-2">
                   <Shield className="w-4 h-4 text-[#D96522] flex-shrink-0 mt-0.5" />
                   <span className="leading-relaxed">
-                    <strong>Zero Impersonation:</strong> Actions are authenticated by your browser's local WebCrypto keypair. Never share spending or viewing keys.
+                    <strong>Ironwood (NU6.3) Activated:</strong> Fully compatible with Ironwood Unified receivers and Sapling notes across Mainnet and Testnet.
                   </span>
                 </div>
 
@@ -359,7 +431,7 @@ export default function Navbar({
                         ⚡ Demo Personas
                       </span>
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 max-h-48 overflow-y-auto">
                       {demoList.map((p) => (
                         <div
                           key={p.id}
@@ -375,6 +447,9 @@ export default function Navbar({
                               <span>{p.name}</span>
                               <span className="text-[9px] px-1.5 py-0.2 rounded bg-stone-200 text-stone-700 font-mono">
                                 {p.addressType}
+                              </span>
+                              <span className="text-[9px] px-1 rounded bg-[#EAE9E4] text-[#66635F] uppercase font-mono font-bold">
+                                {p.network}
                               </span>
                             </div>
                             <div className="font-mono text-[10px] text-[#66635F] truncate">
@@ -417,7 +492,10 @@ export default function Navbar({
                           }`}
                         >
                           <div className="truncate max-w-[200px]">
-                            <div className="font-bold text-[#1A1816]">{p.name}</div>
+                            <div className="font-bold text-[#1A1816] flex items-center space-x-1">
+                              <span>{p.name}</span>
+                              <span className="text-[9px] uppercase font-mono text-[#949089]">({p.network})</span>
+                            </div>
                             <div className="font-mono text-[10px] text-[#66635F] truncate">
                               {formatAddress(p.address, 8, 6)}
                             </div>
@@ -457,7 +535,7 @@ export default function Navbar({
                 <div className="pt-2 border-t border-black/[0.06] space-y-2">
                   {showAddCustom ? (
                     <form onSubmit={handleConnectCustom} className="space-y-2.5">
-                      <div className="text-xs font-bold text-[#1A1816]">Connect Custom Shielded Address</div>
+                      <div className="text-xs font-bold text-[#1A1816]">Connect Shielded Address (Mainnet or Testnet)</div>
                       {customError && (
                         <div className="text-[10px] text-rose-700 bg-rose-50 p-2 rounded-xl border border-rose-200">
                           {customError}
@@ -475,7 +553,7 @@ export default function Navbar({
                       <div>
                         <input
                           type="text"
-                          placeholder="Orchard (u1...) or Sapling (zs1...)"
+                          placeholder="Mainnet (u1... / zs1...) or Testnet (utest1... / ztestsapling1...)"
                           value={customAddress}
                           onChange={(e) => setCustomAddress(e.target.value)}
                           className="w-full px-3 py-2 rounded-xl bg-[#F8F7F4] border border-black/[0.08] text-xs font-mono text-[#1A1816] placeholder-[#949089] focus:outline-none focus:border-[#D96522]"
@@ -516,10 +594,10 @@ export default function Navbar({
                         type="button"
                         onClick={handleGenerateRandom}
                         className="py-2.5 px-3 rounded-2xl border border-dashed border-stone-300 hover:border-[#D96522] hover:bg-stone-50 text-[#1A1816] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
-                        title="Generate a random shielded Orchard identity"
+                        title={`Generate a random ${activeNetwork} Ironwood identity`}
                       >
                         <Sparkles className="w-3.5 h-3.5 text-[#D96522]" />
-                        <span>New Identity</span>
+                        <span>New {activeNetwork === "testnet" ? "Testnet" : "Mainnet"}</span>
                       </button>
                     </div>
                   )}
@@ -538,9 +616,32 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation (Portrait / Landscape responsiveness) */}
+      {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-black/[0.06] bg-white px-4 py-4 space-y-2 animate-in slide-in-from-top-2">
+          {/* Mobile Network Selector */}
+          <div className="flex items-center justify-between p-2 rounded-xl bg-[#F8F7F4] mb-2">
+            <span className="text-xs font-bold text-[#1A1816]">Network:</span>
+            <div className="flex space-x-1">
+              <button
+                onClick={() => handleNetworkChange("mainnet")}
+                className={`px-3 py-1 rounded-lg text-xs font-bold ${
+                  activeNetwork === "mainnet" ? "bg-[#D96522] text-white" : "bg-stone-200 text-[#66635F]"
+                }`}
+              >
+                Mainnet
+              </button>
+              <button
+                onClick={() => handleNetworkChange("testnet")}
+                className={`px-3 py-1 rounded-lg text-xs font-bold ${
+                  activeNetwork === "testnet" ? "bg-[#D96522] text-white" : "bg-stone-200 text-[#66635F]"
+                }`}
+              >
+                Testnet
+              </button>
+            </div>
+          </div>
+
           <button
             onClick={() => {
               setActiveTab("marketplace");
@@ -590,30 +691,6 @@ export default function Navbar({
             <Zap className="w-4 h-4 text-[#D96522]" />
             <span>Webhook Testbed</span>
           </button>
-
-          {/* Persona Deletion row in mobile menu */}
-          <div className="pt-2 border-t border-black/[0.06] space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#949089]">
-              Switch / Delete Persona:
-            </div>
-            {allProfiles.map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center justify-between p-2 rounded-xl text-xs bg-[#F8F7F4]"
-              >
-                <div onClick={() => selectPersona(p)} className="flex-1 cursor-pointer font-bold">
-                  {p.name}
-                </div>
-                <button
-                  onClick={(e) => handleDeleteProfile(e, p.id)}
-                  className="p-1 text-rose-600 hover:text-rose-800"
-                  title="Delete persona"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
       )}
     </header>

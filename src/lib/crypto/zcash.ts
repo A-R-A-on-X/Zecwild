@@ -6,6 +6,9 @@ import QRCode from "qrcode";
  */
 export const ZATOSHIS_PER_ZEC = BigInt(100_000_000);
 
+export type ZecNetwork = "mainnet" | "testnet";
+export type ShieldedPool = "Ironwood" | "Orchard" | "Sapling";
+
 /**
  * Convert ZEC float or string to exact Zatoshis string
  * Guarantees no floating-point rounding errors
@@ -14,7 +17,7 @@ export function zecToZat(zec: number | string): string {
   const zecStr = typeof zec === "number" ? zec.toFixed(8) : zec;
   const parts = zecStr.split(".");
   const whole = BigInt(parts[0] || "0");
-  let fracStr = (parts[1] || "").slice(0, 8).padEnd(8, "0");
+  const fracStr = (parts[1] || "").slice(0, 8).padEnd(8, "0");
   const frac = BigInt(fracStr);
   return (whole * ZATOSHIS_PER_ZEC + frac).toString();
 }
@@ -31,23 +34,105 @@ export function zatToZec(zat: string | bigint): number {
 
 /**
  * Validate Zcash Shielded Addresses
- * - Orchard Unified: starts with "u1", typically 140+ characters
- * - Sapling: starts with "zs1", exactly 78 characters
+ * - Mainnet Unified (Ironwood / Orchard): starts with "u1", 80+ chars
+ * - Testnet Unified (Ironwood / Orchard): starts with "utest1", 80+ chars
+ * - Mainnet Sapling: starts with "zs1", exactly 78 chars
+ * - Testnet Sapling: starts with "ztestsapling1", 78+ chars
  */
 export function isShieldedAddress(address: string): boolean {
   if (!address || typeof address !== "string") return false;
   const trimmed = address.trim();
+
+  // Mainnet
   if (trimmed.startsWith("u1") && trimmed.length >= 80) return true;
   if (trimmed.startsWith("zs1") && trimmed.length === 78) return true;
+
+  // Testnet
+  if (trimmed.startsWith("utest1") && trimmed.length >= 80) return true;
+  if (trimmed.startsWith("ztestsapling1") && trimmed.length >= 78) return true;
+
   return false;
 }
 
-export function getAddressType(address: string): "Orchard" | "Sapling" | "Transparent" | "Invalid" {
-  if (!address || typeof address !== "string") return "Invalid";
+export function detectNetwork(address: string): ZecNetwork {
+  if (!address || typeof address !== "string") return "mainnet";
   const trimmed = address.trim();
-  if (trimmed.startsWith("u1")) return "Orchard";
-  if (trimmed.startsWith("zs1")) return "Sapling";
-  if (trimmed.startsWith("t1") || trimmed.startsWith("t3")) return "Transparent";
+  if (
+    trimmed.startsWith("utest1") ||
+    trimmed.startsWith("ztestsapling1") ||
+    trimmed.startsWith("tm") ||
+    trimmed.startsWith("t2")
+  ) {
+    return "testnet";
+  }
+  return "mainnet";
+}
+
+export function getAddressDetails(address: string): {
+  network: ZecNetwork;
+  pool: "Ironwood/Orchard" | "Sapling" | "Transparent" | "Invalid";
+  isShielded: boolean;
+  poolLabel: string;
+} {
+  if (!address || typeof address !== "string") {
+    return {
+      network: "mainnet",
+      pool: "Invalid",
+      isShielded: false,
+      poolLabel: "Invalid Address",
+    };
+  }
+
+  const trimmed = address.trim();
+  const network = detectNetwork(trimmed);
+
+  if (trimmed.startsWith("u1") || trimmed.startsWith("utest1")) {
+    return {
+      network,
+      pool: "Ironwood/Orchard",
+      isShielded: true,
+      poolLabel: network === "testnet" ? "Testnet Unified (Ironwood)" : "Unified (Ironwood / NU6.3)",
+    };
+  }
+
+  if (trimmed.startsWith("zs1") || trimmed.startsWith("ztestsapling1")) {
+    return {
+      network,
+      pool: "Sapling",
+      isShielded: true,
+      poolLabel: network === "testnet" ? "Testnet Sapling" : "Sapling Shielded",
+    };
+  }
+
+  if (
+    trimmed.startsWith("t1") ||
+    trimmed.startsWith("t3") ||
+    trimmed.startsWith("tm") ||
+    trimmed.startsWith("t2")
+  ) {
+    return {
+      network,
+      pool: "Transparent",
+      isShielded: false,
+      poolLabel: network === "testnet" ? "Testnet Transparent" : "Transparent (Public)",
+    };
+  }
+
+  return {
+    network,
+    pool: "Invalid",
+    isShielded: false,
+    poolLabel: "Invalid Address",
+  };
+}
+
+export function getAddressType(
+  address: string
+): "Ironwood" | "Orchard" | "Sapling" | "Transparent" | "Invalid" {
+  const details = getAddressDetails(address);
+  if (details.pool === "Ironwood/Orchard") return "Ironwood";
+  if (details.pool === "Sapling") return "Sapling";
+  if (details.pool === "Transparent") return "Transparent";
   return "Invalid";
 }
 
@@ -55,6 +140,19 @@ export function formatAddress(address: string, start = 8, end = 6): string {
   if (!address) return "";
   if (address.length <= start + end) return address;
   return `${address.slice(0, start)}...${address.slice(-end)}`;
+}
+
+/**
+ * Return appropriate Block Explorer URL for Mainnet vs Testnet
+ */
+export function getBlockExplorerUrl(txid?: string | null, network: ZecNetwork = "mainnet"): string {
+  const isTest = network === "testnet";
+  const baseUrl = isTest
+    ? "https://testnet.zcashblockexplorer.com"
+    : "https://zcashblockexplorer.com";
+
+  if (!txid) return baseUrl;
+  return `${baseUrl}/transactions/${txid}`;
 }
 
 /**
@@ -74,7 +172,6 @@ export function generateZip321Uri({
   const params = new URLSearchParams();
   params.set("amount", amountZec.toFixed(8).replace(/\.?0+$/, ""));
   if (memo) {
-    // Standard ZIP-321 memo encoding: base64url or plain string
     params.set("memo", Buffer.from(memo, "utf8").toString("base64url"));
   }
   return `zcash:${cleanAddress}?${params.toString()}`;
@@ -89,7 +186,7 @@ export async function generateQrDataUrl(text: string): Promise<string> {
     margin: 2,
     width: 280,
     color: {
-      dark: "#050811",
+      dark: "#1A1816",
       light: "#ffffff",
     },
   });
@@ -99,31 +196,17 @@ export async function generateQrDataUrl(text: string): Promise<string> {
  * Generate a cryptographically secure single-use invoice memo
  * Format: ZECWILD:V1:<random_16_hex>
  */
-export function generateInvoiceMemo(prefix = "ZECWILD:V1"): string {
-  const randomBytes = new Uint8Array(8);
+export function generateInvoiceMemo(prefix = "inv"): string {
+  const bytes = new Uint8Array(8);
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-    crypto.getRandomValues(randomBytes);
+    crypto.getRandomValues(bytes);
   } else {
-    // Fallback for Node environments without global crypto
-    const nodeCrypto = require("crypto");
-    const buf = nodeCrypto.randomBytes(8);
-    return `${prefix}:${buf.toString("hex")}`;
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = Math.floor(Math.random() * 256);
+    }
   }
-  const hex = Array.from(randomBytes)
+  const hex = Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  return `${prefix}:${hex}`;
-}
-
-/**
- * Parse an invoice memo and extract the clean invoice ID
- */
-export function parseInvoiceMemo(memo: string): { valid: boolean; invoiceId?: string } {
-  if (!memo || typeof memo !== "string") return { valid: false };
-  const trimmed = memo.trim();
-  const match = trimmed.match(/^ZECWILD:V1:([a-zA-Z0-9_-]+)/);
-  if (match) {
-    return { valid: true, invoiceId: match[1] };
-  }
-  return { valid: false };
+  return `ZECWILD:V1:${prefix}_${hex}`;
 }

@@ -2,42 +2,58 @@
  * Shielded Zcash Identity & Session Vault
  * Privacy-preserving client-side session management.
  * Stores keys locally in browser storage without transmitting private keys to any server.
+ * Supports Mainnet, Testnet, and Ironwood (NU6.3) / Sapling pools.
  */
+
+import { detectNetwork, getAddressDetails, ZecNetwork, ShieldedPool } from "./zcash";
 
 export interface ShieldedProfile {
   id: string;
   name: string;
-  address: string; // Orchard (u1...) or Sapling (zs1...)
-  addressType: "Orchard" | "Sapling";
+  address: string; // Orchard/Ironwood (u1..., utest1...) or Sapling (zs1..., ztestsapling1...)
+  addressType: "Ironwood" | "Orchard" | "Sapling";
+  network: ZecNetwork;
   isDemo?: boolean;
   identityPubkey?: string; // Client-side device-bound public key for impersonation resistance
   createdAt?: number;
 }
 
-// Pre-seeded Demo Personas for instant hackathon evaluation and video demos
+// Pre-seeded Demo Personas for instant Mainnet and Testnet evaluation
 export const DEFAULT_DEMO_PERSONAS: ShieldedProfile[] = [
   {
     id: "persona_alice_seller",
-    name: "Alice (Seller)",
+    name: "Alice (Seller - Ironwood Mainnet)",
     address:
       "u1zrqm2vh87r6w998v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829f2",
-    addressType: "Orchard",
+    addressType: "Ironwood",
+    network: "mainnet",
     isDemo: true,
   },
   {
-    id: "persona_bob_bidder",
-    name: "Bob (High Bidder)",
+    id: "persona_bob_testnet",
+    name: "Bob (Bidder - Ironwood Testnet)",
     address:
-      "u1zk3e5vh77r6w888v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829bb",
-    addressType: "Orchard",
+      "utest1zk3e5vh77r6w888v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829bb",
+    addressType: "Ironwood",
+    network: "testnet",
     isDemo: true,
   },
   {
     id: "persona_charlie_buyer",
-    name: "Charlie (Market Buyer)",
+    name: "Charlie (Buyer - Sapling Mainnet)",
     address:
-      "u1zp994vh99r6w777v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829cc",
-    addressType: "Orchard",
+      "zs1zp994vh99r6w777v5y9e54a9x64lq438yqf6399080hwr5tq0j9zfx070y9j3x4f707y727p3q2y52q74j2k7y69yq9829cc",
+    addressType: "Sapling",
+    network: "mainnet",
+    isDemo: true,
+  },
+  {
+    id: "persona_dana_testnet",
+    name: "Dana (Buyer - Sapling Testnet)",
+    address:
+      "ztestsapling1076f8e4e7e6f9829df739a82e7492c8e90726f5e82719a84e629f738a92e8471927492a83f982a",
+    addressType: "Sapling",
+    network: "testnet",
     isDemo: true,
   },
 ];
@@ -46,7 +62,28 @@ const STORAGE_KEY_PROFILE = "zecwild_active_profile";
 const STORAGE_KEY_CUSTOM_PROFILES = "zecwild_custom_profiles";
 const STORAGE_KEY_DELETED_PERSONAS = "zecwild_deleted_personas";
 const STORAGE_KEY_AUCTION_KEYS = "zecwild_auction_private_keys";
-const STORAGE_KEY_IDENTITY_KEYS = "zecwild_device_identity_keys";
+const STORAGE_KEY_NETWORK = "zecwild_active_network";
+
+export function getActiveNetwork(): ZecNetwork {
+  if (typeof window === "undefined") return "mainnet";
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_NETWORK);
+    if (stored === "testnet" || stored === "mainnet") return stored;
+  } catch (e) {
+    console.error("Failed to read active network:", e);
+  }
+  return "mainnet";
+}
+
+export function setActiveNetwork(network: ZecNetwork): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(STORAGE_KEY_NETWORK, network);
+    window.dispatchEvent(new CustomEvent("zecwild_network_changed", { detail: network }));
+  } catch (e) {
+    console.error("Failed to save active network:", e);
+  }
+}
 
 export function getDeletedPersonaIds(): string[] {
   if (typeof window === "undefined") return [];
@@ -79,12 +116,16 @@ export function getAllProfiles(): ShieldedProfile[] {
 
 export function addCustomProfile(name: string, address: string): ShieldedProfile {
   const cleanAddr = address.trim();
-  const addressType = cleanAddr.startsWith("u1") ? "Orchard" : "Sapling";
+  const details = getAddressDetails(cleanAddr);
+  const addressType: "Ironwood" | "Orchard" | "Sapling" =
+    details.pool === "Sapling" ? "Sapling" : "Ironwood";
+
   const newProfile: ShieldedProfile = {
     id: `custom_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-    name: name.trim() || `User (${cleanAddr.slice(0, 6)}...)`,
+    name: name.trim() || `User (${cleanAddr.slice(0, 8)}...)`,
     address: cleanAddr,
     addressType,
+    network: details.network,
     isDemo: false,
     createdAt: Date.now(),
   };
@@ -99,17 +140,27 @@ export function addCustomProfile(name: string, address: string): ShieldedProfile
   return newProfile;
 }
 
-export function generateRandomShieldedProfile(name = "Shielded User"): ShieldedProfile {
+export function generateRandomShieldedProfile(
+  name = "Shielded User",
+  network: ZecNetwork = "mainnet"
+): ShieldedProfile {
   const bytes = new Uint8Array(65);
   if (typeof crypto !== "undefined" && crypto.getRandomValues) {
     crypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = Math.floor(Math.random() * 256);
+    }
   }
   const hex = Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  const address = `u1${hex}`;
 
-  return addCustomProfile(name, address);
+  // Testnet vs Mainnet Unified Ironwood Address prefix
+  const prefix = network === "testnet" ? "utest1" : "u1";
+  const address = `${prefix}${hex}`;
+
+  return addCustomProfile(`${name} (${network === "testnet" ? "Testnet" : "Mainnet"})`, address);
 }
 
 /**
@@ -118,37 +169,29 @@ export function generateRandomShieldedProfile(name = "Shielded User"): ShieldedP
 export function deleteProfile(id: string): void {
   if (typeof window === "undefined") return;
 
-  // 1. If it's a custom profile, remove from custom list
   const existingCustom = getCustomProfiles().filter((p) => p.id !== id);
   localStorage.setItem(STORAGE_KEY_CUSTOM_PROFILES, JSON.stringify(existingCustom));
 
-  // 2. Mark as deleted in deleted personas list
   const deleted = getDeletedPersonaIds();
   if (!deleted.includes(id)) {
     deleted.push(id);
     localStorage.setItem(STORAGE_KEY_DELETED_PERSONAS, JSON.stringify(deleted));
   }
 
-  // 3. If deleting active profile, switch to next available profile or create burner
   const current = getActiveProfile();
   if (current.id === id) {
     const remaining = getAllProfiles();
     if (remaining.length > 0) {
       setActiveProfile(remaining[0]);
     } else {
-      // Create a fresh default persona
       const fresh = generateRandomShieldedProfile("New Shielded User");
       setActiveProfile(fresh);
     }
   } else {
-    // Notify components of updated profile list
     window.dispatchEvent(new CustomEvent("zecwild_profile_changed", { detail: getActiveProfile() }));
   }
 }
 
-/**
- * Restore original demo personas
- */
 export function restoreDemoPersonas(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY_DELETED_PERSONAS);
@@ -186,9 +229,6 @@ export function setActiveProfile(profile: ShieldedProfile): void {
   }
 }
 
-/**
- * Save an auction's unsealing private key in the seller's browser vault
- */
 export function storeAuctionPrivateKey(auctionId: string, privateKeyBase64: string): void {
   if (typeof window === "undefined") return;
   try {
@@ -201,9 +241,6 @@ export function storeAuctionPrivateKey(auctionId: string, privateKeyBase64: stri
   }
 }
 
-/**
- * Retrieve an auction's unsealing private key
- */
 export function getAuctionPrivateKey(auctionId: string): string | null {
   if (typeof window === "undefined") return null;
   try {

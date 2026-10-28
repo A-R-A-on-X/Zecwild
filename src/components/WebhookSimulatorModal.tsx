@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Zap, RefreshCw, CheckCircle2, Shield, AlertCircle, ArrowRight } from "lucide-react";
+import { X, Zap, RefreshCw, CheckCircle2, Shield, AlertCircle, ArrowRight, Layers, Globe } from "lucide-react";
 import { formatAddress } from "@/lib/crypto/zcash";
 
 interface WebhookSimulatorModalProps {
@@ -17,6 +17,8 @@ export default function WebhookSimulatorModal({
 }: WebhookSimulatorModalProps) {
   const [pendingItems, setPendingItems] = useState<any[]>([]);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [selectedPool, setSelectedPool] = useState<"Ironwood" | "Orchard" | "Sapling">("Ironwood");
+  const [selectedNetwork, setSelectedNetwork] = useState<"testnet" | "mainnet">("testnet");
   const [isFiring, setIsFiring] = useState(false);
   const [responseLog, setResponseLog] = useState<any | null>(null);
 
@@ -105,7 +107,8 @@ export default function WebhookSimulatorModal({
           memo: selectedItem.memo,
           amountZat: selectedItem.amountZat,
           amountZec: selectedItem.amountZec,
-          pool: "Orchard",
+          pool: selectedPool,
+          network: selectedNetwork,
         }),
       });
 
@@ -129,7 +132,7 @@ export default function WebhookSimulatorModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl sm:max-w-2xl rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[90vh]"
+        className="relative w-full max-w-xl sm:max-w-2xl rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] space-y-4 text-left"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
@@ -138,14 +141,16 @@ export default function WebhookSimulatorModal({
               <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#1A1816] flex items-center space-x-2">
-                <span>ZecShield Gateway Testbed</span>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-base sm:text-lg font-bold text-[#1A1816]">
+                  ZecShield Gateway Testbed
+                </h3>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#A7430B] font-mono font-bold">
-                  Dev Mode
+                  Ironwood & Testnet Ready
                 </span>
-              </h3>
+              </div>
               <p className="text-xs text-[#66635F]">
-                Simulates incoming shielded note events from the zechack indexer
+                Simulates real-time shielded note events from the zechack indexer
               </p>
             </div>
           </div>
@@ -157,7 +162,89 @@ export default function WebhookSimulatorModal({
           </button>
         </div>
 
-        <div className="py-4 space-y-4">
+        {/* Network & Pool Configurations Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06]">
+          {/* Network Selector */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[#949089] flex items-center space-x-1">
+              <Globe className="w-3 h-3 text-[#D96522]" />
+              <span>Zcash Network</span>
+            </label>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={() => setSelectedNetwork("testnet")}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                  selectedNetwork === "testnet"
+                    ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B] shadow-xs"
+                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                }`}
+              >
+                🧪 Testnet
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedNetwork("mainnet")}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                  selectedNetwork === "mainnet"
+                    ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B] shadow-xs"
+                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                }`}
+              >
+                🔒 Mainnet
+              </button>
+            </div>
+          </div>
+
+          {/* Shielded Pool Selector (Ironwood / Orchard / Sapling) */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[#949089] flex items-center space-x-1">
+              <Layers className="w-3 h-3 text-[#D96522]" />
+              <span>Shielded Privacy Pool</span>
+            </label>
+            <div className="grid grid-cols-3 gap-1">
+              <button
+                type="button"
+                onClick={() => setSelectedPool("Ironwood")}
+                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                  selectedPool === "Ironwood"
+                    ? "bg-[#D96522] text-white shadow-xs"
+                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                }`}
+                title="Active NU6.3 shielded privacy pool with corrected circuit"
+              >
+                🌲 Ironwood
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedPool("Orchard")}
+                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                  selectedPool === "Orchard"
+                    ? "bg-[#D96522] text-white shadow-xs"
+                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                }`}
+                title="Legacy Orchard pool (Migration turnstile)"
+              >
+                Orchard
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedPool("Sapling")}
+                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                  selectedPool === "Sapling"
+                    ? "bg-[#D96522] text-white shadow-xs"
+                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                }`}
+                title="Sapling shielded pool"
+              >
+                Sapling
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Pending Invoices */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-[#1A1816] uppercase tracking-wider">
               Pending Shielded Invoices:
@@ -172,11 +259,11 @@ export default function WebhookSimulatorModal({
           </div>
 
           {pendingItems.length === 0 ? (
-            <div className="p-8 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs">
-              No pending listings or winning auctions currently awaiting payment.
+            <div className="p-6 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs">
+              No pending listings or winning auctions currently awaiting payment. Create a listing or declare an auction winner to test note settlement.
             </div>
           ) : (
-            <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {pendingItems.map((item) => (
                 <div
                   key={item.id}
@@ -216,12 +303,14 @@ export default function WebhookSimulatorModal({
             {isFiring ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Dispatching Webhook from Indexer...</span>
+                <span>Simulating Note on {selectedNetwork.toUpperCase()} ({selectedPool})...</span>
               </>
             ) : (
               <>
                 <Zap className="w-4 h-4" />
-                <span>Simulate Shielded Payment Confirmation</span>
+                <span>
+                  Simulate {selectedNetwork.toUpperCase()} {selectedPool} Note Confirmation
+                </span>
               </>
             )}
           </button>

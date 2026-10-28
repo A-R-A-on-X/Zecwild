@@ -65,7 +65,7 @@ export default function PlaceBidModal({
     }
 
     if (!bidderAddress || !isShieldedAddress(bidderAddress)) {
-      setError("A valid shielded address (Orchard u1... or Sapling zs1...) is required.");
+      setError("A valid shielded address (Mainnet u1... / zs1... or Testnet utest1... / ztestsapling1...) is required.");
       return;
     }
 
@@ -217,14 +217,19 @@ export default function PlaceBidModal({
 
             {/* Bidder Shielded Address */}
             <div>
-              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
-                Your Shielded Zcash Address (Orchard / Sapling)
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider">
+                  Your Shielded Zcash Address
+                </label>
+                <span className="text-[10px] text-[#A7430B] font-bold">
+                  🌲 Ironwood / Sapling
+                </span>
+              </div>
               <input
                 type="text"
                 value={bidderAddress}
                 onChange={(e) => setBidderAddress(e.target.value)}
-                placeholder="u1... or zs1..."
+                placeholder="u1... / zs1... (Mainnet) or utest1... / ztestsapling1... (Testnet)"
                 className="w-full px-4 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] font-mono text-xs focus:outline-none focus:border-[#D96522]"
                 required
               />

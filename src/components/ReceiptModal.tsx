@@ -17,7 +17,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { formatAddress } from "@/lib/crypto/zcash";
+import { formatAddress, detectNetwork, getBlockExplorerUrl } from "@/lib/crypto/zcash";
 
 interface ReceiptModalProps {
   isOpen: boolean;
@@ -78,7 +78,7 @@ export default function ReceiptModal({
             invoiceMemo: record.invoiceMemo,
             txid: record.txid,
             paidAt: record.paidAt,
-            pool: record.pool || "Orchard",
+            pool: record.pool || "Ironwood",
             secretPayload: record.secretPayload,
             shippingStatus: record.shippingStatus,
             shippingTracking: record.shippingTracking,
@@ -113,6 +113,9 @@ export default function ReceiptModal({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const detectedNetwork = detectNetwork(item.sellerAddress || item.winnerAddress || "");
+  const isTestnet = detectedNetwork === "testnet";
+
   const handleDownloadJson = () => {
     const dataStr =
       "data:text/json;charset=utf-8," +
@@ -128,7 +131,8 @@ export default function ReceiptModal({
             item_type: item.itemType,
             amount_zec: item.priceZec,
             amount_zatoshis: item.priceZat,
-            settlement_pool: item.pool || "Orchard",
+            settlement_network: detectedNetwork,
+            settlement_pool: item.pool || "Ironwood (NU6.3)",
             transaction_id: item.txid,
             settled_at: item.paidAt,
             invoice_memo: item.invoiceMemo,
@@ -157,8 +161,8 @@ export default function ReceiptModal({
     : "Settled On-Chain";
 
   const explorerUrl = item.txid
-    ? `https://zcashblockexplorer.com/transactions/${item.txid}`
-    : `https://zcashblockexplorer.com`;
+    ? getBlockExplorerUrl(item.txid, detectedNetwork)
+    : (isTestnet ? "https://testnet.zcashblockexplorer.com" : "https://zcashblockexplorer.com");
 
   return (
     <div
@@ -185,6 +189,11 @@ export default function ReceiptModal({
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold uppercase tracking-wider">
                   Verified
                 </span>
+                {isTestnet && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold uppercase tracking-wider border border-amber-300">
+                    🧪 Testnet
+                  </span>
+                )}
               </div>
               <p className="text-xs text-[#66635F]">
                 Zcash Peer-to-Peer Settlement Confirmed by ZecShield Indexer
@@ -375,11 +384,16 @@ export default function ReceiptModal({
           {/* Settlement Pool */}
           <div className="p-3 sm:p-3.5 flex items-center justify-between">
             <span className="text-[#949089] font-bold uppercase tracking-wider text-[10px]">
-              Shielded Pool
+              Shielded Pool & Network
             </span>
-            <span className="font-mono text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              {item.pool || "Orchard"} Note (Zero-Knowledge)
-            </span>
+            <div className="flex items-center space-x-2">
+              <span className="font-mono text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                {item.pool === "Ironwood" || !item.pool ? "🌲 Ironwood (NU6.3)" : `${item.pool} Note`}
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isTestnet ? "bg-amber-50 text-amber-800 border-amber-200" : "bg-stone-100 text-stone-700 border-stone-200"}`}>
+                {isTestnet ? "🧪 Testnet" : "Mainnet"}
+              </span>
+            </div>
           </div>
 
           {/* Payout Recipient */}

@@ -180,11 +180,11 @@ export default function HeroShowcase({
           <div className="mt-2">
             <div className="text-sm sm:text-base font-bold text-emerald-800 flex items-center space-x-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-              <span>zechack Connected</span>
+              <span>zechack: Ironwood Ready</span>
               <ExternalLink className="w-3 h-3 text-emerald-600 opacity-60 group-hover:opacity-100" />
             </div>
             <div className="text-[11px] text-[#66635F] mt-0.5 truncate font-mono">
-              Click to launch testbed
+              Mainnet & Testnet Simulator
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function HeroShowcase({
           <div className="lg:col-span-7 space-y-4">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#FCEFE7] border border-[#D96522]/20 text-[#A7430B] text-xs font-bold">
               <Shield className="w-4 h-4 text-[#D96522]" />
-              <span>Shielded Zcash • Zero Platform Custody</span>
+              <span>Shielded Zcash • Ironwood (NU6.3) & Testnet Ready</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1A1816] tracking-tight leading-[1.15]">
@@ -211,7 +211,7 @@ export default function HeroShowcase({
             </h1>
 
             <p className="text-sm sm:text-base text-[#66635F] leading-relaxed max-w-xl">
-              Bid in sealed auctions without information leakage, or buy items instantly with direct wallet-to-wallet shielded ZEC transactions. All payments verified on-chain by the <strong>ZecShield Gateway</strong> indexer.
+              Bid in sealed auctions without information leakage, or buy items instantly with direct wallet-to-wallet shielded ZEC transactions across Ironwood (NU6.3) and Sapling pools. All payments verified on-chain by the <strong>ZecShield Gateway</strong> indexer.
             </p>
 
             {/* Quick Feature Buttons */}
