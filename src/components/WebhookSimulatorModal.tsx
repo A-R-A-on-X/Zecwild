@@ -133,52 +133,52 @@ export default function WebhookSimulatorModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl sm:max-w-2xl rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] space-y-4 text-left"
+        className="relative w-full max-w-xl sm:max-w-2xl rounded-2xl bg-white border border-slate-200 p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] space-y-4 text-left"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FCEFE7] text-[#D96522] flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[#EEF4FF] text-[#094ae0] flex items-center justify-center shadow-xs">
               <Zap className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-base sm:text-lg font-bold text-[#1A1816]">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">
                   ZecShield Gateway Testbed
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FCEFE7] text-[#A7430B] font-mono font-bold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EEF4FF] text-[#094ae0] font-mono font-bold">
                   Ironwood & Testnet Ready
                 </span>
               </div>
-              <p className="text-xs text-[#66635F]">
+              <p className="text-xs text-slate-500">
                 Simulates real-time shielded note events from the zechack indexer
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-[#949089] hover:text-[#1A1816] hover:bg-black/[0.04] transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Network & Pool Configurations Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
           {/* Network Selector */}
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-[#949089] flex items-center space-x-1">
-              <Globe className="w-3 h-3 text-[#D96522]" />
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1">
+              <Globe className="w-3 h-3 text-[#094ae0]" />
               <span>Zcash Network</span>
             </label>
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 type="button"
                 onClick={() => setSelectedNetwork("testnet")}
-                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                   selectedNetwork === "testnet"
-                    ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B] shadow-xs"
-                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#EEF4FF] border border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
                 🧪 Testnet
@@ -186,10 +186,10 @@ export default function WebhookSimulatorModal({
               <button
                 type="button"
                 onClick={() => setSelectedNetwork("mainnet")}
-                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                   selectedNetwork === "mainnet"
-                    ? "bg-[#FCEFE7] border border-[#D96522]/30 text-[#A7430B] shadow-xs"
-                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#EEF4FF] border border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
                 🔒 Mainnet
@@ -199,18 +199,18 @@ export default function WebhookSimulatorModal({
 
           {/* Shielded Pool Selector (Ironwood / Orchard / Sapling) */}
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-[#949089] flex items-center space-x-1">
-              <Layers className="w-3 h-3 text-[#D96522]" />
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1">
+              <Layers className="w-3 h-3 text-[#094ae0]" />
               <span>Shielded Privacy Pool</span>
             </label>
             <div className="grid grid-cols-3 gap-1">
               <button
                 type="button"
                 onClick={() => setSelectedPool("Ironwood")}
-                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                className={`py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all ${
                   selectedPool === "Ironwood"
-                    ? "bg-[#D96522] text-white shadow-xs"
-                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#094ae0] text-white shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
                 title="Active NU6.3 shielded privacy pool with corrected circuit"
               >
@@ -219,10 +219,10 @@ export default function WebhookSimulatorModal({
               <button
                 type="button"
                 onClick={() => setSelectedPool("Orchard")}
-                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                className={`py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all ${
                   selectedPool === "Orchard"
-                    ? "bg-[#D96522] text-white shadow-xs"
-                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#094ae0] text-white shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
                 title="Legacy Orchard pool (Migration turnstile)"
               >
@@ -231,10 +231,10 @@ export default function WebhookSimulatorModal({
               <button
                 type="button"
                 onClick={() => setSelectedPool("Sapling")}
-                className={`py-1.5 px-2 rounded-xl text-[11px] font-bold transition-all ${
+                className={`py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all ${
                   selectedPool === "Sapling"
-                    ? "bg-[#D96522] text-white shadow-xs"
-                    : "bg-white border border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#094ae0] text-white shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
                 title="Sapling shielded pool"
               >
@@ -247,12 +247,12 @@ export default function WebhookSimulatorModal({
         {/* Pending Invoices */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-[#1A1816] uppercase tracking-wider">
+            <label className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Pending Shielded Invoices:
             </label>
             <button
               onClick={fetchPending}
-              className="text-xs text-[#D96522] hover:text-[#A7430B] font-bold flex items-center space-x-1"
+              className="text-xs text-[#094ae0] hover:underline font-bold flex items-center space-x-1"
             >
               <RefreshCw className="w-3 h-3" />
               <span>Refresh</span>
@@ -260,7 +260,7 @@ export default function WebhookSimulatorModal({
           </div>
 
           {pendingItems.length === 0 ? (
-            <div className="p-6 text-center rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-[#66635F] text-xs">
+            <div className="p-6 text-center rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-xs">
               No pending listings or winning auctions currently awaiting payment. Create a listing or declare an auction winner to test note settlement.
             </div>
           ) : (
@@ -269,26 +269,26 @@ export default function WebhookSimulatorModal({
                 <div
                   key={item.id}
                   onClick={() => setSelectedItem(item)}
-                  className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex items-center justify-between ${
+                  className={`p-3.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between ${
                     selectedItem?.id === item.id
-                      ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#1A1816] shadow-xs"
-                      : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                      ? "bg-[#EEF4FF] border-[#094ae0]/40 text-slate-900 shadow-xs"
+                      : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900"
                   }`}
                 >
                   <div className="min-w-0 pr-3">
                     <div className="flex items-center space-x-2">
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white border border-black/[0.06] text-[#A7430B]">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-white border border-slate-200 text-[#094ae0]">
                         {item.type}
                       </span>
-                      <span className="font-bold text-xs sm:text-sm text-[#1A1816] truncate">{item.title}</span>
+                      <span className="font-bold text-xs sm:text-sm text-slate-900 truncate">{item.title}</span>
                     </div>
-                    <div className="font-mono text-xs text-[#C85A17] font-semibold mt-1 truncate">
+                    <div className="font-mono text-xs text-[#094ae0] font-semibold mt-1 truncate">
                       Memo: {item.memo}
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-sm font-black font-mono text-[#1A1816]">{item.amountZec} ZEC</div>
-                    <div className="text-[10px] text-[#949089] font-mono">{item.amountZat} zat</div>
+                    <div className="text-sm font-black font-mono text-slate-900">{item.amountZec} ZEC</div>
+                    <div className="text-[10px] text-slate-400 font-mono">{item.amountZat} zat</div>
                   </div>
                 </div>
               ))}
@@ -299,7 +299,7 @@ export default function WebhookSimulatorModal({
           <button
             onClick={handleFireWebhook}
             disabled={isFiring || !selectedItem}
-            className="w-full py-3 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
+            className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
           >
             {isFiring ? (
               <>

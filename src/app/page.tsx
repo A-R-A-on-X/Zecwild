@@ -88,7 +88,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F3F2EE] text-[#1A1816]">
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] text-[#0F172A]">
       {/* Top Header Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -112,8 +112,8 @@ export default function Home() {
 
         {isLoading ? (
           <div className="py-24 text-center space-y-4">
-            <div className="w-12 h-12 border-3 border-[#D96522] border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs font-mono text-[#66635F]">Synchronizing Shielded State...</p>
+            <div className="w-12 h-12 border-3 border-[#094ae0] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-mono text-slate-500">Synchronizing Shielded State...</p>
           </div>
         ) : (
           <div id="content-view" className="scroll-mt-20 sm:scroll-mt-24 pt-2">
@@ -151,51 +151,27 @@ export default function Home() {
         )}
       </main>
 
-      {/* Security Architecture & Verifiable Links Footer */}
-      <footer className="border-t border-black/[0.06] bg-white py-8 px-4 text-center text-xs text-[#66635F] space-y-3 mt-12">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-[#66635F]">
-          <a
-            href="https://zips.z.cash/zip-0321"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 text-emerald-800 font-semibold hover:underline"
-            title="Read Zcash ZIP-321 Payment URI Specification"
-          >
-            <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Zero Platform Custody (ZIP-321)</span>
-            <ExternalLink className="w-3 h-3 text-emerald-600" />
-          </a>
-          <span className="text-[#949089] hidden sm:inline">•</span>
-          <a
-            href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 text-[#A7430B] font-semibold hover:underline"
-            title="Read WebCrypto SubtleCrypto standard"
-          >
-            <Lock className="w-3.5 h-3.5 text-[#D96522]" />
-            <span>Client-Side RSA-OAEP Sealing</span>
-            <ExternalLink className="w-3 h-3 text-[#D96522]" />
-          </a>
-          <span className="text-[#949089] hidden sm:inline">•</span>
+      {/* OpenSea-Style Clean Footer */}
+      <footer className="border-t border-slate-200 bg-white py-8 px-4 text-center text-xs text-slate-500 space-y-3 mt-12">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-slate-600">
           <a
             href="https://github.com/TheWebDevEhi/zechack"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 text-[#1A1816] font-semibold hover:underline"
+            className="flex items-center space-x-1.5 text-[#094ae0] font-semibold hover:underline"
             title="View the zechack ZecShield Gateway Indexer on GitHub"
           >
-            <Terminal className="w-3.5 h-3.5 text-[#C85A17]" />
+            <Terminal className="w-3.5 h-3.5 text-[#094ae0]" />
             <span>ZecShield Gateway Indexer (`zechack`)</span>
-            <ExternalLink className="w-3 h-3 text-[#1A1816]" />
+            <ExternalLink className="w-3 h-3 text-[#094ae0]" />
           </a>
-          <span className="text-[#949089] hidden sm:inline">•</span>
-          <span className="flex items-center space-x-1.5 text-[#D96522] font-semibold">
-            <span>🌲 Ironwood (NU6.3) & Testnet</span>
+          <span className="text-slate-300 hidden sm:inline">•</span>
+          <span className="flex items-center space-x-1.5 text-[#094ae0] font-semibold">
+            <span>🌲 Ironwood (NU6.3) & Testnet Ready</span>
           </span>
         </div>
-        <p className="text-[11px] text-[#949089]">
-          ZecWild MVP — Shielded Zcash Sealed-Bid Auctions & Open Marketplace • Mainnet & Testnet Support
+        <p className="text-[11px] text-slate-400">
+          ZecWild — Shielded Sealed-Bid Auctions & Open Marketplace • Powered by Zcash Shielded Pools
         </p>
       </footer>
 

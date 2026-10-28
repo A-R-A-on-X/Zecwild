@@ -121,22 +121,22 @@ export default function CreateListingModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[90vh]"
+        className="relative w-full max-w-lg rounded-2xl bg-white border border-slate-200 p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FCEFE7] text-[#D96522] flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[#EEF4FF] text-[#094ae0] flex items-center justify-center shadow-xs">
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-[#1A1816]">Create Marketplace Listing</h3>
-              <p className="text-xs text-[#66635F]">Fixed-Price Direct Shielded Sale</p>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">Create Marketplace Listing</h3>
+              <p className="text-xs text-slate-500">Fixed-Price Direct Shielded Sale</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-[#949089] hover:text-[#1A1816] hover:bg-black/[0.04] transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -144,7 +144,7 @@ export default function CreateListingModal({
 
         <form onSubmit={handleSubmit} className="py-4 space-y-4">
           {error && (
-            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -152,17 +152,17 @@ export default function CreateListingModal({
 
           {/* Item Type Toggle */}
           <div>
-            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
               Item Category
             </label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setItemType("DIGITAL")}
-                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
+                className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "DIGITAL"
-                    ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#A7430B] shadow-xs"
-                    : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#EEF4FF] border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
                 <Key className="w-3.5 h-3.5" />
@@ -172,10 +172,10 @@ export default function CreateListingModal({
               <button
                 type="button"
                 onClick={() => setItemType("PHYSICAL")}
-                className={`py-2.5 px-3 rounded-2xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
+                className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "PHYSICAL"
-                    ? "bg-[#FCEFE7] border-[#D96522]/30 text-[#A7430B] shadow-xs"
-                    : "bg-[#F8F7F4] border-black/[0.06] text-[#66635F] hover:text-[#1A1816]"
+                    ? "bg-[#EEF4FF] border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
                 <Package className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export default function CreateListingModal({
 
           {/* Title */}
           <div>
-            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
               Title
             </label>
             <input
@@ -194,14 +194,14 @@ export default function CreateListingModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Shielded Hardware Node or API Access Key"
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] text-xs font-medium focus:outline-none focus:border-[#D96522]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-[#094ae0]"
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
               Description
             </label>
             <textarea
@@ -209,14 +209,14 @@ export default function CreateListingModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe specifications and what the buyer receives..."
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] text-xs focus:outline-none focus:border-[#D96522] resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-[#094ae0] resize-none"
             />
           </div>
 
           {/* Price & Image */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
                 Price (ZEC)
               </label>
               <input
@@ -226,23 +226,23 @@ export default function CreateListingModal({
                 value={priceZec}
                 onChange={(e) => setPriceZec(e.target.value)}
                 placeholder="0.25"
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] font-mono text-xs font-bold focus:outline-none focus:border-[#D96522]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs font-bold focus:outline-none focus:border-[#094ae0]"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
                 Image (Max 2MB)
               </label>
               <div className="flex items-center space-x-2">
-                <label className="cursor-pointer flex-1 py-2 px-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] hover:border-[#D96522]/30 text-xs text-[#66635F] flex items-center justify-center space-x-1.5">
-                  <Upload className="w-3.5 h-3.5 text-[#D96522]" />
+                <label className="cursor-pointer flex-1 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#094ae0]/40 text-xs text-slate-600 flex items-center justify-center space-x-1.5 transition-colors">
+                  <Upload className="w-3.5 h-3.5 text-[#094ae0]" />
                   <span>Choose Image</span>
                   <input type="file" accept="image/*" onChange={handleImageFile} className="hidden" />
                 </label>
                 {imageUrl && (
-                  <img src={imageUrl} alt="preview" className="w-9 h-9 rounded-xl object-cover border border-black/[0.08]" />
+                  <img src={imageUrl} alt="preview" className="w-9 h-9 rounded-lg object-cover border border-slate-200" />
                 )}
               </div>
             </div>
@@ -251,7 +251,7 @@ export default function CreateListingModal({
           {/* Digital Secret Payload */}
           {itemType === "DIGITAL" && (
             <div>
-              <label className="block text-xs font-bold text-[#C85A17] uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+              <label className="block text-xs font-bold text-[#094ae0] uppercase tracking-wider mb-1.5 flex items-center space-x-1">
                 <Key className="w-3.5 h-3.5" />
                 <span>Secret Payload / Download Link (Unlocked After Payment)</span>
               </label>
@@ -260,7 +260,7 @@ export default function CreateListingModal({
                 value={secretPayload}
                 onChange={(e) => setSecretPayload(e.target.value)}
                 placeholder="e.g. sk-prod-key-xyz or https://secure.vault/download"
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-[#D96522]/30 text-[#1A1816] font-mono text-xs focus:outline-none focus:border-[#D96522]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-[#094ae0]/30 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0]"
                 required
               />
             </div>
@@ -269,10 +269,10 @@ export default function CreateListingModal({
           {/* Seller Address */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-[#1A1816] uppercase tracking-wider">
+              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
                 Payout Shielded Address
               </label>
-              <span className="text-[10px] text-[#A7430B] font-bold">
+              <span className="text-[10px] text-[#094ae0] font-bold">
                 🌲 Ironwood & Sapling Compatible
               </span>
             </div>
@@ -281,7 +281,7 @@ export default function CreateListingModal({
               value={sellerAddress}
               onChange={(e) => setSellerAddress(e.target.value)}
               placeholder="u1... / zs1... (Mainnet) or utest1... / ztestsapling1... (Testnet)"
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.08] text-[#1A1816] font-mono text-xs focus:outline-none focus:border-[#D96522]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0]"
               required
             />
           </div>
@@ -289,7 +289,7 @@ export default function CreateListingModal({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 rounded-full btn-orange-primary text-xs font-bold transition-all shadow-md disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50"
           >
             {isSubmitting ? "Publishing Listing..." : "Publish Listing"}
           </button>

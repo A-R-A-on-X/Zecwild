@@ -214,36 +214,36 @@ export default function PaymentModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl rounded-3xl bg-white border border-black/[0.08] p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] text-left"
+        className="relative w-full max-w-xl rounded-2xl bg-white border border-slate-200 p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] text-left"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-black/[0.06]">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-2xl bg-[#FCEFE7] text-[#D96522] border border-[#D96522]/20 shadow-xs">
+            <div className="p-2.5 rounded-xl bg-[#EEF4FF] text-[#094ae0] border border-[#094ae0]/20 shadow-xs">
               <Shield className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-base sm:text-lg font-black text-[#1A1816]">
+                <h3 className="text-base sm:text-lg font-black text-slate-900">
                   Shielded Settlement Invoice
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold uppercase tracking-wider">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold uppercase tracking-wider">
                   🌲 Ironwood
                 </span>
                 {isTestnet && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold uppercase tracking-wider border border-amber-300">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 font-bold uppercase tracking-wider border border-amber-300">
                     🧪 Testnet
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#66635F]">
+              <p className="text-xs text-slate-500">
                 ZIP-321 Direct Wallet-to-Wallet ZEC Settlement
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-[#949089] hover:text-[#1A1816] hover:bg-stone-100 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -257,16 +257,16 @@ export default function PaymentModal({
             </div>
 
             <div>
-              <h4 className="text-2xl font-black text-[#1A1816]">Payment Confirmed!</h4>
-              <p className="text-xs text-[#66635F] mt-1">
+              <h4 className="text-2xl font-black text-slate-900">Payment Confirmed!</h4>
+              <p className="text-xs text-slate-500 mt-1">
                 Settled on-chain via Zcash Ironwood Shielded Note ({item.priceZec} ZEC • {isTestnet ? "Testnet" : "Mainnet"})
               </p>
             </div>
 
             {/* Confirmed Txid with explorer link */}
             {confirmedTxid && (
-              <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-left">
-                <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left">
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                   Shielded Transaction ID
                 </div>
                 <div className="flex items-center justify-between mt-1">
@@ -274,7 +274,7 @@ export default function PaymentModal({
                     href={explorerUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-xs text-[#D96522] font-bold truncate max-w-[340px] hover:underline flex items-center space-x-1"
+                    className="font-mono text-xs text-[#094ae0] font-bold truncate max-w-[340px] hover:underline flex items-center space-x-1"
                     title="View on Zcash Block Explorer"
                   >
                     <span className="truncate">{confirmedTxid}</span>
@@ -282,7 +282,7 @@ export default function PaymentModal({
                   </a>
                   <button
                     onClick={() => copyToClipboard(confirmedTxid, "txid")}
-                    className="p-1 text-[#66635F] hover:text-[#1A1816] ml-2 flex-shrink-0"
+                    className="p-1 text-slate-400 hover:text-slate-700 ml-2 flex-shrink-0"
                   >
                     {copiedField === "txid" ? (
                       <Check className="w-4 h-4 text-emerald-600" />
@@ -296,19 +296,19 @@ export default function PaymentModal({
 
             {/* If Digital Goods: Reveal Secret Payload */}
             {item.itemType === "DIGITAL" && (
-              <div className="p-4 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 text-left">
-                <div className="flex items-center space-x-2 text-[#A7430B] text-xs font-bold uppercase tracking-wider">
-                  <Unlock className="w-4 h-4 text-[#D96522]" />
+              <div className="p-4 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/30 text-left">
+                <div className="flex items-center space-x-2 text-[#094ae0] text-xs font-bold uppercase tracking-wider">
+                  <Unlock className="w-4 h-4 text-[#094ae0]" />
                   <span>Unlocked Digital Secret / Download</span>
                 </div>
-                <div className="mt-2.5 p-3 rounded-xl bg-white border border-[#D96522]/20 flex items-center justify-between shadow-xs">
-                  <span className="font-mono text-xs sm:text-sm text-[#C85A17] font-bold break-all select-all">
+                <div className="mt-2.5 p-3 rounded-xl bg-white border border-[#094ae0]/20 flex items-center justify-between shadow-xs">
+                  <span className="font-mono text-xs sm:text-sm text-[#094ae0] font-bold break-all select-all">
                     {unlockedSecret || "Secret payload decrypted and available in your vault."}
                   </span>
                   {unlockedSecret && (
                     <button
                       onClick={() => copyToClipboard(unlockedSecret, "secret")}
-                      className="ml-3 p-1.5 rounded-lg bg-[#FCEFE7] hover:bg-[#F7DDD0] text-[#A7430B] transition-colors flex-shrink-0"
+                      className="ml-3 p-1.5 rounded-lg bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] transition-colors flex-shrink-0"
                       title="Copy Secret Key"
                     >
                       {copiedField === "secret" ? (
@@ -324,13 +324,13 @@ export default function PaymentModal({
 
             {/* If Physical Goods */}
             {item.itemType === "PHYSICAL" && (
-              <div className="p-4 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] text-left flex items-start space-x-3">
-                <Package className="w-5 h-5 text-[#D96522] mt-0.5 flex-shrink-0" />
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-left flex items-start space-x-3">
+                <Package className="w-5 h-5 text-[#094ae0] mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="text-sm font-bold text-[#1A1816]">
+                  <div className="text-sm font-bold text-slate-900">
                     Physical Fulfillment Initiated
                   </div>
-                  <div className="text-xs text-[#66635F] mt-0.5">
+                  <div className="text-xs text-slate-500 mt-0.5">
                     The seller has been notified of your confirmed shielded payment and will dispatch your package.
                   </div>
                 </div>
@@ -344,16 +344,16 @@ export default function PaymentModal({
                     onClose();
                     onOpenReceiptModal(item, entityType);
                   }}
-                  className="w-full sm:flex-1 py-3 rounded-full btn-orange-pill text-xs font-bold flex items-center justify-center space-x-1.5 transition-all"
+                  className="w-full sm:flex-1 py-3 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/30 text-xs font-bold flex items-center justify-center space-x-1.5 transition-all"
                 >
-                  <FileText className="w-4 h-4 text-[#D96522]" />
+                  <FileText className="w-4 h-4 text-[#094ae0]" />
                   <span>View Full Shielded Receipt</span>
                 </button>
               )}
 
               <button
                 onClick={onClose}
-                className="w-full sm:flex-1 py-3 rounded-full btn-orange-primary text-xs font-bold shadow-md transition-all"
+                className="w-full sm:flex-1 py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold shadow-md transition-all"
               >
                 Close Window
               </button>
@@ -363,54 +363,54 @@ export default function PaymentModal({
           /* Active Payment Invoice View */
           <div className="py-4 space-y-4">
             {/* Top Item Summary */}
-            <div className="p-3.5 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-12 h-12 rounded-xl object-cover border border-black/[0.06]"
+                  className="w-12 h-12 rounded-xl object-cover border border-slate-200"
                 />
                 <div className="truncate max-w-[240px] sm:max-w-[300px]">
-                  <div className="font-bold text-sm text-[#1A1816] truncate">
+                  <div className="font-bold text-sm text-slate-900 truncate">
                     {item.title}
                   </div>
-                  <div className="text-[11px] text-[#66635F]">
+                  <div className="text-[11px] text-slate-500">
                     {item.itemType === "DIGITAL" ? "Digital Good" : "Physical Item"}
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-black font-mono text-[#D96522]">
+                <div className="text-base font-black font-mono text-[#094ae0]">
                   {item.priceZec} ZEC
                 </div>
-                <div className="text-[10px] text-[#949089]">Wallet-to-Wallet</div>
+                <div className="text-[10px] text-slate-400">Wallet-to-Wallet</div>
               </div>
             </div>
 
             {/* QR Code Container */}
-            <div className="flex flex-col items-center justify-center p-4 rounded-3xl bg-[#F8F7F4] border border-black/[0.06] space-y-3">
-              <div className="p-3.5 bg-white rounded-2xl border border-black/[0.08] shadow-sm">
+            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div className="p-3.5 bg-white rounded-xl border border-slate-200 shadow-sm">
                 {qrDataUrl ? (
                   <img src={qrDataUrl} alt="ZIP-321 QR" className="w-48 h-48 sm:w-56 sm:h-56 rounded-lg" />
                 ) : (
-                  <div className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center bg-stone-100 rounded-lg">
-                    <QrCodeIcon className="w-8 h-8 text-[#949089] animate-pulse" />
+                  <div className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center bg-slate-100 rounded-lg">
+                    <QrCodeIcon className="w-8 h-8 text-slate-400 animate-pulse" />
                   </div>
                 )}
               </div>
 
               <div className="text-center space-y-2 max-w-sm">
-                <div className="text-xs font-bold text-[#1A1816]">
+                <div className="text-xs font-bold text-slate-900">
                   Scan with any Shielded Zcash Wallet
                 </div>
-                <div className="flex items-center justify-center space-x-1.5 text-[11px] font-mono text-[#A7430B]">
-                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20 font-bold">
+                <div className="flex items-center justify-center space-x-1.5 text-[11px] font-mono text-[#094ae0]">
+                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
                     Zashi
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20 font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
                     YWallet
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#FCEFE7] border border-[#D96522]/20 font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
                     Zingo!
                   </span>
                 </div>
@@ -419,21 +419,21 @@ export default function PaymentModal({
                 <div className="pt-2 flex items-center justify-center space-x-2">
                   <a
                     href={zip321Uri}
-                    className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full btn-orange-pill text-xs font-bold transition-all"
+                    className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/30 text-xs font-bold transition-all"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-[#D96522]" />
+                    <ExternalLink className="w-3.5 h-3.5 text-[#094ae0]" />
                     <span>Open in Zcash Wallet</span>
                   </a>
 
                   <button
                     onClick={() => copyToClipboard(zip321Uri, "zip321")}
-                    className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-[#1A1816] text-xs font-bold transition-colors"
+                    className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors"
                     title="Copy Full ZIP-321 Payment URI"
                   >
                     {copiedField === "zip321" ? (
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                     ) : (
-                      <Copy className="w-3.5 h-3.5 text-[#66635F]" />
+                      <Copy className="w-3.5 h-3.5 text-slate-400" />
                     )}
                     <span>Copy URI</span>
                   </button>
@@ -444,21 +444,21 @@ export default function PaymentModal({
             {/* Payment Fields Breakdown */}
             <div className="space-y-2 pt-1">
               {/* Amount */}
-              <div className="p-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                     Exact Amount
                   </div>
-                  <div className="text-sm font-black text-[#1A1816] font-mono">
-                    <span className="text-[#D96522]">{item.priceZec}</span> ZEC{" "}
-                    <span className="text-[11px] text-[#66635F] font-normal">
+                  <div className="text-sm font-black text-slate-900 font-mono">
+                    <span className="text-[#094ae0]">{item.priceZec}</span> ZEC{" "}
+                    <span className="text-[11px] text-slate-500 font-normal">
                       ({item.priceZat} zatoshis)
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(item.priceZec.toString(), "amount")}
-                  className="p-1 text-[#66635F] hover:text-[#1A1816]"
+                  className="p-1 text-slate-400 hover:text-slate-700"
                 >
                   {copiedField === "amount" ? (
                     <Check className="w-4 h-4 text-emerald-600" />
@@ -469,18 +469,18 @@ export default function PaymentModal({
               </div>
 
               {/* Memo */}
-              <div className="p-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                     Required Memo Tag
                   </div>
-                  <div className="text-xs font-mono font-bold text-[#A7430B] truncate max-w-[280px] sm:max-w-[400px]">
+                  <div className="text-xs font-mono font-bold text-[#094ae0] truncate max-w-[280px] sm:max-w-[400px]">
                     {item.invoiceMemo}
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(item.invoiceMemo, "memo")}
-                  className="p-1 text-[#66635F] hover:text-[#1A1816]"
+                  className="p-1 text-slate-400 hover:text-slate-700"
                 >
                   {copiedField === "memo" ? (
                     <Check className="w-4 h-4 text-emerald-600" />
@@ -491,18 +491,18 @@ export default function PaymentModal({
               </div>
 
               {/* Payout Shielded Address */}
-              <div className="p-3 rounded-2xl bg-[#F8F7F4] border border-black/[0.06] flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-[#949089] font-bold">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                     Recipient Address
                   </div>
-                  <div className="text-xs font-mono text-[#66635F] truncate max-w-[280px] sm:max-w-[400px]">
+                  <div className="text-xs font-mono text-slate-600 truncate max-w-[280px] sm:max-w-[400px]">
                     {item.sellerAddress}
                   </div>
                 </div>
                 <button
                   onClick={() => copyToClipboard(item.sellerAddress, "address")}
-                  className="p-1 text-[#66635F] hover:text-[#1A1816]"
+                  className="p-1 text-slate-400 hover:text-slate-700"
                 >
                   {copiedField === "address" ? (
                     <Check className="w-4 h-4 text-emerald-600" />
@@ -514,15 +514,15 @@ export default function PaymentModal({
             </div>
 
             {simError && (
-              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
                 <span className="font-semibold">{simError}</span>
               </div>
             )}
 
             {/* Listening Notice & Simulator Trigger */}
-            <div className="p-3.5 rounded-2xl bg-[#FCEFE7] border border-[#D96522]/30 flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-xs text-[#A7430B]">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#D96522] animate-ping" />
+            <div className="p-3.5 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/30 flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs text-[#094ae0]">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#094ae0] animate-ping" />
                 <span className="font-semibold">
                   Listening for compact block note via zechack indexer...
                 </span>
@@ -530,7 +530,7 @@ export default function PaymentModal({
               <button
                 onClick={handleSimulatePayment}
                 disabled={isSimulating}
-                className="px-3 py-1.5 rounded-xl btn-orange-primary text-xs font-bold transition-all shadow-xs flex items-center space-x-1"
+                className="px-3 py-1.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1"
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>{isSimulating ? "Simulating..." : "Simulate Note"}</span>
