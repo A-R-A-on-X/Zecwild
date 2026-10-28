@@ -45,7 +45,7 @@ export default function MarketplaceView({
             onClick={() => setFilter("ALL")}
             className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
               filter === "ALL"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -55,7 +55,7 @@ export default function MarketplaceView({
             onClick={() => setFilter("DIGITAL")}
             className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
               filter === "DIGITAL"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -65,7 +65,7 @@ export default function MarketplaceView({
             onClick={() => setFilter("PHYSICAL")}
             className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
               filter === "PHYSICAL"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -79,7 +79,7 @@ export default function MarketplaceView({
           </span>
           <button
             onClick={openCreateModal}
-            className="px-4 py-2.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm transition-all"
+            className="px-4 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm transition-all"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             <span>Post Listing</span>
@@ -90,7 +90,7 @@ export default function MarketplaceView({
       {/* Grid of Listings or Empty State */}
       {filteredListings.length === 0 ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-12 sm:p-16 text-center space-y-4 shadow-xs">
-          <div className="w-16 h-16 rounded-2xl bg-[#EEF4FF] text-[#094ae0] flex items-center justify-center mx-auto shadow-xs">
+          <div className="w-16 h-16 rounded-2xl bg-[#eff4ff] text-[#1b5efa] flex items-center justify-center mx-auto shadow-xs">
             <ShoppingBag className="w-8 h-8" />
           </div>
           <div className="space-y-1 max-w-md mx-auto">
@@ -101,7 +101,7 @@ export default function MarketplaceView({
           </div>
           <button
             onClick={openCreateModal}
-            className="px-5 py-2.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold inline-flex items-center space-x-1.5 shadow-sm transition-all"
+            className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold inline-flex items-center space-x-1.5 shadow-sm transition-all"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Create First Listing</span>
@@ -112,7 +112,7 @@ export default function MarketplaceView({
           {filteredListings.map((item) => (
             <div
               key={item.id}
-              className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-lg hover:border-[#094ae0]/40 transition-all duration-300 flex flex-col justify-between group"
+              className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-lg hover:border-[#1b5efa]/40 transition-all duration-300 flex flex-col justify-between group"
             >
               <div>
                 {/* Media Container */}
@@ -129,12 +129,12 @@ export default function MarketplaceView({
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/95 backdrop-blur-md text-slate-900 shadow-sm flex items-center space-x-1">
                       {item.itemType === "DIGITAL" ? (
                         <>
-                          <Key className="w-3 h-3 text-[#094ae0]" />
+                          <Key className="w-3 h-3 text-[#1b5efa]" />
                           <span>Digital</span>
                         </>
                       ) : (
                         <>
-                          <Package className="w-3 h-3 text-[#094ae0]" />
+                          <Package className="w-3 h-3 text-[#1b5efa]" />
                           <span>Physical</span>
                         </>
                       )}
@@ -165,10 +165,10 @@ export default function MarketplaceView({
                 <div className="p-5 space-y-2.5">
                   <div className="flex items-center space-x-1 text-xs text-slate-500 font-medium">
                     <span>Shielded Peer</span>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#094ae0]" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#1b5efa]" />
                   </div>
 
-                  <h3 className="font-bold text-base text-slate-900 line-clamp-1 group-hover:text-[#094ae0] transition-colors">
+                  <h3 className="font-bold text-base text-slate-900 line-clamp-1 group-hover:text-[#1b5efa] transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
@@ -200,7 +200,7 @@ export default function MarketplaceView({
                       Price
                     </div>
                     <div className="text-lg font-black font-mono text-slate-900 flex items-baseline space-x-1">
-                      <span className="text-[#094ae0]">{item.priceZec}</span>
+                      <span className="text-[#1b5efa]">{item.priceZec}</span>
                       <span className="text-xs text-slate-500 font-bold">ZEC</span>
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export default function MarketplaceView({
                   ) : (
                     <button
                       onClick={() => onOpenPaymentModal(item)}
-                      className="px-4 py-2 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm"
+                      className="px-4 py-2 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all flex items-center space-x-1.5 shadow-sm"
                     >
                       <span>Buy Now</span>
                       <ChevronRight className="w-3.5 h-3.5" />

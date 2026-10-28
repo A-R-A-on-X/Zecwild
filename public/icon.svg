@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <defs>
-    <linearGradient id="cartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#094ae0"/>
-      <stop offset="100%" stop-color="#052c96"/>
+    <linearGradient id="zecwild-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b5efa"/>
+      <stop offset="100%" stop-color="#1550df"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="18" fill="url(#cartGrad)"/>
-  <path d="M14 16h6l4.8 20.4a3 3 0 0 0 2.9 2.3h17.8a3 3 0 0 0 2.9-2.2l3.6-13.5H23" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="28" cy="48" r="3.5" fill="#FFFFFF"/>
-  <circle cx="45" cy="48" r="3.5" fill="#FFFFFF"/>
+  <rect width="32" height="32" rx="9" fill="url(#zecwild-grad)"/>
+  <path d="M7 8h3l2.2 9.5a1.8 1.8 0 0 0 1.8 1.4h9.5a1.8 1.8 0 0 0 1.8-1.3L27 10H10.5" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="14" cy="24" r="1.8" fill="#FFFFFF"/>
+  <circle cx="23" cy="24" r="1.8" fill="#FFFFFF"/>
 </svg>

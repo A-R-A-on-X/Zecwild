@@ -13,9 +13,9 @@ import {
   Send,
   Sparkles,
   ArrowRight,
-  ExternalLink,
   Clock,
   CheckCircle2,
+  ChevronRight,
   SlidersHorizontal,
 } from "lucide-react";
 import { formatAddress } from "@/lib/crypto/zcash";
@@ -86,7 +86,7 @@ export default function HeroShowcase({
     const lower = assistantPrompt.toLowerCase();
     if (lower.includes("simulat") || lower.includes("pay") || lower.includes("test")) {
       onOpenSimulator();
-      setAssistantStatus("Opening ZecShield Webhook Simulator...");
+      setAssistantStatus("Opening Payment Simulator...");
     } else if (lower.includes("bid") || lower.includes("auction") || lower.includes("seal")) {
       setActiveTab("auctions");
       setAssistantStatus("Navigating to Sealed-Bid Auctions...");
@@ -95,7 +95,7 @@ export default function HeroShowcase({
       setAssistantStatus("Navigating to Open Marketplace...");
     } else if (lower.includes("audit") || lower.includes("receipt") || lower.includes("vault")) {
       setActiveTab("activity", "audits");
-      setAssistantStatus("Navigating to Activity & Audit Vault...");
+      setAssistantStatus("Navigating to Activity & Vault...");
     } else {
       setAssistantStatus(`Navigating inventory for "${assistantPrompt}"...`);
       setActiveTab("marketplace");
@@ -105,208 +105,253 @@ export default function HeroShowcase({
   };
 
   return (
-    <section className="space-y-6">
-      {/* 1. OpenSea-Style Spotlight Hero Banner */}
-      <div className="relative rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-sm overflow-hidden">
-        {/* Soft Electric Blue ambient glow in background */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#094ae0]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 -right-32 w-96 h-96 bg-[#094ae0]/5 rounded-full blur-3xl pointer-events-none" />
+    <section className="space-y-4 sm:space-y-6">
+      {/* 
+        Hero Stage Canvas with Live Item / Auction Imagery Backdrop
+        Inspired directly by Image 1 & Image 3: The featured asset forms the visual home backdrop,
+        with floating interactive quick-action cards and clean controls overlaid.
+      */}
+      <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-slate-900 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px] shadow-sm flex flex-col justify-between p-5 sm:p-8 lg:p-10">
+        {/* Background Visual Showcase Canvas */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=2000&q=85"
+            alt="Shielded Auctions & Marketplace"
+            className="w-full h-full object-cover object-center scale-105 filter brightness-[0.7] contrast-[1.05]"
+          />
+          {/* Subtle multi-stop gradient overlay for crisp text readability across breakpoints */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/80" />
+          {/* Ambient Royal Blue Glow Accent */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#1b5efa]/25 rounded-full blur-3xl pointer-events-none" />
+        </div>
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Hero Narrative */}
-          <div className="lg:col-span-7 space-y-5">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 text-[#094ae0] text-xs font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#094ae0] animate-pulse" />
-              <span>Shielded Zcash Marketplace • Ironwood (NU6.3) Ready</span>
+        {/* Top Header Pill Bar Over Background */}
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-white text-xs font-semibold shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Featured Sealed Drop • Live on ZecWild</span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setActiveTab("marketplace")}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all backdrop-blur-md ${
+                activeTab === "marketplace"
+                  ? "bg-[#1b5efa] text-white shadow-sm"
+                  : "bg-black/40 text-slate-200 hover:bg-black/60 border border-white/10"
+              }`}
+            >
+              Marketplace
+            </button>
+            <button
+              onClick={() => setActiveTab("auctions")}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all backdrop-blur-md ${
+                activeTab === "auctions"
+                  ? "bg-[#1b5efa] text-white shadow-sm"
+                  : "bg-black/40 text-slate-200 hover:bg-black/60 border border-white/10"
+              }`}
+            >
+              Sealed Auctions
+            </button>
+          </div>
+        </div>
+
+        {/* Middle Stage: Left Item Headline + Right Floating Action Widget */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-end my-auto py-6">
+          {/* Left Title & Key Details */}
+          <div className="lg:col-span-7 space-y-3 sm:space-y-4">
+            <div className="flex items-center space-x-2 text-white/80 text-xs font-medium">
+              <span>Cypherpunk Hardware Vault</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#1b5efa]" />
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.12]">
-              Explore, Collect & Bid on{" "}
-              <span className="text-[#094ae0]">
-                Shielded Digital Assets
-              </span>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+              Genesis Hardware Node <span className="text-[#1b5efa]">#001</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
-              The premier peer-to-peer marketplace powered by Zcash. Participate in cryptographically sealed blind auctions or buy physical and digital items with direct wallet-to-wallet transactions verified on-chain by the <strong>ZecShield Gateway</strong> indexer.
+            <p className="text-xs sm:text-sm text-slate-300 max-w-lg leading-relaxed">
+              Cryptographically sealed blind auction with zero on-chain bid leakage. Bid privately or buy digital assets and physical hardware with direct wallet-to-wallet settlements.
             </p>
 
-            {/* Quick Action Buttons */}
-            <div className="pt-2 flex flex-wrap gap-3">
-              <button
-                onClick={() => setActiveTab("marketplace")}
-                className="px-6 py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold flex items-center space-x-2 shadow-sm transition-all transform hover:-translate-y-0.5"
-              >
-                <span>Explore Marketplace</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+            {/* Quick Action Badges */}
+            <div className="pt-1 flex flex-wrap items-center gap-3">
+              <div className="px-3.5 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white font-mono text-xs flex items-center space-x-2">
+                <span className="text-slate-400 font-bold uppercase text-[10px]">Reserve:</span>
+                <span className="font-black text-sm text-[#1b5efa]">0.75 ZEC</span>
+              </div>
 
               <button
-                onClick={() => onOpenCreate("auction")}
-                className="px-5 py-3 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/20 text-xs font-bold flex items-center space-x-2 transition-all"
+                onClick={() => setActiveTab("auctions")}
+                className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
               >
                 <Lock className="w-3.5 h-3.5" />
-                <span>Launch Sealed Auction</span>
+                <span>Place Sealed Bid</span>
               </button>
 
               <button
-                onClick={() => onOpenCreate("listing")}
-                className="px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold flex items-center space-x-2 transition-colors"
+                onClick={() => setActiveTab("marketplace")}
+                className="px-4 py-2.5 rounded-xl bg-white/90 hover:bg-white text-slate-900 text-xs font-bold flex items-center space-x-1.5 backdrop-blur-md transition-colors"
               >
-                <Package className="w-3.5 h-3.5 text-[#094ae0]" />
-                <span>Create Listing</span>
+                <span>Browse Listings</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
+          </div>
 
-            {/* Interactive Search / Assistant Command Bar */}
-            <div className="pt-2 max-w-xl">
-              <form onSubmit={handleAssistantSend} className="relative">
+          {/* Right Floating Assistant / Quick Action Card (Directly inspired by Image 1's floating widget) */}
+          <div className="lg:col-span-5 w-full">
+            <div className="rounded-2xl bg-white/95 backdrop-blur-md border border-white/40 p-4 sm:p-5 shadow-2xl space-y-3.5 text-left">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                <div className="flex items-center space-x-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#eff4ff] text-[#1b5efa] flex items-center justify-center">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900">Shielded Navigator</h3>
+                    <p className="text-[10px] text-slate-500">Quick Actions & Search</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+                  Ready
+                </span>
+              </div>
+
+              {/* 4 Action Buttons Grid (Inspired by Book a rent / Analysis in Image 1) */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleAssistantAction("marketplace")}
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] border border-slate-200/80 hover:border-[#1b5efa]/30 transition-all text-left group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Package className="w-3.5 h-3.5 text-[#1b5efa]" />
+                    <span className="text-[9px] text-slate-400 font-mono">Market</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 group-hover:text-[#1b5efa]">
+                    View Listings
+                  </div>
+                  <div className="text-[10px] text-slate-500">Fixed-price buy</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAssistantAction("auctions")}
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] border border-slate-200/80 hover:border-[#1b5efa]/30 transition-all text-left group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Lock className="w-3.5 h-3.5 text-[#1b5efa]" />
+                    <span className="text-[9px] text-slate-400 font-mono">Blind Bids</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 group-hover:text-[#1b5efa]">
+                    Sealed Auctions
+                  </div>
+                  <div className="text-[10px] text-slate-500">Encrypted bids</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAssistantAction("copy")}
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] border border-slate-200/80 hover:border-[#1b5efa]/30 transition-all text-left group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Copy className="w-3.5 h-3.5 text-[#1b5efa]" />
+                    <span className="text-[9px] text-slate-400 font-mono">Wallet</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 group-hover:text-[#1b5efa]">
+                    Copy Address
+                  </div>
+                  <div className="text-[10px] text-slate-500">Active shielded key</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAssistantAction("simulate")}
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] border border-slate-200/80 hover:border-[#1b5efa]/30 transition-all text-left group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <Zap className="w-3.5 h-3.5 text-[#1b5efa]" />
+                    <span className="text-[9px] text-slate-400 font-mono">Test</span>
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 group-hover:text-[#1b5efa]">
+                    Simulate Payment
+                  </div>
+                  <div className="text-[10px] text-slate-500">Test note settlement</div>
+                </button>
+              </div>
+
+              {/* Status Notice if triggered */}
+              {assistantStatus && (
+                <div className="p-2 rounded-xl bg-[#eff4ff] text-[#1b5efa] text-xs font-medium border border-[#1b5efa]/20 animate-in fade-in flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1b5efa] flex-shrink-0" />
+                  <span>{assistantStatus}</span>
+                </div>
+              )}
+
+              {/* Chat / Command Input Bar (Directly inspired by Image 1 bottom bar) */}
+              <form onSubmit={handleAssistantSend} className="relative pt-0.5">
                 <input
                   type="text"
                   value={assistantPrompt}
                   onChange={(e) => setAssistantPrompt(e.target.value)}
-                  placeholder="Search shielded items, type 'simulate', 'auctions', 'audits'..."
-                  className="w-full pl-4 pr-24 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#094ae0] focus:bg-white transition-all shadow-inner"
+                  placeholder="Ask assistant or type 'simulate', 'auctions'..."
+                  className="w-full pl-3.5 pr-20 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1b5efa] focus:bg-white transition-all"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1.5 top-1.5 px-4 py-2 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold flex items-center space-x-1.5 transition-colors shadow-xs"
+                  className="absolute right-1 top-1.5 px-3 py-1 rounded-lg bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-1 transition-colors"
                 >
                   <span>Go</span>
                   <Send className="w-3 h-3" />
                 </button>
               </form>
-
-              {assistantStatus && (
-                <div className="mt-2 p-2.5 rounded-xl bg-[#EEF4FF] text-[#094ae0] text-xs font-medium border border-[#094ae0]/20 animate-in fade-in flex items-center space-x-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#094ae0] flex-shrink-0" />
-                  <span>{assistantStatus}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right OpenSea-Style Featured Spotlight Card */}
-          <div className="lg:col-span-5">
-            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
-              {/* Media Spotlight Container */}
-              <div className="relative aspect-4/3 sm:aspect-16/10 w-full overflow-hidden bg-slate-100">
-                <img
-                  src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80"
-                  alt="Featured Shielded Auction"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
-
-                {/* Top Badges */}
-                <div className="absolute top-3 left-3 flex items-center space-x-2">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#094ae0] text-white shadow-md flex items-center space-x-1.5">
-                    <Sparkles className="w-3 h-3" />
-                    <span>Featured Drop</span>
-                  </span>
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-white shadow-sm flex items-center space-x-1">
-                    <Lock className="w-3 h-3 text-[#094ae0]" />
-                    <span>Sealed</span>
-                  </span>
-                </div>
-
-                <div className="absolute top-3 right-3">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/90 text-white backdrop-blur-md shadow-sm flex items-center space-x-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span>Live Auction</span>
-                  </span>
-                </div>
-
-                {/* Bottom Overlay Info on Media */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
-                  <div className="flex items-center space-x-1.5 bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-medium">
-                    <Clock className="w-3.5 h-3.5 text-[#094ae0]" />
-                    <span>Closes 24h</span>
-                  </div>
-                  <div className="text-[11px] font-mono bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-lg">
-                    RSA-2048 Encrypted
-                  </div>
-                </div>
-              </div>
-
-              {/* Spotlight Card Body */}
-              <div className="p-5 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-medium mb-1">
-                      <span>ZecWild Genesis Collection</span>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#094ae0]" />
-                    </div>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-[#094ae0] transition-colors">
-                      Cypherpunk Hardware Key #001
-                    </h3>
-                  </div>
-                </div>
-
-                {/* OpenSea Price & CTA Block */}
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
-                      Reserve Price
-                    </div>
-                    <div className="text-lg font-black font-mono text-slate-900 flex items-baseline space-x-1">
-                      <span className="text-[#094ae0]">0.75</span>
-                      <span className="text-xs text-slate-500 font-bold">ZEC</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setActiveTab("auctions")}
-                    className="px-4 py-2.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm transition-all"
-                  >
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Place Sealed Bid</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2. OpenSea-Style Collection Metrics & Stats Strip */}
+      {/* 
+        Bottom Metric Overview Cards Strip
+        (Directly inspired by the 3 bottom cards in Image 1: My Location / My Dates / Payment Method)
+        Clean, user-centric metrics with no internal indexer jargon!
+      */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: Shielded Volume */}
         <div
           onClick={() => setActiveTab("activity", "audits")}
-          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#094ae0]/50 hover:shadow-sm transition-all group"
-          title="Click to view on-chain audit trail"
+          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#1b5efa]/40 hover:shadow-sm transition-all group"
+          title="Click to view settlement vault"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#094ae0] transition-colors">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#1b5efa] transition-colors">
               Shielded Volume
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#EEF4FF] flex items-center justify-center text-[#094ae0]">
+            <div className="w-8 h-8 rounded-xl bg-[#eff4ff] flex items-center justify-center text-[#1b5efa]">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
             <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono">
-              {settledVolumeZec.toFixed(2)} <span className="text-sm text-[#094ae0] font-semibold">ZEC</span>
+              {settledVolumeZec.toFixed(2)} <span className="text-sm text-[#1b5efa] font-semibold">ZEC</span>
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5 flex items-center space-x-1">
               <span className="text-emerald-600 font-bold">100%</span>
-              <span>Shielded P2P Settlements</span>
+              <span>Shielded Settlements</span>
             </div>
           </div>
         </div>
 
-        {/* Metric 2: Active Listings */}
+        {/* Metric 2: Marketplace Listings */}
         <div
           onClick={() => setActiveTab("marketplace")}
-          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#094ae0]/50 hover:shadow-sm transition-all group"
-          title="Click to explore marketplace listings"
+          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#1b5efa]/40 hover:shadow-sm transition-all group"
+          title="Click to view marketplace listings"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#094ae0] transition-colors">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#1b5efa] transition-colors">
               Marketplace Listings
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#EEF4FF] flex items-center justify-center text-[#094ae0]">
+            <div className="w-8 h-8 rounded-xl bg-[#eff4ff] flex items-center justify-center text-[#1b5efa]">
               <Package className="w-4 h-4" />
             </div>
           </div>
@@ -323,14 +368,14 @@ export default function HeroShowcase({
         {/* Metric 3: Sealed Auctions */}
         <div
           onClick={() => setActiveTab("auctions")}
-          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#094ae0]/50 hover:shadow-sm transition-all group"
-          title="Click to explore live sealed auctions"
+          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#1b5efa]/40 hover:shadow-sm transition-all group"
+          title="Click to view live sealed auctions"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#094ae0] transition-colors">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#1b5efa] transition-colors">
               Sealed Auctions
             </span>
-            <div className="w-8 h-8 rounded-xl bg-[#EEF4FF] flex items-center justify-center text-[#094ae0]">
+            <div className="w-8 h-8 rounded-xl bg-[#eff4ff] flex items-center justify-center text-[#1b5efa]">
               <Lock className="w-4 h-4" />
             </div>
           </div>
@@ -339,33 +384,32 @@ export default function HeroShowcase({
               {auctionsCount} <span className="text-sm text-slate-500 font-normal">live</span>
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5">
-              Client-side RSA-OAEP sealed
+              Encrypted blind bids
             </div>
           </div>
         </div>
 
-        {/* Metric 4: Indexer Gateway */}
+        {/* Metric 4: Shielded Security (Replaces technical indexer details!) */}
         <div
           onClick={onOpenSimulator}
-          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-emerald-500/50 hover:shadow-sm transition-all group"
-          title="Click to launch simulator testbed"
+          className="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:border-[#1b5efa]/40 hover:shadow-sm transition-all group"
+          title="Click to open payment simulator"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-emerald-600 transition-colors">
-              Indexer Gateway
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#1b5efa] transition-colors">
+              Shielded Security
             </span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="w-8 h-8 rounded-xl bg-[#eff4ff] flex items-center justify-center text-[#1b5efa]">
               <Shield className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-sm sm:text-base font-bold text-emerald-800 flex items-center space-x-1.5">
+            <div className="text-sm sm:text-base font-bold text-slate-900 flex items-center space-x-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Ironwood Ready</span>
-              <ExternalLink className="w-3 h-3 text-emerald-600 opacity-60 group-hover:opacity-100" />
+              <span>Zero Knowledge</span>
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5 truncate font-mono">
-              Mainnet & Testnet Simulator
+              Direct P2P Settlement
             </div>
           </div>
         </div>

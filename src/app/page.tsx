@@ -112,7 +112,7 @@ export default function Home() {
 
         {isLoading ? (
           <div className="py-24 text-center space-y-4">
-            <div className="w-12 h-12 border-3 border-[#094ae0] border-t-transparent rounded-full animate-spin mx-auto" />
+            <div className="w-12 h-12 border-3 border-[#1b5efa] border-t-transparent rounded-full animate-spin mx-auto" />
             <p className="text-xs font-mono text-slate-500">Synchronizing Shielded State...</p>
           </div>
         ) : (
@@ -152,25 +152,8 @@ export default function Home() {
       </main>
 
       {/* OpenSea-Style Clean Footer */}
-      <footer className="border-t border-slate-200 bg-white py-8 px-4 text-center text-xs text-slate-500 space-y-3 mt-12">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] font-mono text-slate-600">
-          <a
-            href="https://github.com/TheWebDevEhi/zechack"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1.5 text-[#094ae0] font-semibold hover:underline"
-            title="View the zechack ZecShield Gateway Indexer on GitHub"
-          >
-            <Terminal className="w-3.5 h-3.5 text-[#094ae0]" />
-            <span>ZecShield Gateway Indexer (`zechack`)</span>
-            <ExternalLink className="w-3 h-3 text-[#094ae0]" />
-          </a>
-          <span className="text-slate-300 hidden sm:inline">•</span>
-          <span className="flex items-center space-x-1.5 text-[#094ae0] font-semibold">
-            <span>🌲 Ironwood (NU6.3) & Testnet Ready</span>
-          </span>
-        </div>
-        <p className="text-[11px] text-slate-400">
+      <footer className="border-t border-slate-200 bg-white py-6 px-4 text-center text-xs text-slate-500 mt-12">
+        <p className="text-[12px] text-slate-500 font-medium">
           ZecWild — Shielded Sealed-Bid Auctions & Open Marketplace • Powered by Zcash Shielded Pools
         </p>
       </footer>

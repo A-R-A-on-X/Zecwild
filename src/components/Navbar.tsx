@@ -23,6 +23,7 @@ import {
   Info,
   Globe,
   Layers,
+  ArrowRight,
 } from "lucide-react";
 import {
   getActiveProfile,
@@ -61,6 +62,7 @@ export default function Navbar({
   const [createDropdownOpen, setCreateDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAddCustom, setShowAddCustom] = useState(false);
+  const [mobileShowAddCustom, setMobileShowAddCustom] = useState(false);
   const [customName, setCustomName] = useState("");
   const [customAddress, setCustomAddress] = useState("");
   const [customError, setCustomError] = useState<string | null>(null);
@@ -145,7 +147,7 @@ export default function Navbar({
       setActiveNetworkState(p.network);
     }
     setPersonaDropdownOpen(false);
-    setMobileMenuOpen(false);
+    setMobileShowAddCustom(false);
   };
 
   const handleCopyActive = (addr: string) => {
@@ -158,7 +160,7 @@ export default function Navbar({
     e.preventDefault();
     setCustomError(null);
     if (!customAddress || !isShieldedAddress(customAddress)) {
-      setCustomError("Enter a valid Orchard/Ironwood (u1..., utest1...) or Sapling (zs1..., ztestsapling1...) address.");
+      setCustomError("Enter a valid Orchard (u1..., utest1...) or Sapling (zs1..., ztestsapling1...) address.");
       return;
     }
     const newProf = addCustomProfile(customName || "My Shielded Wallet", customAddress);
@@ -167,6 +169,7 @@ export default function Navbar({
     setCustomName("");
     setCustomAddress("");
     setShowAddCustom(false);
+    setMobileShowAddCustom(false);
     setPersonaDropdownOpen(false);
   };
 
@@ -175,6 +178,7 @@ export default function Navbar({
     setProfile(fresh);
     reloadProfiles();
     setShowAddCustom(false);
+    setMobileShowAddCustom(false);
     setPersonaDropdownOpen(false);
   };
 
@@ -205,13 +209,13 @@ export default function Navbar({
           }}
           title="Return to ZecWild Marketplace"
         >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#094ae0] to-[#073bc2] flex items-center justify-center shadow-md transition-transform group-hover:scale-105">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1b5efa] to-[#1550df] flex items-center justify-center shadow-md transition-transform group-hover:scale-105">
             <ShoppingCart className="w-5 h-5 text-white" />
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-xl font-black tracking-tight text-slate-900">ZecWild</span>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 tracking-wide uppercase hidden sm:inline-flex">
-              🌲 Ironwood
+              Shielded
             </span>
           </div>
         </div>
@@ -222,13 +226,13 @@ export default function Navbar({
             onClick={() => setActiveTab("marketplace")}
             className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "marketplace"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <ShoppingBag
               className={`w-3.5 h-3.5 ${
-                activeTab === "marketplace" ? "text-[#094ae0]" : "text-slate-400"
+                activeTab === "marketplace" ? "text-[#1b5efa]" : "text-slate-400"
               }`}
             />
             <span>Marketplace</span>
@@ -238,13 +242,13 @@ export default function Navbar({
             onClick={() => setActiveTab("auctions")}
             className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "auctions"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <Lock
               className={`w-3.5 h-3.5 ${
-                activeTab === "auctions" ? "text-[#094ae0]" : "text-slate-400"
+                activeTab === "auctions" ? "text-[#1b5efa]" : "text-slate-400"
               }`}
             />
             <span>Sealed Auctions</span>
@@ -254,16 +258,16 @@ export default function Navbar({
             onClick={() => setActiveTab("activity", "audits")}
             className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeTab === "activity"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <Activity
               className={`w-3.5 h-3.5 ${
-                activeTab === "activity" ? "text-[#094ae0]" : "text-slate-400"
+                activeTab === "activity" ? "text-[#1b5efa]" : "text-slate-400"
               }`}
             />
-            <span>Activity & Audits</span>
+            <span>Activity & Vault</span>
           </button>
         </nav>
 
@@ -286,7 +290,7 @@ export default function Navbar({
               onClick={() => handleNetworkChange("testnet")}
               className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
                 activeNetwork === "testnet"
-                  ? "bg-[#EEF4FF] text-[#094ae0] border border-[#094ae0]/30 shadow-xs"
+                  ? "bg-[#eff4ff] text-[#1b5efa] border border-[#1b5efa]/30 shadow-xs"
                   : "text-slate-500 hover:text-slate-900"
               }`}
               title="Zcash Testnet (utest1 / ztestsapling1)"
@@ -295,11 +299,11 @@ export default function Navbar({
             </button>
           </div>
 
-          {/* Quick Webhook Simulator Icon Button - Desktop */}
+          {/* Quick Payment Simulator Icon Button - Desktop */}
           <button
             onClick={openSimulatorModal}
-            className="hidden md:flex p-2.5 rounded-xl bg-white hover:bg-[#EEF4FF] text-[#094ae0] border border-slate-200 hover:border-[#094ae0]/40 shadow-xs transition-colors"
-            title="Launch Webhook Simulator Testbed"
+            className="hidden md:flex p-2.5 rounded-xl bg-white hover:bg-[#eff4ff] text-[#1b5efa] border border-slate-200 hover:border-[#1b5efa]/40 shadow-xs transition-colors"
+            title="Launch Shielded Payment Simulator"
           >
             <Zap className="w-4 h-4" />
           </button>
@@ -308,7 +312,7 @@ export default function Navbar({
           <div ref={createRef} className="relative hidden md:block">
             <button
               onClick={() => setCreateDropdownOpen(!createDropdownOpen)}
-              className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-sm"
+              className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create</span>
@@ -322,9 +326,9 @@ export default function Navbar({
                     openCreateModal("listing");
                     setCreateDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#EEF4FF] hover:text-[#094ae0] flex items-center space-x-3 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#eff4ff] hover:text-[#1b5efa] flex items-center space-x-3 transition-colors"
                 >
-                  <div className="p-2 rounded-lg bg-[#EEF4FF] text-[#094ae0]">
+                  <div className="p-2 rounded-lg bg-[#eff4ff] text-[#1b5efa]">
                     <ShoppingBag className="w-4 h-4" />
                   </div>
                   <div>
@@ -338,9 +342,9 @@ export default function Navbar({
                     openCreateModal("auction");
                     setCreateDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#EEF4FF] hover:text-[#094ae0] flex items-center space-x-3 transition-colors mt-1"
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#eff4ff] hover:text-[#1b5efa] flex items-center space-x-3 transition-colors mt-1"
                 >
-                  <div className="p-2 rounded-lg bg-[#EEF4FF] text-[#094ae0]">
+                  <div className="p-2 rounded-lg bg-[#eff4ff] text-[#1b5efa]">
                     <Lock className="w-4 h-4" />
                   </div>
                   <div>
@@ -356,13 +360,13 @@ export default function Navbar({
                     openSimulatorModal();
                     setCreateDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#EEF4FF] hover:text-[#094ae0] flex items-center space-x-3 transition-colors"
+                  className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs text-slate-800 hover:bg-[#eff4ff] hover:text-[#1b5efa] flex items-center space-x-3 transition-colors"
                 >
-                  <div className="p-2 rounded-lg bg-[#EEF4FF] text-[#094ae0]">
+                  <div className="p-2 rounded-lg bg-[#eff4ff] text-[#1b5efa]">
                     <Zap className="w-4 h-4" />
                   </div>
                   <div>
-                    <div className="font-bold">Webhook Simulator</div>
+                    <div className="font-bold">Payment Simulator</div>
                     <div className="text-[11px] text-slate-500">Test shielded payments</div>
                   </div>
                 </button>
@@ -375,7 +379,7 @@ export default function Navbar({
             {profile ? (
               <button
                 onClick={() => setPersonaDropdownOpen(!personaDropdownOpen)}
-                className="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-mono bg-white border border-slate-200 hover:border-[#094ae0]/40 shadow-xs transition-all"
+                className="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-mono bg-white border border-slate-200 hover:border-[#1b5efa]/40 shadow-xs transition-all"
               >
                 <div
                   className={`w-2 h-2 rounded-full ${
@@ -393,9 +397,9 @@ export default function Navbar({
                   setShowAddCustom(true);
                   setPersonaDropdownOpen(!personaDropdownOpen);
                 }}
-                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#EEF4FF] hover:bg-[#dbe7ff] border border-[#094ae0]/30 text-[#094ae0] shadow-xs transition-all"
+                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#eff4ff] hover:bg-[#dbe7ff] border border-[#1b5efa]/30 text-[#1b5efa] shadow-xs transition-all"
               >
-                <Shield className="w-3.5 h-3.5 text-[#094ae0]" />
+                <Shield className="w-3.5 h-3.5 text-[#1b5efa]" />
                 <span>Connect Shielded ID</span>
               </button>
             )}
@@ -406,13 +410,13 @@ export default function Navbar({
                 {profile ? (
                   <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#094ae0] flex items-center space-x-1.5">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-[#1b5efa] flex items-center space-x-1.5">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         <span>Active Identity</span>
                       </span>
                       <div className="flex items-center space-x-1">
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono font-bold">
-                          🌲 {profile.addressType}
+                          {profile.addressType}
                         </span>
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-mono font-bold uppercase">
                           {profile.network || "mainnet"}
@@ -451,9 +455,9 @@ export default function Navbar({
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3.5 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/20 space-y-1.5">
-                    <div className="flex items-center space-x-2 text-[#094ae0] font-bold text-xs">
-                      <Shield className="w-4 h-4 text-[#094ae0]" />
+                  <div className="p-3.5 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/20 space-y-1.5">
+                    <div className="flex items-center space-x-2 text-[#1b5efa] font-bold text-xs">
+                      <Shield className="w-4 h-4 text-[#1b5efa]" />
                       <span>No Shielded Identity Connected</span>
                     </div>
                     <p className="text-[11px] text-slate-600 leading-relaxed">
@@ -477,7 +481,7 @@ export default function Navbar({
                           onClick={() => selectPersona(p)}
                           className={`w-full text-left p-2.5 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-between ${
                             profile?.id === p.id
-                              ? "bg-[#EEF4FF] border border-[#094ae0]/30 text-[#094ae0]"
+                              ? "bg-[#eff4ff] border border-[#1b5efa]/30 text-[#1b5efa]"
                               : "hover:bg-slate-50 text-slate-800 border border-slate-100"
                           }`}
                         >
@@ -497,7 +501,7 @@ export default function Navbar({
                           </div>
                           <div className="flex items-center space-x-1">
                             {profile?.id === p.id && (
-                              <CheckCircle2 className="w-4 h-4 text-[#094ae0]" />
+                              <CheckCircle2 className="w-4 h-4 text-[#1b5efa]" />
                             )}
                             <button
                               onClick={(e) => handleDeleteProfile(e, p.id)}
@@ -526,7 +530,7 @@ export default function Navbar({
                           onClick={() => selectPersona(p)}
                           className={`p-2.5 rounded-xl text-xs cursor-pointer transition-colors flex items-center justify-between ${
                             profile?.id === p.id
-                              ? "bg-[#EEF4FF] border border-[#094ae0]/30 text-[#094ae0]"
+                              ? "bg-[#eff4ff] border border-[#1b5efa]/30 text-[#1b5efa]"
                               : "hover:bg-slate-50 text-slate-800 border border-slate-100"
                           }`}
                         >
@@ -541,7 +545,7 @@ export default function Navbar({
                           </div>
                           <div className="flex items-center space-x-1">
                             {profile?.id === p.id && (
-                              <CheckCircle2 className="w-4 h-4 text-[#094ae0]" />
+                              <CheckCircle2 className="w-4 h-4 text-[#1b5efa]" />
                             )}
                             <button
                               onClick={(e) => handleDeleteProfile(e, p.id)}
@@ -564,8 +568,8 @@ export default function Navbar({
                       onClick={handleRestoreDemos}
                       className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
                     >
-                      <RotateCcw className="w-3.5 h-3.5 text-[#094ae0]" />
-                      <span>Restore Default Demo Personas</span>
+                      <RotateCcw className="w-3.5 h-3.5 text-[#1b5efa]" />
+                      <span>Restore Default Personas</span>
                     </button>
                   </div>
                 )}
@@ -586,7 +590,7 @@ export default function Navbar({
                           placeholder="Account Name (e.g. My Zashi)"
                           value={customName}
                           onChange={(e) => setCustomName(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#094ae0]"
+                          className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1b5efa]"
                         />
                       </div>
                       <div>
@@ -595,14 +599,14 @@ export default function Navbar({
                           placeholder="Mainnet (u1... / zs1...) or Testnet (utest1...)"
                           value={customAddress}
                           onChange={(e) => setCustomAddress(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#094ae0]"
+                          className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1b5efa]"
                           required
                         />
                       </div>
                       <div className="flex items-center space-x-2 pt-1">
                         <button
                           type="submit"
-                          className="flex-1 py-2 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-colors"
+                          className="flex-1 py-2 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-colors"
                         >
                           Connect
                         </button>
@@ -623,7 +627,7 @@ export default function Navbar({
                       <button
                         type="button"
                         onClick={() => setShowAddCustom(true)}
-                        className="py-2.5 px-3 rounded-xl border border-dashed border-[#094ae0]/40 hover:border-[#094ae0] hover:bg-[#EEF4FF] text-[#094ae0] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
+                        className="py-2.5 px-3 rounded-xl border border-dashed border-[#1b5efa]/40 hover:border-[#1b5efa] hover:bg-[#eff4ff] text-[#1b5efa] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Address</span>
@@ -632,10 +636,10 @@ export default function Navbar({
                       <button
                         type="button"
                         onClick={handleGenerateRandom}
-                        className="py-2.5 px-3 rounded-xl border border-dashed border-slate-300 hover:border-[#094ae0] hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
-                        title={`Generate a random ${activeNetwork} Ironwood identity`}
+                        className="py-2.5 px-3 rounded-xl border border-dashed border-slate-300 hover:border-[#1b5efa] hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
+                        title={`Generate a random ${activeNetwork} identity`}
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-[#094ae0]" />
+                        <Sparkles className="w-3.5 h-3.5 text-[#1b5efa]" />
                         <span>New {activeNetwork === "testnet" ? "Testnet" : "Mainnet"}</span>
                       </button>
                     </div>
@@ -667,28 +671,28 @@ export default function Navbar({
             className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 transition-colors"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5 text-[#094ae0]" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#1b5efa]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer Navigation (Responsive Hamburger Menu) */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 animate-in slide-in-from-top-2 shadow-xl">
-          {/* 1. Shielded Identity Section */}
+        <div className="md:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-3 animate-in slide-in-from-top-2 shadow-xl max-h-[85vh] overflow-y-auto">
+          {/* 1. Shielded Identity Section in Mobile Drawer */}
           {profile ? (
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-[#094ae0] flex items-center space-x-1.5">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-[#1b5efa] flex items-center space-x-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>{profile.name}</span>
                 </span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono font-bold">
-                  🌲 {profile.addressType}
+                  {profile.addressType}
                 </span>
               </div>
               <div className="flex items-center justify-between text-slate-500 pt-1 border-t border-slate-200/60">
-                <span className="font-mono text-xs truncate max-w-[210px]">{formatAddress(profile.address, 8, 6)}</span>
+                <span className="font-mono text-xs truncate max-w-[190px]">{formatAddress(profile.address, 8, 6)}</span>
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleCopyActive(profile.address)}
@@ -711,52 +715,118 @@ export default function Navbar({
               </div>
             </div>
           ) : (
-            <div className="p-3.5 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/20 space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/20 space-y-2.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1.5 text-xs font-bold text-[#094ae0]">
-                  <Shield className="w-4 h-4 text-[#094ae0]" />
+                <div className="flex items-center space-x-1.5 text-xs font-bold text-[#1b5efa]">
+                  <Shield className="w-4 h-4 text-[#1b5efa]" />
                   <span>Shielded Identity</span>
                 </div>
-                <span className="text-[10px] text-slate-500">Disconnected</span>
+                <span className="text-[10px] text-slate-500">Not Connected</span>
               </div>
-              <div className="grid grid-cols-2 gap-2 pt-0.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAddCustom(true);
-                    setPersonaDropdownOpen(true);
-                    setMobileMenuOpen(false);
-                  }}
-                  className="py-2 px-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold text-center"
-                >
-                  Connect Address
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleGenerateRandom();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="py-2 px-3 rounded-xl bg-white border border-[#094ae0]/30 text-[#094ae0] text-xs font-bold text-center hover:bg-[#EEF4FF]"
-                >
-                  Generate New
-                </button>
-              </div>
+
+              {/* Mobile Connect Address Form or Trigger Buttons */}
+              {mobileShowAddCustom ? (
+                <form onSubmit={handleConnectCustom} className="space-y-2 pt-1 animate-in fade-in duration-150">
+                  {customError && (
+                    <div className="text-[10px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200">
+                      {customError}
+                    </div>
+                  )}
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Account Name (e.g. My Zashi)"
+                      value={customName}
+                      onChange={(e) => setCustomName(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1b5efa]"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="u1... / zs1... or utest1..."
+                      value={customAddress}
+                      onChange={(e) => setCustomAddress(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1b5efa]"
+                      required
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2 pt-0.5">
+                    <button
+                      type="submit"
+                      className="flex-1 py-2 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-colors"
+                    >
+                      Connect
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileShowAddCustom(false);
+                        setCustomError(null);
+                      }}
+                      className="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2 pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setMobileShowAddCustom(true)}
+                      className="py-2.5 px-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold text-center shadow-xs"
+                    >
+                      Connect Address
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGenerateRandom}
+                      className="py-2.5 px-3 rounded-xl bg-white border border-[#1b5efa]/30 text-[#1b5efa] text-xs font-bold text-center hover:bg-[#eff4ff]"
+                    >
+                      Generate New
+                    </button>
+                  </div>
+
+                  {/* Quick Select Persona Pills on Mobile */}
+                  {demoList.length > 0 && (
+                    <div className="pt-1 border-t border-[#1b5efa]/15 space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        Quick Select:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {demoList.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => selectPersona(p)}
+                            className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#1b5efa] text-[11px] font-medium text-slate-800 flex items-center space-x-1"
+                          >
+                            <span>{p.name}</span>
+                            <span className="text-[9px] text-slate-400 font-mono">({p.network})</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
           {/* 2. Main Navigation Links */}
-          <div className="space-y-1">
+          <div className="space-y-1 pt-1">
             <button
               onClick={() => {
                 setActiveTab("marketplace");
                 setMobileMenuOpen(false);
               }}
               className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors ${
-                activeTab === "marketplace" ? "bg-[#EEF4FF] text-[#094ae0]" : "text-slate-600 hover:bg-slate-50"
+                activeTab === "marketplace" ? "bg-[#eff4ff] text-[#1b5efa]" : "text-slate-600 hover:bg-slate-50"
               }`}
             >
-              <ShoppingBag className="w-4 h-4 text-[#094ae0]" />
+              <ShoppingBag className="w-4 h-4 text-[#1b5efa]" />
               <span>Marketplace</span>
             </button>
 
@@ -766,10 +836,10 @@ export default function Navbar({
                 setMobileMenuOpen(false);
               }}
               className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors ${
-                activeTab === "auctions" ? "bg-[#EEF4FF] text-[#094ae0]" : "text-slate-600 hover:bg-slate-50"
+                activeTab === "auctions" ? "bg-[#eff4ff] text-[#1b5efa]" : "text-slate-600 hover:bg-slate-50"
               }`}
             >
-              <Lock className="w-4 h-4 text-[#094ae0]" />
+              <Lock className="w-4 h-4 text-[#1b5efa]" />
               <span>Sealed Auctions</span>
             </button>
 
@@ -779,11 +849,11 @@ export default function Navbar({
                 setMobileMenuOpen(false);
               }}
               className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors ${
-                activeTab === "activity" ? "bg-[#EEF4FF] text-[#094ae0]" : "text-slate-600 hover:bg-slate-50"
+                activeTab === "activity" ? "bg-[#eff4ff] text-[#1b5efa]" : "text-slate-600 hover:bg-slate-50"
               }`}
             >
-              <Activity className="w-4 h-4 text-[#094ae0]" />
-              <span>Activity & Audit Vault</span>
+              <Activity className="w-4 h-4 text-[#1b5efa]" />
+              <span>Activity & Vault</span>
             </button>
           </div>
 
@@ -795,10 +865,10 @@ export default function Navbar({
                   openCreateModal("listing");
                   setMobileMenuOpen(false);
                 }}
-                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#EEF4FF] text-left border border-slate-200 transition-colors"
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] text-left border border-slate-200 transition-colors"
               >
                 <div className="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
-                  <Plus className="w-3.5 h-3.5 text-[#094ae0]" />
+                  <Plus className="w-3.5 h-3.5 text-[#1b5efa]" />
                   <span>New Listing</span>
                 </div>
                 <div className="text-[10px] text-slate-500">Fixed-price sales</div>
@@ -809,10 +879,10 @@ export default function Navbar({
                   openCreateModal("auction");
                   setMobileMenuOpen(false);
                 }}
-                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#EEF4FF] text-left border border-slate-200 transition-colors"
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-[#eff4ff] text-left border border-slate-200 transition-colors"
               >
                 <div className="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
-                  <Lock className="w-3.5 h-3.5 text-[#094ae0]" />
+                  <Lock className="w-3.5 h-3.5 text-[#1b5efa]" />
                   <span>New Auction</span>
                 </div>
                 <div className="text-[10px] text-slate-500">Sealed bids</div>
@@ -824,10 +894,10 @@ export default function Navbar({
                 openSimulatorModal();
                 setMobileMenuOpen(false);
               }}
-              className="w-full p-2.5 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/20 flex items-center justify-center space-x-2 text-xs font-bold transition-colors"
+              className="w-full p-2.5 rounded-xl bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] border border-[#1b5efa]/20 flex items-center justify-center space-x-2 text-xs font-bold transition-colors"
             >
-              <Zap className="w-3.5 h-3.5 text-[#094ae0]" />
-              <span>Launch Webhook Simulator</span>
+              <Zap className="w-3.5 h-3.5 text-[#1b5efa]" />
+              <span>Launch Payment Simulator</span>
             </button>
           </div>
 
@@ -838,7 +908,7 @@ export default function Navbar({
               <button
                 onClick={() => handleNetworkChange("mainnet")}
                 className={`px-3 py-1 rounded-lg text-xs font-bold ${
-                  activeNetwork === "mainnet" ? "bg-[#094ae0] text-white" : "bg-slate-200 text-slate-600"
+                  activeNetwork === "mainnet" ? "bg-[#1b5efa] text-white" : "bg-slate-200 text-slate-600"
                 }`}
               >
                 Mainnet
@@ -846,7 +916,7 @@ export default function Navbar({
               <button
                 onClick={() => handleNetworkChange("testnet")}
                 className={`px-3 py-1 rounded-lg text-xs font-bold ${
-                  activeNetwork === "testnet" ? "bg-[#094ae0] text-white" : "bg-slate-200 text-slate-600"
+                  activeNetwork === "testnet" ? "bg-[#1b5efa] text-white" : "bg-slate-200 text-slate-600"
                 }`}
               >
                 🧪 Testnet

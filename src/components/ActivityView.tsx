@@ -156,7 +156,7 @@ export default function ActivityView({
             onClick={() => setSubTab("seller")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === "seller"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -166,7 +166,7 @@ export default function ActivityView({
             onClick={() => setSubTab("buyer")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === "buyer"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -176,7 +176,7 @@ export default function ActivityView({
             onClick={() => setSubTab("audits")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               subTab === "audits"
-                ? "bg-white text-[#094ae0] shadow-xs"
+                ? "bg-white text-[#1b5efa] shadow-xs"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
@@ -202,7 +202,7 @@ export default function ActivityView({
           <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-                <Package className="w-5 h-5 text-[#094ae0]" />
+                <Package className="w-5 h-5 text-[#1b5efa]" />
                 <span>Marketplace Listings (Fulfillment & Settlement)</span>
               </h3>
               <span className="text-xs text-slate-400">
@@ -228,7 +228,7 @@ export default function ActivityView({
                       <div>
                         <div className="font-bold text-sm text-slate-900">{l.title}</div>
                         <div className="text-xs text-slate-500 flex items-center space-x-2 mt-1">
-                          <span className="font-mono text-[#094ae0] font-black">{l.priceZec} ZEC</span>
+                          <span className="font-mono text-[#1b5efa] font-black">{l.priceZec} ZEC</span>
                           <span>•</span>
                           <span className="font-mono text-[11px] bg-white px-2 py-0.5 rounded-md border border-slate-200">
                             {l.invoiceMemo}
@@ -276,12 +276,12 @@ export default function ActivityView({
                                 onChange={(e) =>
                                   setTrackingInputs({ ...trackingInputs, [l.id]: e.target.value })
                                 }
-                                className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#094ae0]"
+                                className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#1b5efa]"
                               />
                               <button
                                 onClick={() => handleUpdateShipping(l.id)}
                                 disabled={actionLoading === l.id}
-                                className="px-3 py-1.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-xs"
+                                className="px-3 py-1.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all shadow-xs"
                               >
                                 Dispatch
                               </button>
@@ -300,7 +300,7 @@ export default function ActivityView({
           <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-                <Lock className="w-5 h-5 text-[#094ae0]" />
+                <Lock className="w-5 h-5 text-[#1b5efa]" />
                 <span>Sealed Auctions (Close & Reveal Controls)</span>
               </h3>
               <span className="text-xs text-slate-400">
@@ -326,7 +326,7 @@ export default function ActivityView({
                       <div>
                         <div className="font-bold text-sm text-slate-900">{a.title}</div>
                         <div className="text-xs text-slate-500 flex items-center space-x-2 mt-1">
-                          <span className="font-mono text-[#094ae0] font-bold">
+                          <span className="font-mono text-[#1b5efa] font-bold">
                             {a.bids?.length || 0} sealed bids
                           </span>
                           <span>•</span>
@@ -343,7 +343,7 @@ export default function ActivityView({
                           a.status === "SETTLED_PAID"
                             ? "bg-emerald-100 text-emerald-800"
                             : a.status === "WINNER_DECLARED"
-                            ? "bg-[#EEF4FF] text-[#094ae0]"
+                            ? "bg-[#eff4ff] text-[#1b5efa]"
                             : "bg-slate-200 text-slate-700"
                         }`}
                       >
@@ -365,7 +365,7 @@ export default function ActivityView({
                       {a.status === "CLOSED_AWAITING_REVEAL" && (
                         <button
                           onClick={() => onOpenUnsealModal(a)}
-                          className="px-4 py-2 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm"
+                          className="px-4 py-2 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm"
                         >
                           <Unlock className="w-3.5 h-3.5" />
                           <span>Unseal & Reveal Winner</span>
@@ -377,7 +377,7 @@ export default function ActivityView({
                         <button
                           onClick={() => handleSelectRunnerUp(a.id)}
                           disabled={actionLoading === a.id}
-                          className="px-4 py-2 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/20 text-xs font-bold flex items-center space-x-1.5"
+                          className="px-4 py-2 rounded-xl bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] border border-[#1b5efa]/20 text-xs font-bold flex items-center space-x-1.5"
                           title="If winning bidder defaults, offer to the next highest bidder"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
@@ -398,7 +398,7 @@ export default function ActivityView({
         <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4 shadow-xs">
           <div>
             <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-              <Key className="w-5 h-5 text-[#094ae0]" />
+              <Key className="w-5 h-5 text-[#1b5efa]" />
               <span>Buyer Vault — Unlocked Digital Items & Settlements</span>
             </h3>
             <p className="text-xs text-slate-500 mt-1">
@@ -422,7 +422,7 @@ export default function ActivityView({
                       <img src={l.imageUrl} alt={l.title} className="w-12 h-12 rounded-xl object-cover border border-slate-200" />
                       <div>
                         <div className="font-bold text-sm text-slate-900">{l.title}</div>
-                        <div className="text-xs text-[#094ae0] font-mono font-bold">Paid {l.priceZec} ZEC</div>
+                        <div className="text-xs text-[#1b5efa] font-mono font-bold">Paid {l.priceZec} ZEC</div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -434,7 +434,7 @@ export default function ActivityView({
                           onClick={() => onOpenReceiptModal(l, "listing")}
                           className="px-3 py-1 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 flex items-center space-x-1 transition-colors"
                         >
-                          <FileText className="w-3.5 h-3.5 text-[#094ae0]" />
+                          <FileText className="w-3.5 h-3.5 text-[#1b5efa]" />
                           <span>View Receipt</span>
                         </button>
                       )}
@@ -442,13 +442,13 @@ export default function ActivityView({
                   </div>
 
                   {l.secretPayload && (
-                    <div className="p-3.5 rounded-xl bg-white border border-[#094ae0]/20 flex items-center justify-between">
-                      <div className="font-mono text-xs text-[#094ae0] font-bold truncate max-w-[450px]">
+                    <div className="p-3.5 rounded-xl bg-white border border-[#1b5efa]/20 flex items-center justify-between">
+                      <div className="font-mono text-xs text-[#1b5efa] font-bold truncate max-w-[450px]">
                         {l.secretPayload}
                       </div>
                       <button
                         onClick={() => copyToClipboard(l.secretPayload, l.id)}
-                        className="p-1.5 rounded-lg hover:bg-[#EEF4FF] text-slate-500 hover:text-[#094ae0] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#eff4ff] text-slate-500 hover:text-[#1b5efa] transition-colors"
                         title="Copy Secret Key"
                       >
                         {copiedKey === l.id ? (
@@ -464,10 +464,10 @@ export default function ActivityView({
 
               {/* Paid Won Auctions */}
               {settledAuctions.map((a) => (
-                <div key={a.id} className="p-4 rounded-xl bg-[#EEF4FF]/40 border border-[#094ae0]/20 space-y-3">
+                <div key={a.id} className="p-4 rounded-xl bg-[#eff4ff]/40 border border-[#1b5efa]/20 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <img src={a.imageUrl} alt={a.title} className="w-12 h-12 rounded-xl object-cover border border-[#094ae0]/20" />
+                      <img src={a.imageUrl} alt={a.title} className="w-12 h-12 rounded-xl object-cover border border-[#1b5efa]/20" />
                       <div>
                         <div className="flex items-center space-x-1.5">
                           <span className="font-bold text-sm text-slate-900">{a.title}</span>
@@ -475,7 +475,7 @@ export default function ActivityView({
                             Auction Won
                           </span>
                         </div>
-                        <div className="text-xs text-[#094ae0] font-mono font-bold">
+                        <div className="text-xs text-[#1b5efa] font-mono font-bold">
                           Settled {a.winningAmountZec} ZEC
                         </div>
                       </div>
@@ -489,7 +489,7 @@ export default function ActivityView({
                           onClick={() => onOpenReceiptModal(a, "auction")}
                           className="px-3 py-1 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 flex items-center space-x-1 transition-colors"
                         >
-                          <FileText className="w-3.5 h-3.5 text-[#094ae0]" />
+                          <FileText className="w-3.5 h-3.5 text-[#1b5efa]" />
                           <span>View Receipt</span>
                         </button>
                       )}
@@ -497,13 +497,13 @@ export default function ActivityView({
                   </div>
 
                   {a.secretPayload && (
-                    <div className="p-3.5 rounded-xl bg-white border border-[#094ae0]/20 flex items-center justify-between">
-                      <div className="font-mono text-xs text-[#094ae0] font-bold truncate max-w-[450px]">
+                    <div className="p-3.5 rounded-xl bg-white border border-[#1b5efa]/20 flex items-center justify-between">
+                      <div className="font-mono text-xs text-[#1b5efa] font-bold truncate max-w-[450px]">
                         {a.secretPayload}
                       </div>
                       <button
                         onClick={() => copyToClipboard(a.secretPayload, a.id)}
-                        className="p-1.5 rounded-lg hover:bg-[#EEF4FF] text-slate-500 hover:text-[#094ae0] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[#eff4ff] text-slate-500 hover:text-[#1b5efa] transition-colors"
                         title="Copy Secret Payload"
                       >
                         {copiedKey === a.id ? (
@@ -527,22 +527,13 @@ export default function ActivityView({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-                <Activity className="w-5 h-5 text-[#094ae0]" />
-                <span>Shielded Webhook Settlement Log (zechack Indexer)</span>
+                <Activity className="w-5 h-5 text-[#1b5efa]" />
+                <span>On-Chain Settlement History</span>
               </h3>
-              <p className="text-xs text-slate-500 mt-1 font-mono">
-                Idempotent on-chain detection logs ensuring double-spend and replay immunity.
+              <p className="text-xs text-slate-500 mt-1">
+                Immutable on-chain verification logs ensuring authentic settlement and double-spend immunity.
               </p>
             </div>
-            <a
-              href="https://github.com/TheWebDevEhi/zechack"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-[#094ae0] hover:underline font-bold flex items-center space-x-1 self-start sm:self-auto"
-            >
-              <span>zechack Repository</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
           </div>
 
           <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
@@ -562,7 +553,7 @@ export default function ActivityView({
                     className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-mono space-y-1.5"
                   >
                     <div className="flex items-center justify-between text-slate-500">
-                      <span className="text-[#094ae0] font-bold">{log.eventId}</span>
+                      <span className="text-[#1b5efa] font-bold">{log.eventId}</span>
                       <span className="text-[10px] text-slate-400">
                         {new Date(log.createdAt).toLocaleTimeString()}
                       </span>
@@ -574,11 +565,11 @@ export default function ActivityView({
                           href={explorerUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#094ae0] font-bold hover:underline flex items-center space-x-1"
+                          className="text-[#1b5efa] font-bold hover:underline flex items-center space-x-1"
                           title="View on Zcash Block Explorer"
                         >
                           <span>{formatAddress(log.txid, 12, 10)}</span>
-                          <ExternalLink className="w-3 h-3 text-[#094ae0]" />
+                          <ExternalLink className="w-3 h-3 text-[#1b5efa]" />
                         </a>
                         <button
                           onClick={() => copyToClipboard(log.txid, `log_${log.id}`)}

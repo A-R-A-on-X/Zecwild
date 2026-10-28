@@ -9,13 +9,13 @@
   --foreground-muted: #64748B;
   --foreground-subtle: #94A3B8;
   
-  /* OpenSea Electric Royal Blue Design Tokens */
-  --blue-primary: #094ae0;
-  --blue-hover: #073bc2;
-  --blue-deep: #052c96;
-  --blue-light: #EEF4FF;
-  --blue-border: rgba(9, 74, 224, 0.2);
-  --blue-glow: rgba(9, 74, 224, 0.25);
+  /* OpenSea Vivid Electric Blue (#1b5efa) Design Tokens */
+  --blue-primary: #1b5efa;
+  --blue-hover: #1550df;
+  --blue-deep: #0f3eb5;
+  --blue-light: #eff4ff;
+  --blue-border: rgba(27, 94, 250, 0.2);
+  --blue-glow: rgba(27, 94, 250, 0.25);
   
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -44,8 +44,8 @@ code, pre, .font-mono {
 
 .card-floating:hover {
   transform: translateY(-2px);
-  border-color: rgba(9, 74, 224, 0.4);
-  box-shadow: 0 12px 24px -4px rgba(9, 74, 224, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
+  border-color: rgba(27, 94, 250, 0.4);
+  box-shadow: 0 12px 24px -4px rgba(27, 94, 250, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
 }
 
 .card-static {
@@ -55,43 +55,43 @@ code, pre, .font-mono {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* OpenSea Blue Primary Button */
+/* Vivid Blue Primary Button (#1b5efa) */
 .btn-blue-primary, .btn-orange-primary {
-  background: #094ae0;
+  background: #1b5efa;
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 4px 14px 0 rgba(9, 74, 224, 0.28);
+  box-shadow: 0 4px 14px 0 rgba(27, 94, 250, 0.28);
   transition: all 0.15s ease-in-out;
 }
 
 .btn-blue-primary:hover, .btn-orange-primary:hover {
-  background: #073bc2;
-  box-shadow: 0 6px 20px 0 rgba(9, 74, 224, 0.38);
+  background: #1550df;
+  box-shadow: 0 6px 20px 0 rgba(27, 94, 250, 0.38);
   transform: translateY(-1px);
 }
 
 .btn-blue-primary:active, .btn-orange-primary:active {
   transform: translateY(0);
-  background: #052c96;
+  background: #0f3eb5;
 }
 
-/* OpenSea Soft Blue Pill Button */
+/* Soft Blue Pill Button */
 .btn-blue-pill, .btn-orange-pill {
-  background-color: #EEF4FF;
-  color: #094ae0;
-  border: 1px solid rgba(9, 74, 224, 0.2);
+  background-color: #eff4ff;
+  color: #1b5efa;
+  border: 1px solid rgba(27, 94, 250, 0.2);
   font-weight: 700;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-blue-pill:hover, .btn-orange-pill:hover {
-  background-color: #E0EAFF;
-  border-color: rgba(9, 74, 224, 0.4);
+  background-color: #e0eaff;
+  border-color: rgba(27, 94, 250, 0.4);
 }
 
 /* Glow Accent */
 .glow-opensea-blue {
-  box-shadow: 0 0 25px -4px rgba(9, 74, 224, 0.35);
+  box-shadow: 0 0 25px -4px rgba(27, 94, 250, 0.35);
 }
 
 /* Custom Scrollbars */
@@ -101,14 +101,20 @@ code, pre, .font-mono {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F8FAFC;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
 }

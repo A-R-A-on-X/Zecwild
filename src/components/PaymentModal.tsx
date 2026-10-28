@@ -219,7 +219,7 @@ export default function PaymentModal({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-[#EEF4FF] text-[#094ae0] border border-[#094ae0]/20 shadow-xs">
+            <div className="p-2.5 rounded-xl bg-[#eff4ff] text-[#1b5efa] border border-[#1b5efa]/20 shadow-xs">
               <Shield className="w-5 h-5" />
             </div>
             <div>
@@ -274,7 +274,7 @@ export default function PaymentModal({
                     href={explorerUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-xs text-[#094ae0] font-bold truncate max-w-[340px] hover:underline flex items-center space-x-1"
+                    className="font-mono text-xs text-[#1b5efa] font-bold truncate max-w-[340px] hover:underline flex items-center space-x-1"
                     title="View on Zcash Block Explorer"
                   >
                     <span className="truncate">{confirmedTxid}</span>
@@ -296,19 +296,19 @@ export default function PaymentModal({
 
             {/* If Digital Goods: Reveal Secret Payload */}
             {item.itemType === "DIGITAL" && (
-              <div className="p-4 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/30 text-left">
-                <div className="flex items-center space-x-2 text-[#094ae0] text-xs font-bold uppercase tracking-wider">
-                  <Unlock className="w-4 h-4 text-[#094ae0]" />
+              <div className="p-4 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/30 text-left">
+                <div className="flex items-center space-x-2 text-[#1b5efa] text-xs font-bold uppercase tracking-wider">
+                  <Unlock className="w-4 h-4 text-[#1b5efa]" />
                   <span>Unlocked Digital Secret / Download</span>
                 </div>
-                <div className="mt-2.5 p-3 rounded-xl bg-white border border-[#094ae0]/20 flex items-center justify-between shadow-xs">
-                  <span className="font-mono text-xs sm:text-sm text-[#094ae0] font-bold break-all select-all">
+                <div className="mt-2.5 p-3 rounded-xl bg-white border border-[#1b5efa]/20 flex items-center justify-between shadow-xs">
+                  <span className="font-mono text-xs sm:text-sm text-[#1b5efa] font-bold break-all select-all">
                     {unlockedSecret || "Secret payload decrypted and available in your vault."}
                   </span>
                   {unlockedSecret && (
                     <button
                       onClick={() => copyToClipboard(unlockedSecret, "secret")}
-                      className="ml-3 p-1.5 rounded-lg bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] transition-colors flex-shrink-0"
+                      className="ml-3 p-1.5 rounded-lg bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] transition-colors flex-shrink-0"
                       title="Copy Secret Key"
                     >
                       {copiedField === "secret" ? (
@@ -325,7 +325,7 @@ export default function PaymentModal({
             {/* If Physical Goods */}
             {item.itemType === "PHYSICAL" && (
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-left flex items-start space-x-3">
-                <Package className="w-5 h-5 text-[#094ae0] mt-0.5 flex-shrink-0" />
+                <Package className="w-5 h-5 text-[#1b5efa] mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="text-sm font-bold text-slate-900">
                     Physical Fulfillment Initiated
@@ -344,16 +344,16 @@ export default function PaymentModal({
                     onClose();
                     onOpenReceiptModal(item, entityType);
                   }}
-                  className="w-full sm:flex-1 py-3 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/30 text-xs font-bold flex items-center justify-center space-x-1.5 transition-all"
+                  className="w-full sm:flex-1 py-3 rounded-xl bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] border border-[#1b5efa]/30 text-xs font-bold flex items-center justify-center space-x-1.5 transition-all"
                 >
-                  <FileText className="w-4 h-4 text-[#094ae0]" />
+                  <FileText className="w-4 h-4 text-[#1b5efa]" />
                   <span>View Full Shielded Receipt</span>
                 </button>
               )}
 
               <button
                 onClick={onClose}
-                className="w-full sm:flex-1 py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold shadow-md transition-all"
+                className="w-full sm:flex-1 py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold shadow-md transition-all"
               >
                 Close Window
               </button>
@@ -380,7 +380,7 @@ export default function PaymentModal({
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-base font-black font-mono text-[#094ae0]">
+                <div className="text-base font-black font-mono text-[#1b5efa]">
                   {item.priceZec} ZEC
                 </div>
                 <div className="text-[10px] text-slate-400">Wallet-to-Wallet</div>
@@ -403,14 +403,14 @@ export default function PaymentModal({
                 <div className="text-xs font-bold text-slate-900">
                   Scan with any Shielded Zcash Wallet
                 </div>
-                <div className="flex items-center justify-center space-x-1.5 text-[11px] font-mono text-[#094ae0]">
-                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
+                <div className="flex items-center justify-center space-x-1.5 text-[11px] font-mono text-[#1b5efa]">
+                  <span className="px-2.5 py-1 rounded-full bg-[#eff4ff] border border-[#1b5efa]/20 font-bold">
                     Zashi
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#eff4ff] border border-[#1b5efa]/20 font-bold">
                     YWallet
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#EEF4FF] border border-[#094ae0]/20 font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#eff4ff] border border-[#1b5efa]/20 font-bold">
                     Zingo!
                   </span>
                 </div>
@@ -419,9 +419,9 @@ export default function PaymentModal({
                 <div className="pt-2 flex items-center justify-center space-x-2">
                   <a
                     href={zip321Uri}
-                    className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/30 text-xs font-bold transition-all"
+                    className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] border border-[#1b5efa]/30 text-xs font-bold transition-all"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-[#094ae0]" />
+                    <ExternalLink className="w-3.5 h-3.5 text-[#1b5efa]" />
                     <span>Open in Zcash Wallet</span>
                   </a>
 
@@ -450,7 +450,7 @@ export default function PaymentModal({
                     Exact Amount
                   </div>
                   <div className="text-sm font-black text-slate-900 font-mono">
-                    <span className="text-[#094ae0]">{item.priceZec}</span> ZEC{" "}
+                    <span className="text-[#1b5efa]">{item.priceZec}</span> ZEC{" "}
                     <span className="text-[11px] text-slate-500 font-normal">
                       ({item.priceZat} zatoshis)
                     </span>
@@ -474,7 +474,7 @@ export default function PaymentModal({
                   <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                     Required Memo Tag
                   </div>
-                  <div className="text-xs font-mono font-bold text-[#094ae0] truncate max-w-[280px] sm:max-w-[400px]">
+                  <div className="text-xs font-mono font-bold text-[#1b5efa] truncate max-w-[280px] sm:max-w-[400px]">
                     {item.invoiceMemo}
                   </div>
                 </div>
@@ -520,17 +520,17 @@ export default function PaymentModal({
             )}
 
             {/* Listening Notice & Simulator Trigger */}
-            <div className="p-3.5 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/30 flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-xs text-[#094ae0]">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#094ae0] animate-ping" />
+            <div className="p-3.5 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/30 flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs text-[#1b5efa]">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#1b5efa] animate-ping" />
                 <span className="font-semibold">
-                  Listening for compact block note via zechack indexer...
+                  Listening for on-chain shielded payment confirmation...
                 </span>
               </div>
               <button
                 onClick={handleSimulatePayment}
                 disabled={isSimulating}
-                className="px-3 py-1.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1"
+                className="px-3 py-1.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1"
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>{isSimulating ? "Simulating..." : "Simulate Note"}</span>

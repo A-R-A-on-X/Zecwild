@@ -155,7 +155,7 @@ export default function UnsealModal({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EEF4FF] text-[#094ae0] flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[#eff4ff] text-[#1b5efa] flex items-center justify-center shadow-xs">
               <Unlock className="w-5 h-5" />
             </div>
             <div>
@@ -175,7 +175,7 @@ export default function UnsealModal({
           /* Finished Ranked View */
           <div className="py-5 space-y-5">
             <div className="text-center space-y-2">
-              <div className="w-14 h-14 rounded-2xl bg-[#EEF4FF] border border-[#094ae0]/30 text-[#094ae0] flex items-center justify-center mx-auto shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-[#eff4ff] border border-[#1b5efa]/30 text-[#1b5efa] flex items-center justify-center mx-auto shadow-sm">
                 <Trophy className="w-7 h-7" />
               </div>
               <h4 className="text-lg font-black text-slate-900">Auction Decrypted & Winner Declared!</h4>
@@ -190,14 +190,14 @@ export default function UnsealModal({
                   key={b.bidId}
                   className={`p-3.5 rounded-xl border flex items-center justify-between transition-all ${
                     idx === 0
-                      ? "bg-[#EEF4FF] border-[#094ae0]/30 text-slate-900 shadow-xs"
+                      ? "bg-[#eff4ff] border-[#1b5efa]/30 text-slate-900 shadow-xs"
                       : "bg-slate-50 border-slate-200 text-slate-600"
                   }`}
                 >
                   <div className="flex items-center space-x-3">
                     <div
                       className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        idx === 0 ? "bg-[#094ae0] text-white" : "bg-slate-200 text-slate-600"
+                        idx === 0 ? "bg-[#1b5efa] text-white" : "bg-slate-200 text-slate-600"
                       }`}
                     >
                       {idx + 1}
@@ -207,7 +207,7 @@ export default function UnsealModal({
                         {formatAddress(b.bidderAddress, 10, 8)}
                       </div>
                       {idx === 0 && (
-                        <div className="text-[10px] text-[#094ae0] font-black uppercase tracking-wider flex items-center space-x-1 mt-0.5">
+                        <div className="text-[10px] text-[#1b5efa] font-black uppercase tracking-wider flex items-center space-x-1 mt-0.5">
                           <Sparkles className="w-3 h-3" />
                           <span>Winning Bidder</span>
                         </div>
@@ -223,7 +223,7 @@ export default function UnsealModal({
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold shadow-md transition-all"
+              className="w-full py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold shadow-md transition-all"
             >
               Close & View Settlements
             </button>
@@ -234,8 +234,8 @@ export default function UnsealModal({
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Auction Title:</div>
               <div className="text-sm font-bold text-slate-900 truncate mt-0.5">{auction.title}</div>
-              <div className="text-xs text-[#094ae0] mt-1.5 font-bold flex items-center space-x-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#094ae0]" />
+              <div className="text-xs text-[#1b5efa] mt-1.5 font-bold flex items-center space-x-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#1b5efa]" />
                 <span>
                   {isLoadingBids
                     ? "Loading bids..."
@@ -260,7 +260,7 @@ export default function UnsealModal({
                 value={privateKeyBase64}
                 onChange={(e) => setPrivateKeyBase64(e.target.value)}
                 placeholder="Paste the Base64 PKCS#8 private key (or auto-loaded from local browser vault)"
-                className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0] resize-none"
+                className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#1b5efa] resize-none"
               />
               <p className="text-[11px] text-slate-500 mt-1.5">
                 Decryption runs exclusively inside your browser's WebCrypto runtime. Your private key is never transmitted across the network.
@@ -270,7 +270,7 @@ export default function UnsealModal({
             <button
               onClick={handleUnseal}
               disabled={isUnsealing || count === 0}
-              className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
+              className="w-full py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               {isUnsealing ? (
                 <>

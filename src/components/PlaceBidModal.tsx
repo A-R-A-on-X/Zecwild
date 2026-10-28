@@ -132,7 +132,7 @@ export default function PlaceBidModal({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-[#EEF4FF] text-[#094ae0] border border-[#094ae0]/20">
+            <div className="p-2.5 rounded-xl bg-[#eff4ff] text-[#1b5efa] border border-[#1b5efa]/20">
               <Lock className="w-5 h-5" />
             </div>
             <div>
@@ -164,14 +164,14 @@ export default function PlaceBidModal({
               <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
                 SHA-256 Cryptographic Commitment Hash
               </div>
-              <div className="font-mono text-xs text-[#094ae0] font-bold mt-1 break-all select-all">
+              <div className="font-mono text-xs text-[#1b5efa] font-bold mt-1 break-all select-all">
                 {successCommitment}
               </div>
             </div>
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white font-bold text-sm transition-all shadow-md"
+              className="w-full py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white font-bold text-sm transition-all shadow-md"
             >
               Done
             </button>
@@ -182,7 +182,7 @@ export default function PlaceBidModal({
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Auction</div>
               <div className="text-sm font-bold text-slate-900 truncate">{auction.title}</div>
-              <div className="text-xs text-[#094ae0] mt-0.5 font-mono font-bold">
+              <div className="text-xs text-[#1b5efa] mt-0.5 font-mono font-bold">
                 Reserve Price: {auction.reservePriceZec} ZEC
               </div>
             </div>
@@ -207,10 +207,10 @@ export default function PlaceBidModal({
                   value={bidAmountZec}
                   onChange={(e) => setBidAmountZec(e.target.value)}
                   placeholder={`Min ${auction.reservePriceZec} ZEC`}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:outline-none focus:border-[#094ae0]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:outline-none focus:border-[#1b5efa]"
                   required
                 />
-                <div className="absolute right-4 top-2.5 text-xs font-mono text-[#094ae0] font-black">
+                <div className="absolute right-4 top-2.5 text-xs font-mono text-[#1b5efa] font-black">
                   ZEC
                 </div>
               </div>
@@ -222,7 +222,7 @@ export default function PlaceBidModal({
                 <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
                   Your Shielded Zcash Address
                 </label>
-                <span className="text-[10px] text-[#094ae0] font-bold">
+                <span className="text-[10px] text-[#1b5efa] font-bold">
                   🌲 Ironwood / Sapling
                 </span>
               </div>
@@ -231,7 +231,7 @@ export default function PlaceBidModal({
                 value={bidderAddress}
                 onChange={(e) => setBidderAddress(e.target.value)}
                 placeholder="u1... / zs1... (Mainnet) or utest1... / ztestsapling1... (Testnet)"
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0]"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#1b5efa]"
                 required
               />
               <p className="text-[11px] text-slate-400 mt-1">
@@ -240,10 +240,10 @@ export default function PlaceBidModal({
             </div>
 
             {/* Sealing Security Guarantee Banner */}
-            <div className="p-3.5 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/20 text-xs text-[#094ae0] flex items-start space-x-2.5">
-              <Shield className="w-4 h-4 text-[#094ae0] flex-shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/20 text-xs text-[#1b5efa] flex items-start space-x-2.5">
+              <Shield className="w-4 h-4 text-[#1b5efa] flex-shrink-0 mt-0.5" />
               <div>
-                <strong className="text-[#094ae0]">Cryptographic Seal Guarantee: </strong>
+                <strong className="text-[#1b5efa]">Cryptographic Seal Guarantee: </strong>
                 <span className="text-slate-700">Your bid is encrypted locally via WebCrypto (RSA-OAEP + AES-GCM). Only the seller's browser can unseal it when the deadline expires.</span>
               </div>
             </div>
@@ -251,7 +251,7 @@ export default function PlaceBidModal({
             <button
               type="submit"
               disabled={isSealing}
-              className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md"
+              className="w-full py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md"
             >
               {isSealing ? (
                 <>

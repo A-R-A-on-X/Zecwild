@@ -126,7 +126,7 @@ export default function CreateListingModal({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-[#EEF4FF] text-[#094ae0] flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[#eff4ff] text-[#1b5efa] flex items-center justify-center shadow-xs">
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
@@ -161,7 +161,7 @@ export default function CreateListingModal({
                 onClick={() => setItemType("DIGITAL")}
                 className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "DIGITAL"
-                    ? "bg-[#EEF4FF] border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    ? "bg-[#eff4ff] border-[#1b5efa]/40 text-[#1b5efa] shadow-xs"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -174,7 +174,7 @@ export default function CreateListingModal({
                 onClick={() => setItemType("PHYSICAL")}
                 className={`py-2.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition-all ${
                   itemType === "PHYSICAL"
-                    ? "bg-[#EEF4FF] border-[#094ae0]/40 text-[#094ae0] shadow-xs"
+                    ? "bg-[#eff4ff] border-[#1b5efa]/40 text-[#1b5efa] shadow-xs"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -194,7 +194,7 @@ export default function CreateListingModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Shielded Hardware Node or API Access Key"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-[#094ae0]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-medium focus:outline-none focus:border-[#1b5efa]"
               required
             />
           </div>
@@ -209,7 +209,7 @@ export default function CreateListingModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe specifications and what the buyer receives..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-[#094ae0] resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-[#1b5efa] resize-none"
             />
           </div>
 
@@ -226,7 +226,7 @@ export default function CreateListingModal({
                 value={priceZec}
                 onChange={(e) => setPriceZec(e.target.value)}
                 placeholder="0.25"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs font-bold focus:outline-none focus:border-[#094ae0]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs font-bold focus:outline-none focus:border-[#1b5efa]"
                 required
               />
             </div>
@@ -236,8 +236,8 @@ export default function CreateListingModal({
                 Image (Max 2MB)
               </label>
               <div className="flex items-center space-x-2">
-                <label className="cursor-pointer flex-1 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#094ae0]/40 text-xs text-slate-600 flex items-center justify-center space-x-1.5 transition-colors">
-                  <Upload className="w-3.5 h-3.5 text-[#094ae0]" />
+                <label className="cursor-pointer flex-1 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#1b5efa]/40 text-xs text-slate-600 flex items-center justify-center space-x-1.5 transition-colors">
+                  <Upload className="w-3.5 h-3.5 text-[#1b5efa]" />
                   <span>Choose Image</span>
                   <input type="file" accept="image/*" onChange={handleImageFile} className="hidden" />
                 </label>
@@ -251,7 +251,7 @@ export default function CreateListingModal({
           {/* Digital Secret Payload */}
           {itemType === "DIGITAL" && (
             <div>
-              <label className="block text-xs font-bold text-[#094ae0] uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+              <label className="block text-xs font-bold text-[#1b5efa] uppercase tracking-wider mb-1.5 flex items-center space-x-1">
                 <Key className="w-3.5 h-3.5" />
                 <span>Secret Payload / Download Link (Unlocked After Payment)</span>
               </label>
@@ -260,7 +260,7 @@ export default function CreateListingModal({
                 value={secretPayload}
                 onChange={(e) => setSecretPayload(e.target.value)}
                 placeholder="e.g. sk-prod-key-xyz or https://secure.vault/download"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-[#094ae0]/30 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0]"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-[#1b5efa]/30 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#1b5efa]"
                 required
               />
             </div>
@@ -272,7 +272,7 @@ export default function CreateListingModal({
               <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
                 Payout Shielded Address
               </label>
-              <span className="text-[10px] text-[#094ae0] font-bold">
+              <span className="text-[10px] text-[#1b5efa] font-bold">
                 🌲 Ironwood & Sapling Compatible
               </span>
             </div>
@@ -281,7 +281,7 @@ export default function CreateListingModal({
               value={sellerAddress}
               onChange={(e) => setSellerAddress(e.target.value)}
               placeholder="u1... / zs1... (Mainnet) or utest1... / ztestsapling1... (Testnet)"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#094ae0]"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:outline-none focus:border-[#1b5efa]"
               required
             />
           </div>
@@ -289,7 +289,7 @@ export default function CreateListingModal({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50"
+            className="w-full py-3 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold transition-all shadow-md disabled:opacity-50"
           >
             {isSubmitting ? "Publishing Listing..." : "Publish Listing"}
           </button>

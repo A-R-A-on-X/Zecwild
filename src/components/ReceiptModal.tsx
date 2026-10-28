@@ -124,7 +124,7 @@ export default function ReceiptModal({
           {
             receipt_type: "ZecWild Shielded Settlement Receipt",
             verification_status: "HMAC_VERIFIED_ON_CHAIN",
-            indexer: "zechack ZecShield Gateway",
+            settlementProtocol: "ZecShield Shielded Note Protocol",
             entity_type: entityType,
             item_id: item.id,
             item_title: item.title,
@@ -196,7 +196,7 @@ export default function ReceiptModal({
                 )}
               </div>
               <p className="text-xs text-[#66635F]">
-                Zcash Peer-to-Peer Settlement Confirmed by ZecShield Indexer
+                Zcash Peer-to-Peer Shielded Settlement Confirmed
               </p>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function ReceiptModal({
               </div>
               <div className="text-sm font-bold text-[#1A1816] truncate">{item.title}</div>
               <div className="text-xs text-slate-500 flex items-center space-x-1.5 mt-0.5">
-                <span className="font-mono text-[11px] font-bold text-[#094ae0]">
+                <span className="font-mono text-[11px] font-bold text-[#1b5efa]">
                   {item.priceZec} ZEC
                 </span>
                 <span>•</span>
@@ -236,7 +236,7 @@ export default function ReceiptModal({
           </div>
 
           <div className="text-right flex-shrink-0">
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#EEF4FF] text-[#094ae0] border border-[#094ae0]/20">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#eff4ff] text-[#1b5efa] border border-[#1b5efa]/20">
               {item.itemType || "GOODS"}
             </span>
           </div>
@@ -244,18 +244,18 @@ export default function ReceiptModal({
 
         {/* Unlocked Digital Delivery (If Digital) */}
         {item.itemType === "DIGITAL" && (
-          <div className="p-4 rounded-xl bg-[#EEF4FF] border border-[#094ae0]/30 space-y-2">
+          <div className="p-4 rounded-xl bg-[#eff4ff] border border-[#1b5efa]/30 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#094ae0] uppercase tracking-wider flex items-center space-x-1.5">
-                <Key className="w-4 h-4 text-[#094ae0]" />
+              <span className="text-xs font-bold text-[#1b5efa] uppercase tracking-wider flex items-center space-x-1.5">
+                <Key className="w-4 h-4 text-[#1b5efa]" />
                 <span>Unlocked Digital License / Payload</span>
               </span>
-              <span className="text-[10px] text-emerald-800 font-bold bg-white px-2 py-0.5 rounded-full border border-[#094ae0]/20">
+              <span className="text-[10px] text-emerald-800 font-bold bg-white px-2 py-0.5 rounded-full border border-[#1b5efa]/20">
                 Decrypted
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-white border border-[#094ae0]/20 flex items-center justify-between">
-              <span className="font-mono text-xs sm:text-sm text-[#094ae0] font-bold break-all select-all">
+            <div className="p-3 rounded-xl bg-white border border-[#1b5efa]/20 flex items-center justify-between">
+              <span className="font-mono text-xs sm:text-sm text-[#1b5efa] font-bold break-all select-all">
                 {item.secretPayload || "sk-prod-license-key-7718942-shielded"}
               </span>
               <button
@@ -265,7 +265,7 @@ export default function ReceiptModal({
                     "secret"
                   )
                 }
-                className="ml-3 p-1.5 rounded-lg bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] transition-colors flex-shrink-0"
+                className="ml-3 p-1.5 rounded-lg bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] transition-colors flex-shrink-0"
                 title="Copy Secret Payload"
               >
                 {copiedField === "secret" ? (
@@ -281,7 +281,7 @@ export default function ReceiptModal({
         {/* Physical Shipping Fulfillment Status (If Physical) */}
         {item.itemType === "PHYSICAL" && (
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start space-x-3">
-            <Package className="w-5 h-5 text-[#094ae0] mt-0.5 flex-shrink-0" />
+            <Package className="w-5 h-5 text-[#1b5efa] mt-0.5 flex-shrink-0" />
             <div>
               <div className="text-sm font-bold text-slate-900">
                 Physical Shipping Fulfillment
@@ -295,7 +295,7 @@ export default function ReceiptModal({
                   <span>
                     {" "}
                     • Tracking:{" "}
-                    <code className="text-[#094ae0] font-mono font-bold">
+                    <code className="text-[#1b5efa] font-mono font-bold">
                       {item.shippingTracking}
                     </code>
                   </span>
@@ -319,7 +319,7 @@ export default function ReceiptModal({
                     href={explorerUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-[#094ae0] font-bold truncate hover:underline flex items-center space-x-1"
+                    className="font-mono text-[#1b5efa] font-bold truncate hover:underline flex items-center space-x-1"
                     title="View on Zcash Block Explorer"
                   >
                     <span className="truncate max-w-[280px] sm:max-w-[340px]">
@@ -421,9 +421,9 @@ export default function ReceiptModal({
 
           <button
             onClick={handleDownloadJson}
-            className="w-full sm:flex-1 py-2.5 rounded-xl bg-[#EEF4FF] hover:bg-[#dbe7ff] text-[#094ae0] border border-[#094ae0]/30 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all"
+            className="w-full sm:flex-1 py-2.5 rounded-xl bg-[#eff4ff] hover:bg-[#dbe7ff] text-[#1b5efa] border border-[#1b5efa]/30 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all"
           >
-            <Download className="w-3.5 h-3.5 text-[#094ae0]" />
+            <Download className="w-3.5 h-3.5 text-[#1b5efa]" />
             <span>Export JSON Receipt</span>
           </button>
 
@@ -432,7 +432,7 @@ export default function ReceiptModal({
               href={explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#094ae0] hover:bg-[#073bc2] text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white font-bold text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm"
             >
               <span>Block Explorer</span>
               <ExternalLink className="w-3.5 h-3.5" />
