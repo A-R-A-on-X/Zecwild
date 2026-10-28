@@ -71,6 +71,19 @@ export default function Home() {
       .filter((a) => a.status === "SETTLED_PAID")
       .reduce((acc, a) => acc + (a.winningAmountZec || 0), 0);
 
+  // Compute the most recently added item across marketplace listings and sealed auctions
+  const allInventory = [
+    ...listings.map((l) => ({ ...l, __type: "listing" as const })),
+    ...auctions.map((a) => ({ ...a, __type: "auction" as const })),
+  ];
+
+  allInventory.sort(
+    (a, b) =>
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+  );
+
+  const latestItem = allInventory.length > 0 ? allInventory[0] : null;
+
   const handleTabChange = (
     tab: "marketplace" | "auctions" | "activity",
     subTab?: "seller" | "buyer" | "audits"
@@ -108,6 +121,9 @@ export default function Home() {
           listingsCount={listings.length}
           auctionsCount={auctions.length}
           settledVolumeZec={settledVolumeZec}
+          latestItem={latestItem}
+          onOpenBid={(auction) => setBidAuction(auction)}
+          onOpenPayment={(item, type) => setPaymentItem({ item, type })}
         />
 
         {isLoading ? (

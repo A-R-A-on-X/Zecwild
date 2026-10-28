@@ -29,6 +29,9 @@ interface HeroShowcaseProps {
   listingsCount: number;
   auctionsCount: number;
   settledVolumeZec?: number;
+  latestItem?: any;
+  onOpenBid?: (auction: any) => void;
+  onOpenPayment?: (item: any, type: "listing" | "auction") => void;
 }
 
 export default function HeroShowcase({
@@ -39,6 +42,9 @@ export default function HeroShowcase({
   listingsCount,
   auctionsCount,
   settledVolumeZec = 0,
+  latestItem,
+  onOpenBid,
+  onOpenPayment,
 }: HeroShowcaseProps) {
   const [profile, setProfile] = useState(getActiveProfile());
   const [assistantPrompt, setAssistantPrompt] = useState("");
@@ -104,6 +110,48 @@ export default function HeroShowcase({
     setTimeout(() => setAssistantStatus(null), 3500);
   };
 
+  const DEFAULT_IMAGE =
+    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=2000&q=85";
+
+  const isAuction = latestItem?.__type === "auction";
+  const isListing = latestItem?.__type === "listing";
+
+  const heroImage = latestItem?.imageUrl || DEFAULT_IMAGE;
+  const heroTitle = latestItem?.title || (
+    <>
+      Genesis Hardware Node <span className="text-[#1b5efa]">#001</span>
+    </>
+  );
+  const heroDescription =
+    latestItem?.description ||
+    "Cryptographically sealed blind auction with zero on-chain bid leakage. Bid privately or buy digital assets and physical hardware with direct wallet-to-wallet settlements.";
+
+  // Dynamic price or reserve label & value
+  const heroPriceLabel = isListing ? "Price:" : "Reserve:";
+  const heroPriceValue = isListing
+    ? `${latestItem.priceZec} ZEC`
+    : latestItem
+    ? latestItem.reservePriceZec > 0
+      ? `${latestItem.reservePriceZec} ZEC`
+      : "No Reserve"
+    : "0.75 ZEC";
+
+  const badgeText = latestItem
+    ? isAuction
+      ? `Latest Sealed Drop • ${latestItem.itemType === "PHYSICAL" ? "Physical Asset" : "Digital Asset"}`
+      : `Latest Marketplace Drop • ${latestItem.itemType === "PHYSICAL" ? "Physical Asset" : "Digital Asset"}`
+    : "Featured Sealed Drop • Live on ZecWild";
+
+  const sellerText = latestItem?.sellerAddress
+    ? `Seller: ${formatAddress(latestItem.sellerAddress)}`
+    : "Cypherpunk Hardware Vault";
+
+  const featureTag = isAuction
+    ? "Encrypted Blind Bids"
+    : isListing
+    ? "Direct P2P Settlement"
+    : "Shielded Sealed Drop";
+
   return (
     <section className="space-y-4 sm:space-y-6">
       {/* 
@@ -115,9 +163,13 @@ export default function HeroShowcase({
         {/* Background Visual Showcase Canvas */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=2000&q=85"
-            alt="Shielded Auctions & Marketplace"
-            className="w-full h-full object-cover object-center scale-105 filter brightness-[0.7] contrast-[1.05]"
+            key={heroImage}
+            src={heroImage}
+            alt={typeof heroTitle === "string" ? heroTitle : "ZecWild Featured Listing"}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = DEFAULT_IMAGE;
+            }}
+            className="w-full h-full object-cover object-center scale-105 filter brightness-[0.7] contrast-[1.05] transition-all duration-700"
           />
           {/* Subtle multi-stop gradient overlay for crisp text readability across breakpoints */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/30" />
@@ -130,7 +182,7 @@ export default function HeroShowcase({
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-white text-xs font-semibold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Featured Sealed Drop • Live on ZecWild</span>
+            <span>{badgeText}</span>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -162,38 +214,85 @@ export default function HeroShowcase({
           {/* Left Title & Key Details */}
           <div className="lg:col-span-7 space-y-3 sm:space-y-4">
             <div className="flex items-center space-x-2 text-white/80 text-xs font-medium">
-              <span>Cypherpunk Hardware Vault</span>
+              <span>{sellerText}</span>
               <CheckCircle2 className="w-3.5 h-3.5 text-[#1b5efa]" />
+              <span className="text-white/40">•</span>
+              <span className="text-[11px] text-slate-300 font-normal">{featureTag}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-              Genesis Hardware Node <span className="text-[#1b5efa]">#001</span>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight line-clamp-2">
+              {heroTitle}
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 max-w-lg leading-relaxed">
-              Cryptographically sealed blind auction with zero on-chain bid leakage. Bid privately or buy digital assets and physical hardware with direct wallet-to-wallet settlements.
+            <p className="text-xs sm:text-sm text-slate-300 max-w-lg leading-relaxed line-clamp-2 sm:line-clamp-3">
+              {heroDescription}
             </p>
 
             {/* Quick Action Badges */}
             <div className="pt-1 flex flex-wrap items-center gap-3">
               <div className="px-3.5 py-2 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white font-mono text-xs flex items-center space-x-2">
-                <span className="text-slate-400 font-bold uppercase text-[10px]">Reserve:</span>
-                <span className="font-black text-sm text-[#1b5efa]">0.75 ZEC</span>
+                <span className="text-slate-400 font-bold uppercase text-[10px]">{heroPriceLabel}</span>
+                <span className="font-black text-sm text-[#1b5efa]">{heroPriceValue}</span>
               </div>
 
-              <button
-                onClick={() => setActiveTab("auctions")}
-                className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                <span>Place Sealed Bid</span>
-              </button>
+              {/* Primary Action Button */}
+              {isListing ? (
+                latestItem.status === "SOLD" ? (
+                  <div className="px-5 py-2.5 rounded-xl bg-slate-800/80 text-slate-300 text-xs font-bold flex items-center space-x-2 border border-slate-700">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Settled / Sold Out</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => (onOpenPayment ? onOpenPayment(latestItem, "listing") : setActiveTab("marketplace"))}
+                    className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>Buy Now ({latestItem.priceZec} ZEC)</span>
+                  </button>
+                )
+              ) : isAuction ? (
+                latestItem.status === "OPEN" ? (
+                  <button
+                    onClick={() => (onOpenBid ? onOpenBid(latestItem) : setActiveTab("auctions"))}
+                    className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Place Sealed Bid</span>
+                  </button>
+                ) : latestItem.status === "WINNER_DECLARED" ? (
+                  <button
+                    onClick={() => (onOpenPayment ? onOpenPayment(latestItem, "auction") : setActiveTab("auctions"))}
+                    className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Complete Settlement</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setActiveTab("auctions")}
+                    className="px-5 py-2.5 rounded-xl bg-slate-800/80 text-slate-200 text-xs font-bold flex items-center space-x-2 border border-slate-700"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>View Auction ({latestItem.status.replace(/_/g, " ")})</span>
+                  </button>
+                )
+              ) : (
+                <button
+                  onClick={() => setActiveTab("auctions")}
+                  className="px-5 py-2.5 rounded-xl bg-[#1b5efa] hover:bg-[#1550df] text-white text-xs font-bold flex items-center space-x-2 shadow-lg transition-transform hover:-translate-y-0.5"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Place Sealed Bid</span>
+                </button>
+              )}
 
+              {/* Secondary Browse Button */}
               <button
-                onClick={() => setActiveTab("marketplace")}
+                onClick={() => setActiveTab(isAuction ? "auctions" : "marketplace")}
                 className="px-4 py-2.5 rounded-xl bg-white/90 hover:bg-white text-slate-900 text-xs font-bold flex items-center space-x-1.5 backdrop-blur-md transition-colors"
               >
-                <span>Browse Listings</span>
+                <span>{isAuction ? "Browse Auctions" : "Browse Marketplace"}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
